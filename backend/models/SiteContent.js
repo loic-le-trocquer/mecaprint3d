@@ -10,12 +10,22 @@ const ServiceSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const MediaSchema = new mongoose.Schema(
+  {
+    type: { type: String, enum: ["image", "video"], default: "image" },
+    url: String,
+    title: String,
+  },
+  { _id: false }
+);
+
 const RealisationSchema = new mongoose.Schema(
   {
     title: String,
     description: String,
-    imageUrl: String,
+    imageUrl: String, // compatibilité avec les anciennes réalisations
     category: String,
+    media: [MediaSchema], // nouvelles photos / vidéos multiples
   },
   { _id: false }
 );

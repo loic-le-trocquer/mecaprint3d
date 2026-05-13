@@ -16,11 +16,15 @@ cloudinary.config({
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 15 * 1024 * 1024 },
+  limits: { fileSize: 80 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    if (!file.mimetype.startsWith("image/")) {
-      return cb(new Error("Seules les images sont autorisées."));
+    const isImage = file.mimetype.startsWith("image/");
+    const isVideo = file.mimetype.startsWith("video/");
+
+    if (!isImage && !isVideo) {
+      return cb(new Error("Seules les images et vidéos sont autorisées."));
     }
+
     cb(null, true);
   },
 });
@@ -55,12 +59,12 @@ function adminAuth(req, res, next) {
   next();
 }
 
-function uploadImageToCloudinary(file) {
+function uploadMediaToCloudinary(file) {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
         folder: "mecaprint3d/site",
-        resource_type: "image",
+        resource_type: "auto",
       },
       (error, result) => {
         if (error) reject(error);
@@ -70,6 +74,11 @@ function uploadImageToCloudinary(file) {
 
     streamifier.createReadStream(file.buffer).pipe(stream);
   });
+}
+
+function getMediaType(file, result) {
+  if (file.mimetype.startsWith("video/") || result.resource_type === "video") return "video";
+  return "image";
 }
 
 router.get("/", async (req, res, next) => {
@@ -122,14 +131,19 @@ router.put("/admin", adminAuth, async (req, res, next) => {
 router.post("/admin/upload", adminAuth, upload.single("image"), async (req, res, next) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ success: false, error: "Aucune image reçue." });
+      return res.status(400).json({ success: false, error: "Aucun média reçu." });
     }
 
-    const result = await uploadImageToCloudinary(req.file);
+    const result = await uploadMediaToCloudinary(req.file);
+    const mediaType = getMediaType(req.file, result);
 
     res.json({
       success: true,
-      imageUrl: result.secure_url,
+      imageUrl: result.secure_url, // compatibilité avec l'ancien front
+      media: {
+        type: mediaType,
+        url: result.secure_url,
+      },
       publicId: result.public_id,
     });
   } catch (error) {

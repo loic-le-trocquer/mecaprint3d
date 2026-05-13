@@ -3,7 +3,7 @@ import { API_URL, apiFetch } from "../lib/api";
 import { defaultContent } from "../lib/defaultContent";
 
 const emptyService = { number: "", title: "", description: "", badge: "Sur devis" };
-const emptyRealisation = { title: "", description: "", imageUrl: "", category: "" };
+const emptyRealisation = { title: "", description: "", imageUrl: "", category: "", media: [] };
 
 function Field({ label, value, onChange, textarea = false, placeholder = "" }) {
   const className = "mt-2 w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition focus:border-orange-500";
@@ -122,6 +122,48 @@ export default function Admin({ content, setContent }) {
     }
   };
 
+
+  const uploadRealisationMedia = async (file, realisationIndex) => {
+    if (!file) return;
+    setMessage("Upload du média en cours...");
+
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const response = await fetch(`${API_URL}/api/site-content/admin/upload`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const data = await response.json();
+
+      if (!response.ok || !data.success) throw new Error(data.error || "Upload impossible");
+
+      setDraft((current) => {
+        const copy = structuredClone(current);
+        const item = copy.realisations[realisationIndex];
+        item.media = [...(item.media || []), data.media || { type: "image", url: data.imageUrl }];
+        item.imageUrl = item.imageUrl || data.imageUrl;
+        return copy;
+      });
+
+      setMessage("Média ajouté. Pense à cliquer sur Enregistrer les modifications.");
+    } catch (error) {
+      setMessage(error.message);
+    }
+  };
+
+  const removeRealisationMedia = (realisationIndex, mediaIndex) => {
+    setDraft((current) => {
+      const copy = structuredClone(current);
+      const item = copy.realisations[realisationIndex];
+      item.media = (item.media || []).filter((_, index) => index !== mediaIndex);
+      item.imageUrl = item.media?.[0]?.url || "";
+      return copy;
+    });
+  };
+
   const updateArrayItem = (arrayName, index, key, value) => {
     setDraft((current) => {
       const copy = structuredClone(current);
@@ -163,7 +205,7 @@ export default function Admin({ content, setContent }) {
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.3em] text-orange-500">Admin</p>
             <h1 className="text-4xl font-black">Contenu du site</h1>
-            <p className="mt-2 text-zinc-400">Modifie les textes, le logo, les photos et les réalisations.</p>
+            <p className="mt-2 text-zinc-400">Modifie les textes, le logo, les photos, les vidéos et les réalisations.</p>
           </div>
           <div className="flex flex-wrap gap-3">
             <a href="/" className="rounded-xl border border-white/10 px-5 py-3 font-bold text-zinc-200 hover:border-orange-500">Voir le site</a>
@@ -235,28 +277,58 @@ export default function Admin({ content, setContent }) {
             <button onClick={() => addArrayItem("services", { ...emptyService, number: String((draft.services || []).length + 1).padStart(2, "0") })} className="rounded-xl border border-orange-500/40 px-5 py-3 font-bold text-orange-300 hover:bg-orange-500/10">Ajouter un service</button>
           </Card>
 
-          <Card title="Réalisations avec photos">
+          <Card title="Réalisations avec photos / vidéos">
             <Field label="Petit titre" value={draft.realisationsIntro?.eyebrow} onChange={(v) => update("realisationsIntro.eyebrow", v)} />
             <Field label="Titre" value={draft.realisationsIntro?.title} onChange={(v) => update("realisationsIntro.title", v)} />
             <Field label="Description" value={draft.realisationsIntro?.description} onChange={(v) => update("realisationsIntro.description", v)} textarea />
 
-            {(draft.realisations || []).map((item, index) => (
-              <div key={index} className="rounded-2xl border border-white/10 bg-black/30 p-5">
-                {item.imageUrl && <img src={item.imageUrl} alt="" className="mb-4 h-40 w-full rounded-xl object-cover" />}
-                <div className="grid gap-4 md:grid-cols-3">
-                  <Field label="Titre" value={item.title} onChange={(v) => updateArrayItem("realisations", index, "title", v)} />
-                  <Field label="Catégorie" value={item.category} onChange={(v) => updateArrayItem("realisations", index, "category", v)} />
-                  <Field label="URL photo" value={item.imageUrl} onChange={(v) => updateArrayItem("realisations", index, "imageUrl", v)} />
-                </div>
-                <div className="mt-4 grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
-                  <Field label="Description" value={item.description} onChange={(v) => updateArrayItem("realisations", index, "description", v)} textarea />
-                  <div className="space-y-3">
-                    <input type="file" accept="image/*" onChange={(e) => uploadImage(e.target.files?.[0], `realisations.${index}.imageUrl`)} className="block w-full max-w-xs rounded-xl border border-white/10 bg-black/40 p-3 text-zinc-300" />
-                    <button onClick={() => removeArrayItem("realisations", index)} className="w-full rounded-xl border border-red-500/30 px-4 py-3 font-bold text-red-300 hover:bg-red-500/10">Supprimer</button>
+            {(draft.realisations || []).map((item, index) => {
+              const mediaList = item.media?.length ? item.media : item.imageUrl ? [{ type: "image", url: item.imageUrl }] : [];
+
+              return (
+                <div key={index} className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                  {mediaList.length > 0 && (
+                    <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+                      {mediaList.map((media, mediaIndex) => (
+                        <div key={`${media.url}-${mediaIndex}`} className="relative overflow-hidden rounded-xl border border-white/10 bg-black">
+                          {media.type === "video" ? (
+                            <video src={media.url} className="h-32 w-full object-cover" muted controls />
+                          ) : (
+                            <img src={media.url} alt="" className="h-32 w-full object-cover" />
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => removeRealisationMedia(index, mediaIndex)}
+                            className="absolute right-2 top-2 rounded-full bg-red-600 px-2 py-1 text-xs font-black text-white"
+                          >
+                            X
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <Field label="Titre" value={item.title} onChange={(v) => updateArrayItem("realisations", index, "title", v)} />
+                    <Field label="Catégorie" value={item.category} onChange={(v) => updateArrayItem("realisations", index, "category", v)} />
+                    <Field label="URL principale" value={item.imageUrl} onChange={(v) => updateArrayItem("realisations", index, "imageUrl", v)} />
+                  </div>
+
+                  <div className="mt-4 grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
+                    <Field label="Description" value={item.description} onChange={(v) => updateArrayItem("realisations", index, "description", v)} textarea />
+                    <div className="space-y-3">
+                      <input
+                        type="file"
+                        accept="image/*,video/*"
+                        onChange={(e) => uploadRealisationMedia(e.target.files?.[0], index)}
+                        className="block w-full max-w-xs rounded-xl border border-white/10 bg-black/40 p-3 text-zinc-300"
+                      />
+                      <button onClick={() => removeArrayItem("realisations", index)} className="w-full rounded-xl border border-red-500/30 px-4 py-3 font-bold text-red-300 hover:bg-red-500/10">Supprimer</button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             <button onClick={() => addArrayItem("realisations", { ...emptyRealisation })} className="rounded-xl border border-orange-500/40 px-5 py-3 font-bold text-orange-300 hover:bg-orange-500/10">Ajouter une réalisation</button>
           </Card>
 
