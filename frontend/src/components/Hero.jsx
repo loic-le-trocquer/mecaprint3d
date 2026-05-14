@@ -64,17 +64,13 @@ export default function Hero({ content }) {
       <div className="absolute -left-32 top-0 h-96 w-96 rounded-full bg-orange-500/20 blur-3xl" />
 
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 pt-24 text-center">
-        {logoUrl ? (
-          <img
-            src={logoUrl}
-            alt="Mecaprint3D"
-            className="mb-8 w-40 drop-shadow-2xl md:w-52"
-          />
-        ) : (
-          <div className="mb-8 text-4xl font-black text-white">
-            Meca<span className="text-orange-400">Print3D</span>
-          </div>
-        )}
+      {logoUrl && (
+  <img
+    src={logoUrl}
+    alt="Logo"
+    className="mb-8 w-40 drop-shadow-2xl md:w-52"
+  />
+)}
 
         <div className="mb-6 rounded-full border border-orange-500/40 bg-orange-500/10 px-5 py-2 text-sm text-orange-300 backdrop-blur-sm">
           Atelier de fabrication • Réparation • Prototypage
