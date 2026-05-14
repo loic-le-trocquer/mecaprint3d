@@ -118,30 +118,29 @@ export default function Hero({ content }) {
 
         </div>
 
-        {/* TECHNO SHORTCUTS */}
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
+  {/* TECHNO SHORTCUTS */}
+<div className="mt-12 flex flex-wrap items-center justify-center gap-3">
 
-          {[
-            ["FDM", "#fdm"],
-            ["Résine", "#resine"],
-            ["SLS", "#sls"],
-            ["Métal", "#metal"],
-            ["Découpe laser", "#laser"],
-            ["Conception CAO", "#cao"],
-          ].map(([label, link]) => (
+  {[
+    ["FDM", "#fdm"],
+    ["Résine", "#resine"],
+    ["SLS", "#sls"],
+    ["Métal", "#metal"],
+    ["Découpe laser", "#laser"],
+    ["Conception CAO", "#cao"],
+  ].map(([label, link]) => (
 
-            <a
-              key={label}
-              href={link}
-              className="rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm text-zinc-300 backdrop-blur transition hover:border-orange-500/50 hover:text-orange-300"
-            >
-              {label}
-            </a>
+    <a
+      key={label}
+      href={link}
+      className="rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm text-zinc-300 backdrop-blur transition hover:border-orange-500/50 hover:text-orange-300"
+    >
+      {label}
+    </a>
 
-          ))}
+  ))}
 
-        </div>
-
+</div>
         {/* STEPS */}
         {steps.length > 0 && (
           <div className="mt-16 grid gap-4 md:grid-cols-3">
