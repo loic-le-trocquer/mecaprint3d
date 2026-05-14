@@ -1,8 +1,8 @@
 import logo from "../assets/logo.png";
 
 export default function Hero({ content }) {
-  const videoUrl = content?.heroVideoUrl;
-  const imageUrl = content?.heroImageUrl;
+  const videoUrl = content?.bannerVideoUrl;
+const imageUrl = content?.bannerImageUrl;
 
   return (
     <section className="relative min-h-screen overflow-hidden">
@@ -20,7 +20,7 @@ export default function Hero({ content }) {
         </video>
       ) : (
         <img
-          src={imageUrl || "/fallback-hero.jpg"}
+          src={imageUrl}
           alt="Mecaprint3D"
           className="absolute inset-0 h-full w-full object-cover"
         />
