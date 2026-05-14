@@ -19,6 +19,22 @@ const MediaSchema = new mongoose.Schema(
   { _id: false }
 );
 
+
+const TechnologySchema = new mongoose.Schema(
+  {
+    process: String,
+    title: String,
+    badge: String,
+    description: String,
+    materials: [String],
+    applications: [String],
+    benefits: [String],
+    mediaUrl: String,
+    mediaType: { type: String, enum: ["image", "video"], default: "image" },
+  },
+  { _id: false }
+);
+
 const RealisationSchema = new mongoose.Schema(
   {
     title: String,
@@ -46,7 +62,9 @@ const SiteContentSchema = new mongoose.Schema(
       description: String,
       primaryButton: String,
       secondaryButton: String,
+      slogan: String,
       imageUrl: String,
+      videoUrl: String,
     },
     steps: [String],
     servicesIntro: {
@@ -55,6 +73,12 @@ const SiteContentSchema = new mongoose.Schema(
       description: String,
     },
     services: [ServiceSchema],
+    technologiesIntro: {
+      eyebrow: String,
+      title: String,
+      description: String,
+    },
+    technologies: [TechnologySchema],
     realisationsIntro: {
       eyebrow: String,
       title: String,

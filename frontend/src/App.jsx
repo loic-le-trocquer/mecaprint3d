@@ -1,6 +1,7 @@
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import Services from "./components/Services";
+import Technologies from "./components/Technologies";
 import Realisations from "./components/Realisations";
 import QuoteForm from "./components/QuoteForm";
 import Footer from "./components/Footer";
@@ -22,6 +23,7 @@ export default function App() {
       <main>
         <Hero content={content} />
         <Services content={content} />
+        <Technologies content={content} />
         <Realisations content={content} />
         <QuoteForm content={content} />
       </main>

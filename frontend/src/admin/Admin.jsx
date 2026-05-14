@@ -4,6 +4,7 @@ import { defaultContent } from "../lib/defaultContent";
 
 const emptyService = { number: "", title: "", description: "", badge: "Sur devis" };
 const emptyRealisation = { title: "", description: "", imageUrl: "", category: "", media: [] };
+const emptyTechnology = { process: "", title: "", badge: "", description: "", materials: [], applications: [], benefits: [], mediaUrl: "", mediaType: "image" };
 
 function Field({ label, value, onChange, textarea = false, placeholder = "" }) {
   const className = "mt-2 w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition focus:border-orange-500";
@@ -122,6 +123,31 @@ export default function Admin({ content, setContent }) {
     }
   };
 
+  const uploadMedia = async (file, path, typePath = null) => {
+    if (!file) return;
+    setMessage("Upload du média en cours...");
+
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const response = await fetch(`${API_URL}/api/site-content/admin/upload`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const data = await response.json();
+
+      if (!response.ok || !data.success) throw new Error(data.error || "Upload impossible");
+
+      update(path, data.imageUrl);
+      if (typePath && data.media?.type) update(typePath, data.media.type);
+      setMessage("Média envoyé. Pense à cliquer sur Enregistrer les modifications.");
+    } catch (error) {
+      setMessage(error.message);
+    }
+  };
+
 
   const uploadRealisationMedia = async (file, realisationIndex) => {
     if (!file) return;
@@ -170,6 +196,14 @@ export default function Admin({ content, setContent }) {
       copy[arrayName][index][key] = value;
       return copy;
     });
+  };
+
+  const updateArrayItemList = (arrayName, index, key, value) => {
+    const list = value
+      .split("\n")
+      .map((item) => item.trim())
+      .filter(Boolean);
+    updateArrayItem(arrayName, index, key, list);
   };
 
   const addArrayItem = (arrayName, item) => {
@@ -236,12 +270,25 @@ export default function Admin({ content, setContent }) {
               <Field label="Texte orange" value={draft.hero?.highlight} onChange={(v) => update("hero.highlight", v)} />
             </div>
             <Field label="Description" value={draft.hero?.description} onChange={(v) => update("hero.description", v)} textarea />
+            <Field
+              label="Slogan / signature"
+              value={draft.hero?.slogan}
+              onChange={(v) => update("hero.slogan", v)}
+              textarea
+              placeholder="L’impression 3D est devenue accessible. La conception reste la clé d’une pièce performante."
+            />
             <div className="grid gap-5 md:grid-cols-2">
               <Field label="Bouton principal" value={draft.hero?.primaryButton} onChange={(v) => update("hero.primaryButton", v)} />
               <Field label="Bouton secondaire" value={draft.hero?.secondaryButton} onChange={(v) => update("hero.secondaryButton", v)} />
             </div>
-            <Field label="URL photo bannière" value={draft.hero?.imageUrl} onChange={(v) => update("hero.imageUrl", v)} />
-            <input type="file" accept="image/*" onChange={(e) => uploadImage(e.target.files?.[0], "hero.imageUrl")} className="block w-full rounded-xl border border-white/10 bg-black/40 p-3 text-zinc-300" />
+            <div className="grid gap-5 md:grid-cols-2">
+              <Field label="URL photo bannière / fallback" value={draft.hero?.imageUrl} onChange={(v) => update("hero.imageUrl", v)} />
+              <Field label="URL vidéo bannière" value={draft.hero?.videoUrl} onChange={(v) => update("hero.videoUrl", v)} />
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <input type="file" accept="image/*" onChange={(e) => uploadImage(e.target.files?.[0], "hero.imageUrl")} className="block w-full rounded-xl border border-white/10 bg-black/40 p-3 text-zinc-300" />
+              <input type="file" accept="video/*" onChange={(e) => uploadMedia(e.target.files?.[0], "hero.videoUrl")} className="block w-full rounded-xl border border-white/10 bg-black/40 p-3 text-zinc-300" />
+            </div>
           </Card>
 
           <Card title="Étapes d’accueil">
@@ -275,6 +322,75 @@ export default function Admin({ content, setContent }) {
               </div>
             ))}
             <button onClick={() => addArrayItem("services", { ...emptyService, number: String((draft.services || []).length + 1).padStart(2, "0") })} className="rounded-xl border border-orange-500/40 px-5 py-3 font-bold text-orange-300 hover:bg-orange-500/10">Ajouter un service</button>
+          </Card>
+
+          <Card title="Technologies / matériaux / découpe laser">
+            <Field label="Petit titre" value={draft.technologiesIntro?.eyebrow} onChange={(v) => update("technologiesIntro.eyebrow", v)} />
+            <Field label="Titre" value={draft.technologiesIntro?.title} onChange={(v) => update("technologiesIntro.title", v)} />
+            <Field label="Description" value={draft.technologiesIntro?.description} onChange={(v) => update("technologiesIntro.description", v)} textarea />
+
+            {(draft.technologies || []).map((item, index) => (
+              <div key={index} className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                {item.mediaUrl && (
+                  <div className="mb-4 overflow-hidden rounded-2xl border border-white/10 bg-black">
+                    {item.mediaType === "video" ? (
+                      <video src={item.mediaUrl} className="h-48 w-full object-cover" muted loop playsInline controls />
+                    ) : (
+                      <img src={item.mediaUrl} alt="" className="h-48 w-full object-cover" />
+                    )}
+                  </div>
+                )}
+
+                <div className="grid gap-4 md:grid-cols-4">
+                  <Field label="Procédé" value={item.process} onChange={(v) => updateArrayItem("technologies", index, "process", v)} />
+                  <Field label="Titre" value={item.title} onChange={(v) => updateArrayItem("technologies", index, "title", v)} />
+                  <Field label="Badge" value={item.badge} onChange={(v) => updateArrayItem("technologies", index, "badge", v)} />
+                  <button onClick={() => removeArrayItem("technologies", index)} className="self-end rounded-xl border border-red-500/30 px-4 py-3 font-bold text-red-300 hover:bg-red-500/10">Supprimer</button>
+                </div>
+
+                <div className="mt-4">
+                  <Field label="Description" value={item.description} onChange={(v) => updateArrayItem("technologies", index, "description", v)} textarea />
+                </div>
+
+                <div className="mt-4 grid gap-4 md:grid-cols-3">
+                  <Field label="Matériaux — un par ligne" value={(item.materials || []).join("\n")} onChange={(v) => updateArrayItemList("technologies", index, "materials", v)} textarea />
+                  <Field label="Applications — une par ligne" value={(item.applications || []).join("\n")} onChange={(v) => updateArrayItemList("technologies", index, "applications", v)} textarea />
+                  <Field label="Avantages — un par ligne" value={(item.benefits || []).join("\n")} onChange={(v) => updateArrayItemList("technologies", index, "benefits", v)} textarea />
+                </div>
+
+                <div className="mt-4 grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
+                  <Field label="URL média technologie" value={item.mediaUrl} onChange={(v) => updateArrayItem("technologies", index, "mediaUrl", v)} />
+                  <input
+                    type="file"
+                    accept="image/*,video/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setMessage("Upload du média technologie en cours...");
+                      try {
+                        const formData = new FormData();
+                        formData.append("image", file);
+                        const response = await fetch(`${API_URL}/api/site-content/admin/upload`, {
+                          method: "POST",
+                          headers: { Authorization: `Bearer ${token}` },
+                          body: formData,
+                        });
+                        const data = await response.json();
+                        if (!response.ok || !data.success) throw new Error(data.error || "Upload impossible");
+                        updateArrayItem("technologies", index, "mediaUrl", data.imageUrl);
+                        updateArrayItem("technologies", index, "mediaType", data.media?.type || "image");
+                        setMessage("Média technologie ajouté. Pense à cliquer sur Enregistrer les modifications.");
+                      } catch (error) {
+                        setMessage(error.message);
+                      }
+                    }}
+                    className="block w-full max-w-xs rounded-xl border border-white/10 bg-black/40 p-3 text-zinc-300"
+                  />
+                </div>
+              </div>
+            ))}
+
+            <button onClick={() => addArrayItem("technologies", { ...emptyTechnology })} className="rounded-xl border border-orange-500/40 px-5 py-3 font-bold text-orange-300 hover:bg-orange-500/10">Ajouter une technologie</button>
           </Card>
 
           <Card title="Réalisations avec photos / vidéos">

@@ -42,6 +42,10 @@ export default function Header({ content }) {
               Services
             </a>
 
+            <a href="#technologies" className="transition hover:text-orange-400">
+              Technologies
+            </a>
+
             <a href="#realisations" className="transition hover:text-orange-400">
               Réalisations
             </a>
