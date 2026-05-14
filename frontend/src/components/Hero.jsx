@@ -29,26 +29,27 @@ export default function Hero({ content }) {
       <div className="absolute inset-0 -z-30 bg-zinc-950" />
 
       {/* IMAGE */}
-      {backgroundImage && (
-        <img
-          src={backgroundImage}
-          alt="MecaPrint3D"
-          className="absolute inset-0 -z-20 h-full w-full object-cover opacity-40"
-        />
-      )}
+{backgroundImage && (
+  <img
+    src={backgroundImage}
+    alt="MecaPrint3D"
+    className="absolute inset-0 -z-30 h-full w-full object-cover opacity-40"
+  />
+)}
 
-      {/* VIDEO */}
-      {backgroundVideo && (
-        <video
-          src={backgroundVideo}
-          className="absolute inset-0 -z-10 h-full w-full object-cover opacity-50"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-        />
-      )}
+{/* VIDEO */}
+{backgroundVideo && (
+  <video
+    key={backgroundVideo}
+    src={backgroundVideo}
+    className="absolute inset-0 -z-20 h-full w-full object-cover opacity-60"
+    autoPlay
+    muted
+    loop
+    playsInline
+    preload="auto"
+  />
+)}
 
       {/* GRID EFFECT */}
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:60px_60px]" />
