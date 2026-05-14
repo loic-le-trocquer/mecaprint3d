@@ -125,12 +125,14 @@ export default function Hero({ content }) {
 
         <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
           {[
-            ["FDM", "#technologies"],
-            ["Résine", "#technologies"],
-            ["SLS", "#technologies"],
-            ["Métal", "#technologies"],
-            ["Découpe laser", "#technologies"],
-            ["Conception CAO", "#technologies"],
+            [
+                 ["FDM", "#fdm"],
+                 ["Résine", "#resine"],
+                 ["SLS", "#sls"],
+                 ["Métal", "#metal"],
+                 ["Découpe laser", "#laser"],
+                 ["Conception CAO", "#cao"],
+]
           ].map(([item, link]) => (
             <a
               key={item}
