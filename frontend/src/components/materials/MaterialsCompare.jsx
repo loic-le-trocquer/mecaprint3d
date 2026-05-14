@@ -15,6 +15,7 @@ function ScoreDots({ value }) {
   );
 }
 
+
 export default function MaterialsCompare({
   materials = [],
   onClose,
