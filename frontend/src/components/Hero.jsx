@@ -8,12 +8,8 @@ export default function Hero({ content }) {
   const steps = content?.steps?.length ? content.steps : [];
 
   // ================= MEDIA =================
-  const backgroundVideo =
-  hero.videoUrl ||
- 
-  const backgroundImage =
-    hero.imageUrl ||
-    (!isVideoUrl(hero.videoUrl) ? hero.videoUrl : null);
+const backgroundVideo = hero.videoUrl;
+const backgroundImage = hero.imageUrl;
 
   // ================= TEXT =================
   const slogan =
