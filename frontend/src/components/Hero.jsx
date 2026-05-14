@@ -39,18 +39,17 @@ export default function Hero({ content }) {
 )}
 
 {/* VIDEO */}
-{{backgroundVideo && (
+{backgroundVideo && (
   <video
     key={backgroundVideo}
+    src={backgroundVideo}
     className="absolute inset-0 -z-20 h-full w-full object-cover opacity-60"
     autoPlay
     muted
     loop
     playsInline
     preload="auto"
-  >
-    <source src={backgroundVideo} type="video/mp4" />
-  </video>
+  />
 )}
 
       {/* GRID EFFECT */}
