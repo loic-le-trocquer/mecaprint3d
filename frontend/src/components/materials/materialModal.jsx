@@ -15,7 +15,6 @@ function ScoreBar({ value }) {
   );
 }
 
-
 export default function MaterialModal({
   material,
   onClose,
