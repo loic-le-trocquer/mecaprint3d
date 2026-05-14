@@ -8,9 +8,9 @@ export default function Hero({ content }) {
   const steps = content?.steps?.length ? content.steps : [];
 
   // ================= MEDIA =================
-  const backgroundVideo = isVideoUrl(hero.videoUrl)
-    ? hero.videoUrl
-    : null;
+  const backgroundVideo =
+  hero.videoUrl ||
+  "https://res.cloudinary.com/dn3hxvz2y/video/upload/v1778771886/mecaprint3d/site/kgvw4xf7vwx2r9mzcvkc.mp4";
 
   const backgroundImage =
     hero.imageUrl ||
@@ -42,16 +42,16 @@ export default function Hero({ content }) {
 {backgroundVideo && (
   <video
     key={backgroundVideo}
-    src={backgroundVideo}
     className="absolute inset-0 -z-20 h-full w-full object-cover opacity-60"
     autoPlay
     muted
     loop
     playsInline
     preload="auto"
-  />
+  >
+    <source src={backgroundVideo} type="video/mp4" />
+  </video>
 )}
-
       {/* GRID EFFECT */}
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:60px_60px]" />
 
