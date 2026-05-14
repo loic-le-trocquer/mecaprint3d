@@ -1,4 +1,5 @@
 import logo from "../assets/logo.png";
+import workshopVideo from "../assets/videos/workshop.mp4";
 
 export default function Hero({ content }) {
   return (
@@ -10,7 +11,7 @@ export default function Hero({ content }) {
         playsInline
         className="absolute inset-0 h-full w-full object-cover"
       >
-        <source src="/videos/workshop.mp4" type="video/mp4" />
+        <source src={workshopVideo} type="video/mp4" />
       </video>
 
       <div className="absolute inset-0 bg-black/75" />
