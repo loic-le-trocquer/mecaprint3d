@@ -10,8 +10,7 @@ export default function Hero({ content }) {
   // ================= MEDIA =================
   const backgroundVideo =
   hero.videoUrl ||
-  "https://res.cloudinary.com/dn3hxvz2y/video/upload/v1778771886/mecaprint3d/site/kgvw4xf7vwx2r9mzcvkc.mp4";
-
+ 
   const backgroundImage =
     hero.imageUrl ||
     (!isVideoUrl(hero.videoUrl) ? hero.videoUrl : null);
@@ -34,7 +33,7 @@ export default function Hero({ content }) {
   <img
     src={backgroundImage}
     alt="MecaPrint3D"
-    className="absolute inset-0 -z-30 h-full w-full object-cover opacity-40"
+    className="absolute inset-0 -z-30 h-full w-full object-cover opacity-30"
   />
 )}
 
@@ -42,12 +41,12 @@ export default function Hero({ content }) {
 {backgroundVideo && (
   <video
     key={backgroundVideo}
-    className="absolute inset-0 -z-20 h-full w-full object-cover opacity-60"
     autoPlay
     muted
     loop
     playsInline
     preload="auto"
+    className="absolute inset-0 -z-20 h-full w-full object-cover opacity-70"
   >
     <source src={backgroundVideo} type="video/mp4" />
   </video>
