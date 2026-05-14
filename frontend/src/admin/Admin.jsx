@@ -21,6 +21,25 @@ function Field({ label, value, onChange, textarea = false, placeholder = "" }) {
   );
 }
 
+function SelectField({ label, value, onChange, options = [] }) {
+  return (
+    <label className="block text-sm font-semibold text-zinc-300">
+      {label}
+      <select
+        value={value || ""}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-2 w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition focus:border-orange-500"
+      >
+        {options.map((option) => (
+          <option key={option} value={option} className="bg-zinc-950 text-white">
+            {option}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 function Card({ title, children }) {
   return (
     <section className="rounded-3xl border border-white/10 bg-zinc-900/90 p-6 shadow-2xl shadow-black/30">
@@ -344,8 +363,22 @@ export default function Admin({ content, setContent }) {
                 <div className="grid gap-4 md:grid-cols-4">
                   <Field label="Procédé" value={item.process} onChange={(v) => updateArrayItem("technologies", index, "process", v)} />
                   <Field label="Titre" value={item.title} onChange={(v) => updateArrayItem("technologies", index, "title", v)} />
-                  <Field label="Badge" value={item.badge} onChange={(v) => updateArrayItem("technologies", index, "badge", v)} />
+                  <SelectField
+                    label="Réalisation / source"
+                    value={item.badge || "Atelier MECAPRINT3D"}
+                    onChange={(v) => updateArrayItem("technologies", index, "badge", v)}
+                    options={["Atelier MECAPRINT3D", "Partenaire", "Service complémentaire", "Interne + partenaire"]}
+                  />
                   <button onClick={() => removeArrayItem("technologies", index)} className="self-end rounded-xl border border-red-500/30 px-4 py-3 font-bold text-red-300 hover:bg-red-500/10">Supprimer</button>
+                </div>
+
+                <div className="mt-4">
+                  <Field
+                    label="Texte du badge personnalisé"
+                    value={item.badge}
+                    onChange={(v) => updateArrayItem("technologies", index, "badge", v)}
+                    placeholder="Ex : Atelier MECAPRINT3D, Partenaire, Service complémentaire..."
+                  />
                 </div>
 
                 <div className="mt-4">
