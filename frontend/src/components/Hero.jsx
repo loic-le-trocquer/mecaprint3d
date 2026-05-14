@@ -4,6 +4,7 @@ function isVideoUrl(url = "") {
 
 export default function Hero({ content }) {
   const hero = content?.hero || {};
+  console.log("HERO CONTENT", hero);
   const steps = content?.steps?.length ? content.steps : [];
 
   // ================= MEDIA =================
