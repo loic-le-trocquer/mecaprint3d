@@ -13,7 +13,7 @@ export default function QuoteForm({ content }) {
     quantity: "",
     material: "",
     message: "",
-    file: null,
+    file: [],
   });
 
 
@@ -30,11 +30,11 @@ export default function QuoteForm({ content }) {
 
   // ================= FICHIER =================
   const handleFileChange = (e) => {
-    setForm({
-      ...form,
-      file: e.target.files[0],
-    });
-  };
+  setForm({
+    ...form,
+    files: Array.from(e.target.files || []),
+  });
+};
 
 
 
@@ -58,9 +58,9 @@ export default function QuoteForm({ content }) {
       formData.append("message", form.message);
 
       // ================= FICHIER =================
-      if (form.file) {
-        formData.append("file", form.file);
-      }
+      form.files.forEach((file) => {
+  formData.append("files", file);
+});
 
 
 
@@ -98,7 +98,7 @@ export default function QuoteForm({ content }) {
         quantity: "",
         material: "",
         message: "",
-        file: null,
+        file: [],
       });
 
     } catch (error) {
@@ -260,17 +260,22 @@ export default function QuoteForm({ content }) {
 
             <input
               type="file"
+              multiple
               name="file"
               onChange={handleFileChange}
               accept=".stl,.step,.stp,.obj,.3mf,.jpg,.jpeg,.png,.pdf"
               className="hidden"
             />
 
-            {form.file ? (
-              <span className="text-orange-400">
-                Fichier sélectionné : {form.file.name}
-              </span>
-            ) : (
+            {form.files?.length ? (
+             <div className="space-y-1 text-orange-400">
+             {form.files.map((file) => (
+              <div key={file.name}>
+                 {file.name}
+              </div>
+             ))}
+           </div>
+          ) : (
               <span>
                 Ajouter un fichier STL, STEP, photo ou PDF
               </span>
