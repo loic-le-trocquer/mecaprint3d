@@ -208,7 +208,81 @@ export default function Admin({ content, setContent }) {
       return copy;
     });
   };
+// ================= MEDIA PRINCIPAL =================
+const setPrimaryRealisationMedia = (
+  realisationIndex,
+  mediaIndex
+) => {
+  setContent((prev) => {
+    const updated = [...prev.realisations];
 
+    const media =
+      updated[realisationIndex].media || [];
+
+    if (!media[mediaIndex]) return prev;
+
+    // déplacer en premier
+    const selected = media[mediaIndex];
+
+    updated[realisationIndex].media = [
+      selected,
+      ...media.filter((_, i) => i !== mediaIndex),
+    ];
+
+    // image principale synchronisée
+    updated[realisationIndex].imageUrl =
+      selected.url;
+
+    return {
+      ...prev,
+      realisations: updated,
+    };
+  });
+};
+
+
+// ================= DEPLACEMENT MEDIA =================
+const moveRealisationMedia = (
+  realisationIndex,
+  mediaIndex,
+  direction
+) => {
+  setContent((prev) => {
+    const updated = [...prev.realisations];
+
+    const media =
+      [...(updated[realisationIndex].media || [])];
+
+    const targetIndex =
+      mediaIndex + direction;
+
+    if (
+      targetIndex < 0 ||
+      targetIndex >= media.length
+    ) {
+      return prev;
+    }
+
+    // swap
+    [media[mediaIndex], media[targetIndex]] = [
+      media[targetIndex],
+      media[mediaIndex],
+    ];
+
+    updated[realisationIndex].media = media;
+
+    // synchro couverture
+    if (media[0]) {
+      updated[realisationIndex].imageUrl =
+        media[0].url;
+    }
+
+    return {
+      ...prev,
+      realisations: updated,
+    };
+  });
+};
   const updateArrayItem = (arrayName, index, key, value) => {
     setDraft((current) => {
       const copy = structuredClone(current);
