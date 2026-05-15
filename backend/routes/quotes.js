@@ -38,7 +38,7 @@ function uploadToCloudinary(file) {
   });
 }
 
-router.post("/", upload.single("file",10), async (req, res) => {
+router.post("/", upload.single("files",10), async (req, res) => {
   try {
     let uploadedFile = [];
 
