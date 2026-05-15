@@ -121,8 +121,8 @@ export const materialsData = [
     ],
   },
 {
-  id: "petg-carbone",
-  name: "PETG carbone",
+  id: "carbone",
+  name: "carbone",
   family: "FDM",
   shortDescription:
     "PETG renforcé fibre carbone pour pièces plus rigides et aspect technique.",
@@ -171,6 +171,23 @@ export const materialsData = [
   limits: ["Sensible à l’humidité", "Impression plus exigeante"],
   applications: ["Engrenage", "Support mécanique", "Pièce fonctionnelle"],
   finishing: ["Ébavurage", "Microbillage", "Teinture"],
+},
+{
+  id: "Polycarbonate",
+  name: "Polycarbonate",
+  family: "FDM",
+  shortDescription:
+    "Matière technique résistante, adaptée aux pièces mécaniques et fonctionnelles.",
+  resistance: 5,
+  temperature: 4,
+  uv: 3,
+  flexibility: 3,
+  finish: 3,
+  bestFor: "Pièce mécanique",
+  advantages: ["Forte", "Durable", "resistante au impact"],
+  limits: ["Sensible à l’humidité", "Impression plus exigeante"],
+  applications: ["Engrenage", "Support mécanique", "Pièce fonctionnelle"],
+  finishing: ["Ébavurage", "Microbillage", "Transluside"],
 },
   {
     id: "pa12",
