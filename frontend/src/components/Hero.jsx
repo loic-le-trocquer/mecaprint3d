@@ -123,26 +123,7 @@ export default function Hero({ content }) {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
-          {[
-            [
-                 ["FDM", "#fdm"],
-                 ["Résine", "#resine"],
-                 ["SLS", "#sls"],
-                 ["Métal", "#metal"],
-                 ["Découpe laser", "#laser"],
-                 ["Conception CAO", "#cao"],
-]
-          ].map(([item, link]) => (
-            <a
-              key={item}
-              href={link}
-              className="rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm text-zinc-300 backdrop-blur-md transition hover:border-orange-500/50 hover:text-orange-300"
-            >
-              {item}
-            </a>
-          ))}
-        </div>
+      
       </div>
 
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-2xl text-white/60">
