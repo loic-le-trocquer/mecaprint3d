@@ -38,25 +38,29 @@ function uploadToCloudinary(file) {
   });
 }
 
-router.post("/", upload.single("file"), async (req, res) => {
+router.post("/", upload.single("file",10), async (req, res) => {
   try {
-    let uploadedFile = null;
+    let uploadedFile = [];
 
-    if (req.file) {
-      const cloudinaryResult = await uploadToCloudinary(req.file);
+    if (req.files?.length) {
+  uploadedFiles = await Promise.all(
+    req.files.map(async (file) => {
+      const cloudinaryResult =
+        await uploadToCloudinary(file);
 
-      uploadedFile = {
-        originalName: req.file.originalname,
+      return {
+        originalName: file.originalname,
         filename: cloudinaryResult.public_id,
         path: cloudinaryResult.secure_url,
-        mimetype: req.file.mimetype,
-        size: req.file.size,
+        mimetype: file.mimetype,
+        size: file.size,
       };
-    }
-
+    })
+  );
+}
     const quote = await Quote.create({
       ...req.body,
-      file: uploadedFile,
+      files: uploadedFiles,
     });
 
     console.log("📩 Nouveau devis :", quote._id);
@@ -85,13 +89,20 @@ router.post("/", upload.single("file"), async (req, res) => {
         <p><strong>Quantité :</strong> ${quote.quantity || "Non précisée"}</p>
         <p><strong>Matière :</strong> ${quote.material || "À définir"}</p>
         <p><strong>Message :</strong><br/>${quote.message}</p>
-        <p><strong>Fichier :</strong><br/>
-          ${
-            quote.file
-              ? `<a href="${quote.file.path}">${quote.file.originalName}</a>`
-              : "Aucun fichier"
-          }
-        </p>
+        <p><strong>Fichiers :</strong></p>
+
+<ul>
+  ${
+    quote.files?.length
+      ? quote.files
+          .map(
+            (file) =>
+              `<li><a href="${file.path}">${file.originalName}</a></li>`
+          )
+          .join("")
+      : "<li>Aucun fichier</li>"
+  }
+</ul>
       `,
     });
 
