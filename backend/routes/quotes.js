@@ -38,15 +38,24 @@ function uploadToCloudinary(file) {
   });
 }
 
-router.post("/", upload.single("files",10), async (req, res) => {
+router.post(
+  "/",
+  upload.fields([
+    { name: "file", maxCount: 1 },
+    { name: "files", maxCount: 10 },
+  ]),
+  async (req, res) => {
   try {
-    let uploadedFile = [];
+    let uploadedFiles = [];
+const receivedFiles = [
+  ...(req.files?.file || []),
+  ...(req.files?.files || []),
+];
 
-    if (req.files?.length) {
+    if (receivedFiles.length) {
   uploadedFiles = await Promise.all(
-    req.files.map(async (file) => {
-      const cloudinaryResult =
-        await uploadToCloudinary(file);
+    receivedFiles.map(async (file) => {
+      const cloudinaryResult = await uploadToCloudinary(file);
 
       return {
         originalName: file.originalname,
