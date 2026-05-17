@@ -37,6 +37,46 @@ function uploadToCloudinary(file) {
     streamifier.createReadStream(file.buffer).pipe(stream);
   });
 }
+// =====================================================
+// 🔐 MIDDLEWARE ADMIN SIMPLE
+// =====================================================
+function requireAdmin(req, res, next) {
+  const auth = req.headers.authorization || "";
+  const token = auth.replace("Bearer ", "");
+
+  if (!token || token !== process.env.ADMIN_TOKEN) {
+    return res.status(401).json({
+      success: false,
+      error: "Accès non autorisé",
+    });
+  }
+
+  next();
+}
+
+// =====================================================
+// 📋 LISTE DES DEVIS ADMIN
+// GET /api/quotes
+// =====================================================
+router.get("/", requireAdmin, async (req, res) => {
+  try {
+    const quotes = await Quote.find()
+      .sort({ createdAt: -1 })
+      .lean();
+
+    res.json({
+      success: true,
+      quotes,
+    });
+  } catch (error) {
+    console.error("❌ Erreur récupération devis :", error);
+
+    res.status(500).json({
+      success: false,
+      error: "Erreur serveur",
+    });
+  }
+});
 
 router.post(
   "/",
