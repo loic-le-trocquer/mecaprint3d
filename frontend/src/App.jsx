@@ -8,14 +8,19 @@ import Footer from "./components/Footer";
 import Admin from "./admin/Admin";
 import { useSiteContent } from "./lib/useSiteContent";
 import "./index.css";
+import AdminQuotes from "./admin/AdminQuotes";
 
 export default function App() {
   const { content, setContent } = useSiteContent();
   const isAdmin = window.location.pathname.startsWith("/admin");
 
-  if (isAdmin) {
-    return <Admin content={content} setContent={setContent} />;
-  }
+  if (window.location.pathname === "/admin/quotes") {
+  return <AdminQuotes />;
+}
+
+if (isAdmin) {
+  return <Admin content={content} setContent={setContent} />;
+}
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { API_URL, apiFetch } from "../lib/api";
 import { defaultContent } from "../lib/defaultContent";
+import AdminLayout from "./AdminLayout";
+
 
 // ================= OBJETS VIDES =================
 const emptyService = {

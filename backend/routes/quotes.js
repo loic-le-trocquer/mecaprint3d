@@ -71,6 +71,51 @@ router.get("/", requireAdmin, async (req, res) => {
   } catch (error) {
     console.error("❌ Erreur récupération devis :", error);
 
+    // =====================================================
+// ✏️ MISE À JOUR D’UN DEVIS
+// PUT /api/quotes/:id
+// =====================================================
+router.put("/:id", requireAdmin, async (req, res) => {
+
+  try {
+
+    const quote = await Quote.findByIdAndUpdate(
+
+      req.params.id,
+
+      {
+        status: req.body.status,
+        adminNotes: req.body.adminNotes,
+        archived: req.body.archived,
+      },
+
+      {
+        new: true,
+      }
+
+    );
+
+    res.json({
+      success: true,
+      quote,
+    });
+
+  } catch (error) {
+
+    console.error(
+      "❌ Erreur mise à jour devis :",
+      error
+    );
+
+    res.status(500).json({
+      success: false,
+      error: "Erreur serveur",
+    });
+
+  }
+
+});
+
     res.status(500).json({
       success: false,
       error: "Erreur serveur",
