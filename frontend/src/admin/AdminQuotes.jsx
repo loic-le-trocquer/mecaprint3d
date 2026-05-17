@@ -124,8 +124,8 @@ export default function AdminQuotes() {
 
       const matchArchive =
         showArchived
-          ? true
-          : !quote.archived;
+        ? true
+        : quote.archived !== true;
 
       return (
         matchStatus && matchArchive
