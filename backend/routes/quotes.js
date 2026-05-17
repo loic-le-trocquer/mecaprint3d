@@ -80,7 +80,12 @@ const receivedFiles = [
 
             <tr>
               <td style="padding:40px;background:linear-gradient(135deg,#f97316,#ea580c);">
-                <img
+           
+            <p style="color:red;font-size:20px;">
+            TEST LOGO ICI
+            </p>
+
+              <img
                   src="https://mecaprint3d.fr/logo-mail.jpg"
                   alt="MecaPrint3D"
                   width="320"
