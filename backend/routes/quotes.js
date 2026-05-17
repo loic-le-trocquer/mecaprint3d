@@ -74,6 +74,8 @@ const receivedFiles = [
 
     console.log("📩 Nouveau devis :", quote._id);
 
+    console.log("📧 EMAIL CLIENT =", quote.email);
+    
     await sendEmail({
       to: quote.email,
       subject: "Votre demande de devis MecaPrint3D",
