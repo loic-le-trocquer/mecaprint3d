@@ -94,17 +94,11 @@ const receivedFiles = [
   <td style="padding:40px;background:linear-gradient(135deg,#f97316,#ea580c);">
 
     <div style="margin-bottom:24px;">
-  <img
-  src="https://mecaprint3d.fr/logo-mail.png"
+ <img
+  src="https://mecaprint3d.fr/logo-mail.jpg"
   alt="MecaPrint3D"
   width="320"
-  height="90"
-  style="
-    display:block;
-    border:0;
-    outline:none;
-    text-decoration:none;
-  "
+  style="display:block;border:0;"
 />
     </div>
 
