@@ -29,12 +29,33 @@ export default function QuoteForm({ content }) {
 
 
   // ================= FICHIER =================
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
+
 const handleFileChange = (e) => {
-  const newFiles = Array.from(e.target.files || []);
+  const selectedFiles = Array.from(e.target.files || []);
+
+  const validFiles = [];
+  const rejectedFiles = [];
+
+  selectedFiles.forEach((file) => {
+    if (file.size > MAX_FILE_SIZE) {
+      rejectedFiles.push(file.name);
+    } else {
+      validFiles.push(file);
+    }
+  });
+
+  if (rejectedFiles.length) {
+    alert(
+      `Fichier trop volumineux :\n\n${rejectedFiles.join(
+        "\n"
+      )}\n\nTaille maximale : 100 Mo par fichier`
+    );
+  }
 
   setForm((current) => ({
     ...current,
-    files: [...current.files, ...newFiles],
+    files: [...current.files, ...validFiles],
   }));
 };
 

@@ -92,11 +92,10 @@ const receivedFiles = [
             <!-- HEADER -->
             <tr>
               <td style="padding:40px;background:linear-gradient(135deg,#f97316,#ea580c);">
-
-                <h1 style="margin:0;color:white;font-size:34px;font-weight:900;">
-                  MECAPRINT3D
-                </h1>
-
+            <div style="margin-bottom:24px;">
+            
+            </div>
+               
                 <p style="margin-top:12px;color:white;font-size:16px;line-height:1.6;">
                   Votre demande de devis a bien été reçue.
                 </p>
