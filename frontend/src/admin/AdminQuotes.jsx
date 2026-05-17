@@ -7,6 +7,51 @@ export default function AdminQuotes() {
 
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
+const updateQuote = async (
+  id,
+  updates
+) => {
+
+  try {
+
+    const token =
+      localStorage.getItem(
+        "mecaprint3d_admin_token"
+      );
+
+    const response = await fetch(
+      `${API_URL}/api/quotes/${id}`,
+      {
+        method: "PUT",
+
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+
+        body: JSON.stringify(updates),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!data.success) return;
+
+    setQuotes((current) =>
+      current.map((quote) =>
+        quote._id === id
+          ? data.quote
+          : quote
+      )
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+
+};
 
   useEffect(() => {
 
@@ -48,6 +93,26 @@ export default function AdminQuotes() {
 
   }, []);
 
+const statusColors = {
+  "Nouveau":
+    "bg-blue-500/20 text-blue-300",
+
+  "En analyse":
+    "bg-yellow-500/20 text-yellow-300",
+
+  "Devis envoyé":
+    "bg-purple-500/20 text-purple-300",
+
+  "En fabrication":
+    "bg-orange-500/20 text-orange-300",
+
+  "Terminé":
+    "bg-green-500/20 text-green-300",
+
+  "Refusé":
+    "bg-red-500/20 text-red-300",
+};
+
   return (
   <AdminLayout title="Demandes de devis">
 
@@ -86,9 +151,55 @@ export default function AdminQuotes() {
                       {quote.project}
                     </h2>
 
-                    <div className="rounded-full bg-orange-500/20 px-3 py-1 text-sm font-bold text-orange-300">
-                      {quote.status}
-                    </div>
+                    <div className="mt-6">
+
+  <p className="mb-2 text-sm font-bold uppercase tracking-widest text-orange-400">
+    Notes admin
+  </p>
+
+  <textarea
+    value={quote.adminNotes || ""}
+    onChange={(e) => {
+
+      const value = e.target.value;
+
+      setQuotes((current) =>
+        current.map((item) =>
+          item._id === quote._id
+            ? {
+                ...item,
+                adminNotes: value,
+              }
+            : item
+        )
+      );
+
+    }}
+    onBlur={() =>
+      updateQuote(
+        quote._id,
+        {
+          status: quote.status,
+          adminNotes:
+            quote.adminNotes,
+          archived:
+            quote.archived,
+        }
+      )
+    }
+    rows="4"
+    placeholder="Notes internes..."
+    className="
+      w-full rounded-2xl
+      border border-white/10
+      bg-black/30
+      p-4 text-zinc-200
+      outline-none
+      focus:border-orange-500
+    "
+  />
+
+</div>
 
                   </div>
 
