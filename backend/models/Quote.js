@@ -10,13 +10,15 @@ const quoteSchema = new mongoose.Schema(
     material: String,
     message: String,
 
-    file: {
-      originalName: String,
-      filename: String,
-      path: String,
-      mimetype: String,
-      size: Number,
-    },
+    files: [
+  {
+    originalName: String,
+    filename: String,
+    path: String,
+    mimetype: String,
+    size: Number,
+  },
+],
   },
   {
     timestamps: true,
