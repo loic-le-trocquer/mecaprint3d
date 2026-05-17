@@ -145,41 +145,25 @@ const statusColors = {
 
                 <div>
 
-                  <div className="flex flex-wrap items-center gap-3">
+{/* ===================================================== */
+/* 🏷️ TITRE + STATUT */
+/* ===================================================== */}
+<div className="flex flex-wrap items-center gap-3">
 
-                    <h2 className="text-2xl font-black">
-                      {quote.project}
-                    </h2>
+  {/* TITRE PROJET */}
+  <h2 className="text-2xl font-black">
+    {quote.project}
+  </h2>
 
-                    <div className="mt-6">
+  {/* SELECT STATUT */}
+  <select
+    value={quote.status}
 
-  <p className="mb-2 text-sm font-bold uppercase tracking-widest text-orange-400">
-    Notes admin
-  </p>
-
-  <textarea
-    value={quote.adminNotes || ""}
-    onChange={(e) => {
-
-      const value = e.target.value;
-
-      setQuotes((current) =>
-        current.map((item) =>
-          item._id === quote._id
-            ? {
-                ...item,
-                adminNotes: value,
-              }
-            : item
-        )
-      );
-
-    }}
-    onBlur={() =>
+    onChange={(e) =>
       updateQuote(
         quote._id,
         {
-          status: quote.status,
+          status: e.target.value,
           adminNotes:
             quote.adminNotes,
           archived:
@@ -187,19 +171,42 @@ const statusColors = {
         }
       )
     }
-    rows="4"
-    placeholder="Notes internes..."
-    className="
-      w-full rounded-2xl
-      border border-white/10
-      bg-black/30
-      p-4 text-zinc-200
-      outline-none
-      focus:border-orange-500
-    "
-  />
 
-</div>
+    className={`
+      rounded-full
+      border border-white/10
+      px-4 py-2
+      text-sm font-bold
+      outline-none
+      ${statusColors[quote.status]}
+    `}
+  >
+
+    <option value="Nouveau">
+      Nouveau
+    </option>
+
+    <option value="En analyse">
+      En analyse
+    </option>
+
+    <option value="Devis envoyé">
+      Devis envoyé
+    </option>
+
+    <option value="En fabrication">
+      En fabrication
+    </option>
+
+    <option value="Terminé">
+      Terminé
+    </option>
+
+    <option value="Refusé">
+      Refusé
+    </option>
+
+  </select>
 
                   </div>
 
