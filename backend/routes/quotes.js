@@ -125,10 +125,6 @@ await sendEmail({
                 "
               >
 
-                <p style="color:red;font-size:20px;">
-                  TEST LOGO ICI
-                </p>
-
                 <img
                   src="https://mecaprint3d.fr/logo-mail.jpg"
                   alt="MecaPrint3D"
