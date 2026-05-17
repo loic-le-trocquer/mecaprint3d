@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { API_URL } from "../lib/api";
+import AdminLayout from "./AdminLayout";
+
 
 export default function AdminQuotes() {
 
@@ -47,33 +49,7 @@ export default function AdminQuotes() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-zinc-950 px-6 py-10 text-white">
-
-      <div className="mx-auto max-w-7xl">
-
-        {/* HEADER */}
-        <div className="mb-10 flex items-center justify-between">
-
-          <div>
-
-            <p className="text-sm font-bold uppercase tracking-[0.3em] text-orange-500">
-              Admin
-            </p>
-
-            <h1 className="mt-2 text-5xl font-black">
-              Demandes de devis
-            </h1>
-
-          </div>
-
-          <a
-            href="/admin"
-            className="rounded-xl border border-white/10 px-5 py-3 font-bold text-zinc-300 hover:border-orange-500"
-          >
-            Retour admin
-          </a>
-
-        </div>
+  <AdminLayout title="Demandes de devis">
 
         {/* LOADING */}
         {loading && (
@@ -210,8 +186,7 @@ export default function AdminQuotes() {
 
         </div>
 
-      </div>
+        </AdminLayout>
 
-    </div>
   );
 }
