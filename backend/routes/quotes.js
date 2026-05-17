@@ -93,9 +93,19 @@ const receivedFiles = [
             <tr>
               <td style="padding:40px;background:linear-gradient(135deg,#f97316,#ea580c);">
             <div style="margin-bottom:24px;">
+            <div style="margin-bottom:24px;">
+  <img
+    src="https://mecaprint3d.fr/logo-mail.png"
+    alt="MecaPrint3D"
+    style="
+      width:320px;
+      max-width:100%;
+      display:block;
+    "
+  />
+</div>
             
-            </div>
-                
+
                 <p style="margin-top:12px;color:white;font-size:16px;line-height:1.6;">
                   Votre demande de devis a bien été reçue.
                 </p>
