@@ -95,7 +95,7 @@ const receivedFiles = [
             <div style="margin-bottom:24px;">
             
             </div>
-               
+                
                 <p style="margin-top:12px;color:white;font-size:16px;line-height:1.6;">
                   Votre demande de devis a bien été reçue.
                 </p>
