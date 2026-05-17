@@ -13,7 +13,7 @@ export default function QuoteForm({ content }) {
     quantity: "",
     material: "",
     message: "",
-    file: [],
+    files: [],
   });
 
 
@@ -29,14 +29,23 @@ export default function QuoteForm({ content }) {
 
 
   // ================= FICHIER =================
-  const handleFileChange = (e) => {
-  setForm({
-    ...form,
-    files: Array.from(e.target.files || []),
-  });
+const handleFileChange = (e) => {
+  const newFiles = Array.from(e.target.files || []);
+
+  setForm((current) => ({
+    ...current,
+    files: [...current.files, ...newFiles],
+  }));
 };
 
-
+const removeFile = (fileIndex) => {
+  setForm((current) => ({
+    ...current,
+    files: current.files.filter(
+      (_, index) => index !== fileIndex
+    ),
+  }));
+};
 
   // ================= ENVOI FORMULAIRE =================
   const handleSubmit = async (e) => {
@@ -98,7 +107,7 @@ export default function QuoteForm({ content }) {
         quantity: "",
         material: "",
         message: "",
-        file: [],
+        files: [],
       });
 
     } catch (error) {
@@ -268,14 +277,35 @@ export default function QuoteForm({ content }) {
             />
 
             {form.files?.length ? (
-             <div className="space-y-1 text-orange-400">
-             {form.files.map((file) => (
-              <div key={file.name}>
-                 {file.name}
-              </div>
-             ))}
+
+              <div className="space-y-2">
+
+              {form.files.map((file, index) => (
+
+             <div
+              key={`${file.name}-${index}`}
+              className="flex items-center justify-between rounded-xl border border-white/10 bg-black/40 px-4 py-3"
+             >
+
+              <div className="truncate text-left text-sm text-orange-300">
+            {file.name}
            </div>
-          ) : (
+
+        <button
+          type="button"
+          onClick={() => removeFile(index)}
+          className="ml-3 rounded-full bg-red-500 px-2 py-1 text-xs font-black text-white hover:bg-red-400"
+        >
+          X
+        </button>
+
+      </div>
+
+    ))}
+
+  </div>
+
+) : (
               <span>
                 Ajouter un fichier STL, STEP, photo ou PDF
               </span>
