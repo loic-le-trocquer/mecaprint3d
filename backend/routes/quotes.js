@@ -51,11 +51,17 @@ const receivedFiles = [
   ...(req.files?.file || []),
   ...(req.files?.files || []),
 ];
+// =====================================================
+// 📦 UPLOAD DES FICHIERS SUR CLOUDINARY
+// =====================================================
+if (receivedFiles.length) {
 
-    if (receivedFiles.length) {
   uploadedFiles = await Promise.all(
+
     receivedFiles.map(async (file) => {
-      const cloudinaryResult = await uploadToCloudinary(file);
+
+      const cloudinaryResult =
+        await uploadToCloudinary(file);
 
       return {
         originalName: file.originalname,
@@ -64,63 +70,157 @@ const receivedFiles = [
         mimetype: file.mimetype,
         size: file.size,
       };
+
     })
+
   );
+
 }
-  await sendEmail({
+
+// =====================================================
+// 💾 ENREGISTREMENT DU DEVIS EN BASE
+// =====================================================
+const quote = await Quote.create({
+  ...req.body,
+  files: uploadedFiles,
+});
+
+console.log("📩 Nouveau devis :", quote._id);
+console.log("📧 EMAIL CLIENT =", quote.email);
+
+// =====================================================
+// 📧 EMAIL CLIENT
+// =====================================================
+await sendEmail({
+
   to: quote.email,
+
   subject: "Votre demande de devis MecaPrint3D",
+
   html: `
   <div style="margin:0;padding:0;background:#f4f4f5;font-family:Arial,sans-serif;">
+
     <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 0;">
       <tr>
         <td align="center">
-          <table width="620" cellpadding="0" cellspacing="0"
-            style="background:#18181b;border-radius:24px;overflow:hidden;border:1px solid #27272a;">
 
+          <table
+            width="620"
+            cellpadding="0"
+            cellspacing="0"
+            style="
+              background:#18181b;
+              border-radius:24px;
+              overflow:hidden;
+              border:1px solid #27272a;
+            "
+          >
+
+            <!-- HEADER -->
             <tr>
-              <td style="padding:40px;background:linear-gradient(135deg,#f97316,#ea580c);">
-           
-            <p style="color:red;font-size:20px;">
-            TEST LOGO ICI
-            </p>
+              <td
+                style="
+                  padding:40px;
+                  background:linear-gradient(135deg,#f97316,#ea580c);
+                "
+              >
 
-              <img
+                <p style="color:red;font-size:20px;">
+                  TEST LOGO ICI
+                </p>
+
+                <img
                   src="https://mecaprint3d.fr/logo-mail.jpg"
                   alt="MecaPrint3D"
                   width="320"
-                  style="display:block;border:0;outline:none;text-decoration:none;"
+                  style="
+                    display:block;
+                    border:0;
+                    outline:none;
+                    text-decoration:none;
+                  "
                 />
 
-                <p style="margin:24px 0 0 0;color:white;font-size:16px;line-height:1.6;">
+                <p
+                  style="
+                    margin:24px 0 0 0;
+                    color:white;
+                    font-size:16px;
+                    line-height:1.6;
+                  "
+                >
                   Votre demande de devis a bien été reçue.
                 </p>
+
               </td>
             </tr>
 
+            <!-- CONTENT -->
             <tr>
               <td style="padding:40px;color:#e4e4e7;">
+
                 <p style="font-size:16px;line-height:1.7;">
                   Bonjour <strong>${quote.name}</strong>,
                 </p>
 
-                <p style="font-size:16px;line-height:1.7;color:#d4d4d8;">
+                <p
+                  style="
+                    font-size:16px;
+                    line-height:1.7;
+                    color:#d4d4d8;
+                  "
+                >
                   Merci pour votre demande de devis.
-                  Votre projet est maintenant en cours d’analyse par notre atelier.
+                  Votre projet est maintenant en cours
+                  d’analyse par notre atelier.
                 </p>
 
-                <div style="margin-top:30px;padding:24px;border-radius:18px;background:#09090b;border:1px solid #27272a;">
-                  <h2 style="margin-top:0;color:#f97316;font-size:20px;">
+                <!-- RECAP -->
+                <div
+                  style="
+                    margin-top:30px;
+                    padding:24px;
+                    border-radius:18px;
+                    background:#09090b;
+                    border:1px solid #27272a;
+                  "
+                >
+
+                  <h2
+                    style="
+                      margin-top:0;
+                      color:#f97316;
+                      font-size:20px;
+                    "
+                  >
                     Récapitulatif du projet
                   </h2>
 
-                  <p><strong>Projet :</strong> ${quote.project}</p>
-                  <p><strong>Quantité :</strong> ${quote.quantity || "Non précisée"}</p>
-                  <p><strong>Matière :</strong> ${quote.material || "À définir"}</p>
-                  <p><strong>Message :</strong><br/>${quote.message || "Aucun message"}</p>
+                  <p>
+                    <strong>Projet :</strong>
+                    ${quote.project}
+                  </p>
+
+                  <p>
+                    <strong>Quantité :</strong>
+                    ${quote.quantity || "Non précisée"}
+                  </p>
+
+                  <p>
+                    <strong>Matière :</strong>
+                    ${quote.material || "À définir"}
+                  </p>
+
+                  <p>
+                    <strong>Message :</strong><br/>
+                    ${quote.message || "Aucun message"}
+                  </p>
+
                 </div>
 
+                <!-- FICHIERS -->
                 <div style="margin-top:30px;">
+
                   <h2 style="color:#f97316;font-size:20px;">
                     Fichiers transmis
                   </h2>
@@ -129,59 +229,129 @@ const receivedFiles = [
                     quote.files?.length
                       ? `
                         <ul style="padding-left:20px;color:#d4d4d8;">
+
                           ${quote.files
                             .map(
                               (file) => `
                                 <li style="margin-bottom:10px;">
-                                  <a href="${file.path}" style="color:#fb923c;text-decoration:none;">
+
+                                  <a
+                                    href="${file.path}"
+                                    style="
+                                      color:#fb923c;
+                                      text-decoration:none;
+                                    "
+                                  >
                                     ${file.originalName}
                                   </a>
+
                                 </li>
                               `
                             )
                             .join("")}
+
                         </ul>
                       `
-                      : `<p style="color:#a1a1aa;">Aucun fichier joint.</p>`
+                      : `
+                        <p style="color:#a1a1aa;">
+                          Aucun fichier joint.
+                        </p>
+                      `
                   }
+
                 </div>
 
-                <div style="margin-top:35px;padding:22px;border-radius:18px;background:#27272a;">
-                  <p style="margin:0;font-size:15px;line-height:1.7;color:#fafafa;">
+                <!-- INFO -->
+                <div
+                  style="
+                    margin-top:35px;
+                    padding:22px;
+                    border-radius:18px;
+                    background:#27272a;
+                  "
+                >
+
+                  <p
+                    style="
+                      margin:0;
+                      font-size:15px;
+                      line-height:1.7;
+                      color:#fafafa;
+                    "
+                  >
                     Nous revenons vers vous rapidement avec :
                   </p>
 
-                  <ul style="margin-top:14px;color:#d4d4d8;line-height:1.8;">
+                  <ul
+                    style="
+                      margin-top:14px;
+                      color:#d4d4d8;
+                      line-height:1.8;
+                    "
+                  >
                     <li>Analyse technique</li>
                     <li>Choix matériau / technologie</li>
                     <li>Délai estimé</li>
                     <li>Tarification</li>
                   </ul>
+
                 </div>
 
+                <!-- CTA -->
                 <div style="margin-top:40px;text-align:center;">
+
                   <a
                     href="https://mecaprint3d.fr"
-                    style="display:inline-block;background:#f97316;color:white;text-decoration:none;padding:16px 28px;border-radius:14px;font-weight:800;font-size:15px;"
+                    style="
+                      display:inline-block;
+                      background:#f97316;
+                      color:white;
+                      text-decoration:none;
+                      padding:16px 28px;
+                      border-radius:14px;
+                      font-weight:800;
+                      font-size:15px;
+                    "
                   >
                     Accéder au site MECAPRINT3D
                   </a>
+
                 </div>
+
               </td>
             </tr>
 
+            <!-- FOOTER -->
             <tr>
-              <td style="padding:28px;background:#09090b;border-top:1px solid #27272a;">
-                <p style="margin:0;color:#71717a;font-size:13px;text-align:center;line-height:1.7;">
+              <td
+                style="
+                  padding:28px;
+                  background:#09090b;
+                  border-top:1px solid #27272a;
+                "
+              >
+
+                <p
+                  style="
+                    margin:0;
+                    color:#71717a;
+                    font-size:13px;
+                    text-align:center;
+                    line-height:1.7;
+                  "
+                >
                   MECAPRINT3D — Impression 3D • Prototypage • Réparation • Conception
                 </p>
+
               </td>
             </tr>
 
           </table>
+
         </td>
       </tr>
     </table>
+
   </div>
   `,
 });
