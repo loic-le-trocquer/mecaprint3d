@@ -7,6 +7,9 @@ export default function AdminQuotes() {
 
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState("Tous");
+  const [showArchived, setShowArchived] = useState(false);
+  
 const updateQuote = async (
   id,
   updates
@@ -113,6 +116,16 @@ const statusColors = {
     "bg-red-500/20 text-red-300",
 };
 
+const filteredQuotes = quotes.filter((quote) => {
+  const matchStatus =
+    statusFilter === "Tous" || quote.status === statusFilter;
+
+  const matchArchive =
+    showArchived ? true : !quote.archived;
+
+  return matchStatus && matchArchive;
+});
+
   return (
   <AdminLayout title="Demandes de devis">
 
@@ -130,10 +143,48 @@ const statusColors = {
           </div>
         )}
 
+{/* FILTRES */}
+<div className="mb-6 flex flex-wrap gap-3">
+  {[
+    "Tous",
+    "Nouveau",
+    "En analyse",
+    "Devis envoyé",
+    "En fabrication",
+    "Terminé",
+    "Refusé",
+  ].map((status) => (
+    <button
+      key={status}
+      type="button"
+      onClick={() => setStatusFilter(status)}
+      className={`rounded-xl border px-4 py-2 text-sm font-bold transition ${
+        statusFilter === status
+          ? "border-orange-500 bg-orange-500 text-white"
+          : "border-white/10 bg-black/30 text-zinc-300 hover:border-orange-500"
+      }`}
+    >
+      {status}
+    </button>
+  ))}
+
+  <button
+    type="button"
+    onClick={() => setShowArchived((value) => !value)}
+    className={`rounded-xl border px-4 py-2 text-sm font-bold transition ${
+      showArchived
+        ? "border-purple-500 bg-purple-500 text-white"
+        : "border-white/10 bg-black/30 text-zinc-300 hover:border-purple-500"
+    }`}
+  >
+    {showArchived ? "Archivés visibles" : "Masquer archivés"}
+  </button>
+</div>
+
         {/* LISTE */}
         <div className="grid gap-6">
 
-          {quotes.map((quote) => (
+          {filteredQuotes.map((quote) => (
 
             <div
               key={quote._id}
@@ -242,6 +293,24 @@ const statusColors = {
                     <strong>Quantité :</strong>{" "}
                     {quote.quantity || "—"}
                   </p>
+
+<button
+  type="button"
+  onClick={() =>
+    updateQuote(quote._id, {
+      status: quote.status,
+      adminNotes: quote.adminNotes,
+      archived: !quote.archived,
+    })
+  }
+  className={`mt-3 rounded-xl border px-4 py-2 text-sm font-bold transition ${
+    quote.archived
+      ? "border-green-500/40 text-green-300 hover:bg-green-500/10"
+      : "border-white/10 text-zinc-300 hover:border-red-500 hover:text-red-300"
+  }`}
+>
+  {quote.archived ? "Désarchiver" : "Archiver"}
+</button>
 
                   <p className="mt-1">
                     <strong>Matière :</strong>{" "}
