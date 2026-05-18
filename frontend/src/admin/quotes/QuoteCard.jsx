@@ -1,6 +1,8 @@
 import QuoteStatusSelect from "./QuoteStatusSelect";
 import QuoteAdminNotes from "./QuoteAdminNotes";
 import QuoteFiles from "./QuoteFiles";
+import { API_URL } from "../../lib/api";
+
 
 export default function QuoteCard({
   quote,
@@ -96,6 +98,24 @@ export default function QuoteCard({
             {quote.archived
               ? "Désarchiver"
               : "Archiver"}
+
+              <a
+  href={`${API_URL}/api/quotes/${quote._id}/pdf`}
+  target="_blank"
+  rel="noreferrer"
+
+  className="
+    mt-3 block w-full rounded-xl
+    border border-orange-500/30
+    bg-orange-500/10
+    px-4 py-2 text-center
+    text-sm font-bold text-orange-300
+    transition hover:bg-orange-500/20
+  "
+>
+  Générer PDF
+</a>
+
           </button>
 
         </div>
