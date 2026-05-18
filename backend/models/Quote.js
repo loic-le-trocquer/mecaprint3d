@@ -55,6 +55,23 @@ const quoteSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+     // ===============================
+    // DEVIS COMMERCIAL
+    // ===============================
+    quoteAmount: {
+      type: Number,
+      default: 0,
+    },
+
+    quoteDelay: {
+      type: String,
+      default: "",
+    },
+
+    quoteComment: {
+      type: String,
+      default: "",
+    },
   },
 
   {
