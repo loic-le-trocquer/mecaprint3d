@@ -97,12 +97,15 @@ router.put("/:id", requireAdmin, async (req, res) => {
     const quote = await Quote.findByIdAndUpdate(
 
       req.params.id,
+{
+  status: req.body.status,
+  adminNotes: req.body.adminNotes,
+  archived: req.body.archived,
 
-      {
-        status: req.body.status,
-        adminNotes: req.body.adminNotes,
-        archived: req.body.archived,
-      },
+  quoteAmount: req.body.quoteAmount,
+  quoteDelay: req.body.quoteDelay,
+  quoteComment: req.body.quoteComment,
+},
 
       {
         new: true,
