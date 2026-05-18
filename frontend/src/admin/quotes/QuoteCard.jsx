@@ -72,34 +72,36 @@ export default function QuoteCard({
             {quote.material || "—"}
           </p>
 
-          {/* ARCHIVE */}
-          <button
-            type="button"
+{/* ARCHIVE */}
+<button
+  type="button"
 
-            onClick={() =>
-              onUpdate(quote._id, {
-                status: quote.status,
-                adminNotes: quote.adminNotes,
-                archived: !quote.archived,
-              })
-            }
+  onClick={() =>
+    onUpdate(quote._id, {
+      status: quote.status,
+      adminNotes: quote.adminNotes,
+      archived: !quote.archived,
+    })
+  }
 
-            className={`
-              mt-4 w-full rounded-xl border px-4 py-2
-              text-sm font-bold transition
+  className={`
+    mt-4 w-full rounded-xl border px-4 py-2
+    text-sm font-bold transition
 
-              ${
-                quote.archived
-                  ? "border-green-500/40 text-green-300 hover:bg-green-500/10"
-                  : "border-white/10 text-zinc-300 hover:border-red-500 hover:text-red-300"
-              }
-            `}
-          >
-            {quote.archived
-              ? "Désarchiver"
-              : "Archiver"}
+    ${
+      quote.archived
+        ? "border-green-500/40 text-green-300 hover:bg-green-500/10"
+        : "border-white/10 text-zinc-300 hover:border-red-500 hover:text-red-300"
+    }
+  `}
+>
+  {quote.archived
+    ? "Désarchiver"
+    : "Archiver"}
+</button>
 
-    <button
+{/* PDF */}
+<button
   type="button"
 
   onClick={async () => {
@@ -157,8 +159,6 @@ export default function QuoteCard({
 >
   Générer PDF
 </button>
-
-          </button>
 
         </div>
 
