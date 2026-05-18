@@ -99,10 +99,52 @@ export default function QuoteCard({
               ? "Désarchiver"
               : "Archiver"}
 
-              <a
-  href={`${API_URL}/api/quotes/${quote._id}/pdf`}
-  target="_blank"
-  rel="noreferrer"
+    <button
+  type="button"
+
+  onClick={async () => {
+
+    try {
+
+      const token =
+        localStorage.getItem(
+          "mecaprint3d_admin_token"
+        );
+
+      const response = await fetch(
+        `${API_URL}/api/quotes/${quote._id}/pdf`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const blob =
+        await response.blob();
+
+      const url =
+        window.URL.createObjectURL(blob);
+
+      const link =
+        document.createElement("a");
+
+      link.href = url;
+
+      link.download =
+        `devis-${quote._id}.pdf`;
+
+      link.click();
+
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+
+      console.error(error);
+
+    }
+
+  }}
 
   className="
     mt-3 block w-full rounded-xl
@@ -114,7 +156,7 @@ export default function QuoteCard({
   "
 >
   Générer PDF
-</a>
+</button>
 
           </button>
 
