@@ -5,7 +5,7 @@ const streamifier = require("streamifier");
 
 const Quote = require("../models/Quote");
 const sendEmail = require("../services/sendEmail");
-
+const PDFDocument = require("pdfkit");
 const router = express.Router();
 
 cloudinary.config({
@@ -133,6 +133,140 @@ router.put("/:id", requireAdmin, async (req, res) => {
   }
 
 });
+
+// =====================================================
+// 📄 GENERATION PDF DEVIS
+// GET /api/quotes/:id/pdf
+// =====================================================
+router.get("/:id/pdf", requireAdmin, async (req, res) => {
+  try {
+    const quote = await Quote.findById(req.params.id).lean();
+
+    if (!quote) {
+      return res.status(404).json({
+        success: false,
+        error: "Devis introuvable",
+      });
+    }
+
+    const doc = new PDFDocument({
+      size: "A4",
+      margin: 50,
+    });
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=devis-mecaprint3d-${quote._id}.pdf`
+    );
+
+    doc.pipe(res);
+
+    // HEADER
+    doc
+      .fontSize(24)
+      .fillColor("#f97316")
+      .text("MECAPRINT3D", { align: "left" });
+
+    doc
+      .moveDown(0.5)
+      .fontSize(10)
+      .fillColor("#666")
+      .text("Impression 3D • Prototypage • Réparation • Conception");
+
+    doc.moveDown(2);
+
+    // TITRE
+    doc
+      .fontSize(22)
+      .fillColor("#111")
+      .text("Devis", { align: "center" });
+
+    doc.moveDown(2);
+
+    // CLIENT
+    doc.fontSize(14).fillColor("#f97316").text("Client");
+    doc.moveDown(0.5);
+    doc.fontSize(11).fillColor("#111");
+    doc.text(`Nom : ${quote.name || "-"}`);
+    doc.text(`Email : ${quote.email || "-"}`);
+    doc.text(`Téléphone : ${quote.phone || "-"}`);
+
+    doc.moveDown(1.5);
+
+    // PROJET
+    doc.fontSize(14).fillColor("#f97316").text("Projet");
+    doc.moveDown(0.5);
+    doc.fontSize(11).fillColor("#111");
+    doc.text(`Projet : ${quote.project || "-"}`);
+    doc.text(`Quantité : ${quote.quantity || "-"}`);
+    doc.text(`Matière : ${quote.material || "À définir"}`);
+
+    doc.moveDown(1);
+
+    if (quote.message) {
+      doc.text("Message client :", { underline: true });
+      doc.text(quote.message);
+      doc.moveDown(1);
+    }
+
+    // COMMERCIAL
+    doc.fontSize(14).fillColor("#f97316").text("Proposition commerciale");
+    doc.moveDown(0.5);
+    doc.fontSize(11).fillColor("#111");
+    doc.text(`Montant : ${quote.quoteAmount || 0} €`);
+    doc.text(`Délai estimé : ${quote.quoteDelay || "-"}`);
+
+    if (quote.quoteComment) {
+      doc.moveDown(0.5);
+      doc.text("Commentaire :");
+      doc.text(quote.quoteComment);
+    }
+
+    doc.moveDown(1.5);
+
+    // FICHIERS
+    doc.fontSize(14).fillColor("#f97316").text("Fichiers transmis");
+    doc.moveDown(0.5);
+    doc.fontSize(10).fillColor("#111");
+
+    if (quote.files?.length) {
+      quote.files.forEach((file) => {
+        doc.text(`• ${file.originalName}`);
+      });
+    } else {
+      doc.text("Aucun fichier transmis.");
+    }
+
+    doc.moveDown(2);
+
+    // CONDITIONS
+    doc.fontSize(10).fillColor("#666");
+    doc.text(
+      "Ce devis est établi sous réserve de validation technique définitive après analyse complète des fichiers transmis."
+    );
+    doc.text(
+      "Les délais peuvent varier selon la complexité, la disponibilité matière et la charge atelier."
+    );
+
+    doc.moveDown(2);
+
+    doc
+      .fontSize(10)
+      .fillColor("#999")
+      .text("MECAPRINT3D — mecaprint3d.fr", { align: "center" });
+
+    doc.end();
+  } catch (error) {
+    console.error("❌ Erreur génération PDF :", error);
+
+    res.status(500).json({
+      success: false,
+      error: "Erreur génération PDF",
+    });
+  }
+});
+
 router.post(
   "/",
   upload.fields([
