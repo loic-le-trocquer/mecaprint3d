@@ -31,7 +31,6 @@ export default function QuoteCard({
             />
 
           </div>
-
           {/* INFOS CLIENT */}
           <div className="mt-3 space-y-1 text-sm text-zinc-400">
 
