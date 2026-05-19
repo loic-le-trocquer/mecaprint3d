@@ -2,7 +2,6 @@ import QuoteStatusSelect from "./QuoteStatusSelect";
 import QuoteAdminNotes from "./QuoteAdminNotes";
 import QuoteFiles from "./QuoteFiles";
 import { API_URL } from "../../lib/api";
-import QuoteCommercial from "./QuoteCommercial";
 
 
 export default function QuoteCard({
@@ -185,12 +184,19 @@ export default function QuoteCard({
         setQuotes={setQuotes}
         onUpdate={onUpdate}
       />
-<QuoteCommercial
-  quote={quote}
-  setQuotes={setQuotes}
-  onUpdate={onUpdate}
-/>
+<div className="mt-6 rounded-2xl border border-white/10 bg-black/30 p-5">
+  <p className="mb-4 text-sm font-bold uppercase tracking-widest text-orange-400">
+    Devis commercial
+  </p>
 
+  <p className="text-zinc-400">
+    Bloc devis temporairement désactivé pour sécuriser le déploiement.
+  </p>
+
+  <p className="mt-3 text-xs text-zinc-500">
+    TVA non applicable — art. 293 B du CGI
+  </p>
+</div>
       {/* FICHIERS */}
       <QuoteFiles files={quote.files} />
 
