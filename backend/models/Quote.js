@@ -72,6 +72,24 @@ const quoteSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+quoteLines: [
+  {
+    label: String,
+    quantity: {
+      type: Number,
+      default: 1,
+    },
+    unitPrice: {
+      type: Number,
+      default: 0,
+    },
+    total: {
+      type: Number,
+      default: 0,
+    },
+  },
+],
+
   },
 
   {
