@@ -33,7 +33,6 @@ const sendEmail = require("./utils/sendEmail");
 
 // const generateDocument = require("./utils/generateDocument");
 const generateQuotePdf = require("./utils/generateQuotePdf");
-const siteContentRoutes = require("./routes/siteContent");
 
 // ================= DATABASE =================
 mongoose.connect(process.env.MONGO_URI);
