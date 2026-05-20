@@ -16,7 +16,8 @@ const path = require("path");
 const mongoose = require("mongoose");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const multer = require("multer");
-
+const quotesRoutes = require("./routes/quotes");
+const siteContentRoutes = require("./routes/siteContent");
 // ================= CONFIG =================
 const PORT = process.env.PORT || 4242;
 
@@ -152,7 +153,8 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
+app.use("/api/quotes", quotesRoutes);
 app.use("/api/site-content", siteContentRoutes);
 
 // ================= UPLOAD =================
