@@ -30,7 +30,7 @@ const sendEmail = require("./utils/sendEmail");
 // const saveInvoice = require("./utils/saveInvoice");
 // const generateInvoiceNumber = require("./utils/invoiceNumber");
 
-const generateDocument = require("./utils/generateDocument");
+// const generateDocument = require("./utils/generateDocument");
 const generateQuotePdf = require("./utils/generateQuotePdf");
 // ================= DATABASE =================
 mongoose.connect(process.env.MONGO_URI);
