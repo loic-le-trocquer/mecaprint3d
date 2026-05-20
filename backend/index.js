@@ -25,7 +25,7 @@ const Order = require("./models/Order");
 const Quote = require("./models/Quote");
 
 // ================= UTILS =================
-const createInvoice = require("./utils/createInvoice");
+// const createInvoice = require("./utils/createInvoice");
 const sendEmail = require("./utils/sendEmail");
 const saveInvoice = require("./utils/saveInvoice");
 const generateInvoiceNumber = require("./utils/invoiceNumber");
@@ -367,6 +367,7 @@ async function handleOrder(order) {
     const filePath = path.join(invoicesDir, `${invoiceNumber}.pdf`);
 
     // 📄 génération facture
+    /*
     await createInvoice({
       customer: order.email,
       email: order.email,
@@ -374,7 +375,7 @@ async function handleOrder(order) {
       total: order.total,
       invoiceNumber
     }, filePath);
-
+    */
     await saveInvoice({
       invoiceNumber,
       email: order.email,
