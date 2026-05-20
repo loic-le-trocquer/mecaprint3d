@@ -27,8 +27,8 @@ const Quote = require("./models/Quote");
 // ================= UTILS =================
 // const createInvoice = require("./utils/createInvoice");
 const sendEmail = require("./utils/sendEmail");
-const saveInvoice = require("./utils/saveInvoice");
-const generateInvoiceNumber = require("./utils/invoiceNumber");
+// const saveInvoice = require("./utils/saveInvoice");
+// const generateInvoiceNumber = require("./utils/invoiceNumber");
 
 const generateDocument = require("./utils/generateDocument");
 const generateQuotePdf = require("./utils/generateQuotePdf");
@@ -375,13 +375,13 @@ async function handleOrder(order) {
       total: order.total,
       invoiceNumber
     }, filePath);
-    */
+   
     await saveInvoice({
       invoiceNumber,
       email: order.email,
       total: order.total
     });
-
+ */
     console.log("📄 Facture OK");
 
     // ================= EMAIL CLIENT =================
