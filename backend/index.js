@@ -32,6 +32,8 @@ const sendEmail = require("./utils/sendEmail");
 
 // const generateDocument = require("./utils/generateDocument");
 const generateQuotePdf = require("./utils/generateQuotePdf");
+const siteContentRoutes = require("./routes/siteContent");
+
 // ================= DATABASE =================
 mongoose.connect(process.env.MONGO_URI);
 
@@ -150,6 +152,8 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+
+app.use("/api/site-content", siteContentRoutes);
 
 // ================= UPLOAD =================
 // 👉 upload fichiers avant paiement
