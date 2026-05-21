@@ -3,6 +3,7 @@ export default function QuoteAdminNotes({
   setQuotes,
   onUpdate,
 }) {
+
   return (
     <div className="mt-6">
       <p className="mb-2 text-sm font-bold uppercase tracking-widest text-orange-400">

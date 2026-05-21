@@ -184,6 +184,11 @@ export default function QuoteCard({
         setQuotes={setQuotes}
         onUpdate={onUpdate}
       />
+      <QuoteCommercial
+        quote={quote}
+        setQuotes={setQuotes}
+        onUpdate={onUpdate}
+      />
 
       {/* FICHIERS */}
       <QuoteFiles files={quote.files} />
@@ -191,4 +196,3 @@ export default function QuoteCard({
     </div>
   );
 }
-
