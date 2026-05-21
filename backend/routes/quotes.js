@@ -4,7 +4,7 @@ const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
 
 const Quote = require("../models/Quote");
-const sendEmail = require("../services/sendEmail");
+const sendEmail = require("../utils/sendEmail");
 const PDFDocument = require("pdfkit");
 const router = express.Router();
 
