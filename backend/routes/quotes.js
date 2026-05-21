@@ -102,14 +102,14 @@ router.put("/:id", requireAdmin, async (req, res) => {
   adminNotes: req.body.adminNotes,
   archived: req.body.archived,
 
+  quoteLines: req.body.quoteLines,
+
   quoteAmount: req.body.quoteAmount,
   quoteDelay: req.body.quoteDelay,
   quoteComment: req.body.quoteComment,
 },
 
-      {
-        new: true,
-      }
+      {new: true}
 
     );
 
