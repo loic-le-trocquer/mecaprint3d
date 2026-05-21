@@ -143,12 +143,14 @@ app.post("/webhook", express.raw({ type: "application/json" }), async (req, res)
 // ================= MIDDLEWARE =================
 app.use(cors({
   origin: [
+    "http://localhost:5173",
+    "https://mecaprint3d-fr.vercel.app",
     "https://mecaprint3d.fr",
     "https://www.mecaprint3d.fr",
-    "http://localhost:5173",
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
 }));
 
 app.use(cors());
