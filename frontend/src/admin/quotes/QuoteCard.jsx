@@ -2,7 +2,7 @@ import QuoteStatusSelect from "./QuoteStatusSelect";
 import QuoteAdminNotes from "./QuoteAdminNotes";
 import QuoteFiles from "./QuoteFiles";
 import { API_URL } from "../../lib/api";
-
+import QuoteCommercial from "./QuoteCommercial";
 
 export default function QuoteCard({
   quote,
@@ -191,3 +191,4 @@ export default function QuoteCard({
     </div>
   );
 }
+
