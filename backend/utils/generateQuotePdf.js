@@ -91,12 +91,29 @@ function drawHeader(doc, data, logoPath) {
   const w = 523;
   const h = 128;
 
-  doc.roundedRect(x, y, w, h, 18).fill(BRAND.navy);
+  doc
+  .save()
+  .roundedRect(x, y, w, h, 18)
+  .fill(BRAND.navy)
+  .restore();
+
   doc.rect(x, y + h - 8, w, 8).fill(BRAND.orange);
 
+  console.log("LOGO PATH =", logoPath);
   if (logoPath && fs.existsSync(logoPath)) {
-    doc.image(logoPath, x + 22, y + 22, { height: 46 });
+    doc.image(
+  logoPath,
+  x + 22,
+  y + 22,
+  {
+    fit: [180, 60],
+    align: "left",
+    valign: "center",
+  }
+);
+
   } else {
+
     doc
       .fillColor(BRAND.white)
       .font("Helvetica-Bold")
@@ -463,8 +480,11 @@ function drawTotals(doc, data, startY) {
 // ================= SIGNATURE =================
 
 function drawSignature(doc, startY) {
-  const signaturePath = path.join(__dirname, "..", "assets", "signature.png");
+  const signaturePath = path.join(__dirname, "..", "assets", "signature.jpg");
   const exists = fs.existsSync(signaturePath);
+
+console.log("SIGNATURE PATH =", signaturePath);
+console.log("SIGNATURE EXISTS =", exists);
 
   const x = 360;
   const y = startY;
@@ -583,7 +603,7 @@ function generateQuotePdf(data, filePath, options = {}) {
 
     // Chemins des images côté backend
     const logoPath =
-      options.logoPath || path.join(__dirname, "..", "assets", "logo.png");
+      options.logoPath || path.join(__dirname, "..", "assets", "logo.jpg");
 
     const date = data.date || new Date().toLocaleDateString("fr-FR");
 
