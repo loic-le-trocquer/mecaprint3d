@@ -515,41 +515,53 @@ function drawFilesAndFooter(doc, data, startY) {
   });
 
   const footerY = 754;
+// ================= FOOTER PREMIUM =================
 
-  doc
-    .moveTo(36, footerY - 12)
-    .lineTo(559, footerY - 12)
-    .strokeColor(BRAND.border)
-    .lineWidth(0.8)
-    .stroke();
+doc
+  .moveTo(36, footerY - 18)
+  .lineTo(559, footerY - 18)
+  .strokeColor(BRAND.orange)
+  .lineWidth(1.2)
+  .stroke();
 
-  doc
-    .fillColor(BRAND.slate)
-    .font("Helvetica")
-    .fontSize(7.5)
-    .text(
-      "Ce devis est établi sous réserve de validation technique définitive après analyse complète des fichiers transmis. Validité : 30 jours. Production après accord client.",
-      36,
-      footerY,
-      {
-        width: 523,
-        align: "center",
-      }
-    );
+doc
+  .fillColor(BRAND.slate)
+  .font("Helvetica")
+  .fontSize(7)
+  .text(
+    "Ce devis est établi sous réserve de validation technique définitive après analyse complète des fichiers transmis.",
+    36,
+    footerY,
+    {
+      width: 523,
+      align: "center",
+    }
+  );
 
-  doc
-    .fillColor(BRAND.slate)
-    .font("Helvetica-Bold")
-    .fontSize(7.5)
-    .text(
-      `${COMPANY.name} — SIRET ${COMPANY.siret} — APE ${COMPANY.ape} — ${COMPANY.website}`,
-      36,
-      footerY + 14,
-      {
-        width: 523,
-        align: "center",
-      }
-    );
+doc
+  .text(
+    "Validité : 30 jours — Production après accord client",
+    36,
+    footerY + 10,
+    {
+      width: 523,
+      align: "center",
+    }
+  );
+
+doc
+  .fillColor(BRAND.text)
+  .font("Helvetica-Bold")
+  .fontSize(7.5)
+  .text(
+    `${COMPANY.name} — SIRET ${COMPANY.siret} — APE ${COMPANY.ape} — ${COMPANY.website}`,
+    36,
+    footerY + 24,
+    {
+      width: 523,
+      align: "center",
+    }
+  );
 }
 
 // ================= GÉNÉRATION PDF =================
