@@ -5,7 +5,7 @@ const streamifier = require("streamifier");
 
 const Quote = require("../models/Quote");
 const sendEmail = require("../utils/sendEmail");
-const generateQuotePdf = require("../services/quotePdf");
+const generateQuotePdf = require("../utils/generateQuotePdf");
 const router = express.Router();
 
 cloudinary.config({
