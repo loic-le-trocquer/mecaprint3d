@@ -76,9 +76,10 @@ const sendEmail = async ({ to, subject, text = "", html, attachments = [] }) => 
         "content-type": "application/json"
       },
       body: JSON.stringify({
+        
         sender: {
           name: "MecaPrint3D",
-          email: process.env.EMAIL_USER
+          email: process.env.env.BREVO_SENDER_EMAIL
         },
         to: [
           { email: to }
