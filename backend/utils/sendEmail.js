@@ -27,31 +27,35 @@ const sendEmail = async ({ to, subject, text = "", html, attachments = [] }) => 
       title: subject,
       content: `<p>${String(text).replace(/\n/g, "<br/>")}</p>`
     });
+const finalText =
+  text && String(text).trim()
+    ? String(text)
+    : subject || "Message MecaPrint3D";
 
-    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-      method: "POST",
-      headers: {
-        "accept": "application/json",
-        "api-key": process.env.BREVO_API_KEY,
-        "content-type": "application/json"
-      },
-      body: JSON.stringify({
-        sender: {
-          name: "MecaPrint3D",
-          email: senderEmail
-        },
-        to: [
-          { email: to }
-        ],
-        subject,
-        htmlContent: finalHtml,
-        textContent: text,
-        attachment: attachments.map((file) => ({
-          name: file.filename || file.name,
-          content: fs.readFileSync(file.path).toString("base64")
-        }))
-      })
-    });
+const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+  method: "POST",
+  headers: {
+    "accept": "application/json",
+    "api-key": process.env.BREVO_API_KEY,
+    "content-type": "application/json"
+  },
+  body: JSON.stringify({
+    sender: {
+      name: "MecaPrint3D",
+      email: senderEmail
+    },
+    to: [
+      { email: to }
+    ],
+    subject,
+    htmlContent: finalHtml,
+    textContent: finalText,
+    attachment: attachments.map((file) => ({
+      name: file.filename || file.name,
+      content: fs.readFileSync(file.path).toString("base64")
+    }))
+  })
+});
 
     const data = await response.json();
 
