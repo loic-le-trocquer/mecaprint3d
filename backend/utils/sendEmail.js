@@ -79,7 +79,7 @@ const sendEmail = async ({ to, subject, text = "", html, attachments = [] }) => 
         
         sender: {
           name: "MecaPrint3D",
-          email: process.env.env.BREVO_SENDER_EMAIL
+          email: process.env.BREVO_SENDER_EMAIL
         },
         to: [
           { email: to }
