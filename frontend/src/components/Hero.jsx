@@ -28,7 +28,7 @@ export default function Hero({ content = {} }) {
   "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=80";
  
   return (
-    <section className="relative min-h-[90vh] overflow-hidden bg-slate-950 text-white">
+    <section className="relative min-h-screen overflow-hidden bg-slate-950 pt-20 text-white">
       {/* Background video / image */}
       <div className="absolute inset-0">
         {backgroundVideo ? (
@@ -54,7 +54,7 @@ export default function Hero({ content = {} }) {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 mx-auto flex min-h-[90vh] max-w-7xl items-center px-6 py-24 lg:px-8">
+      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-5rem)] max-w-7xl items-center px-6 py-16 lg:px-8">
         <div className="max-w-4xl">
           {/* Badge */}
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-white/10 px-4 py-2 text-sm font-medium text-orange-100 backdrop-blur">
