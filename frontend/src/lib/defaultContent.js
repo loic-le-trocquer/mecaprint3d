@@ -7,15 +7,24 @@ export const defaultContent = {
   },
   hero: {
   badge: "Atelier de conception & rénovation sur mesure",
-  title: "Fabrication 3D, covering premium & rénovation design",
+
+  title:
+    "Fabrication 3D, covering premium & rénovation design",
+
   highlight: "sur mesure",
+
   description:
-    "De la pièce technique à la rénovation complète, MecaPrint3D conçoit, fabrique et transforme vos projets grâce à la fabrication numérique, au covering décoratif et au sur-mesure.",
+    "MecaPrint3D conçoit et transforme vos projets grâce à la fabrication numérique, au covering décoratif premium et à l’aménagement sur mesure.",
+
   slogan:
     "L’impression 3D est devenue accessible. La conception reste la clé d’une pièce performante.",
+
   primaryButton: "Demander un devis",
+
   secondaryButton: "Découvrir nos univers",
+
   imageUrl: "",
+
   videoUrl: "",
 },
 
@@ -24,20 +33,6 @@ export const defaultContent = {
     "Nous analysons la faisabilité",
     "Vous recevez un devis clair",
   ],
-
-  hero: {
-  badge: "Atelier de conception & rénovation sur mesure",
-  title: "Fabrication 3D, covering premium & rénovation design",
-  highlight: "sur mesure",
-  description:
-    "De la pièce technique à la rénovation complète, MecaPrint3D conçoit, fabrique et transforme vos projets grâce à la fabrication numérique, au covering décoratif et au sur-mesure.",
-  slogan:
-    "L’impression 3D est devenue accessible. La conception reste la clé d’une pièce performante.",
-  primaryButton: "Demander un devis",
-  secondaryButton: "Découvrir nos univers",
-  imageUrl: "",
-  videoUrl: "",
-},
 
   servicesIntro: {
     eyebrow: "Nos expertises",
