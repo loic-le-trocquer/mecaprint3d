@@ -31,7 +31,7 @@ export default function App() {
     <div className="min-h-screen bg-zinc-950 text-white">
       <Header content={content} />
 
-      <main className="pt-20">
+      <main>
         <Hero content={content} />
 
         <Univers content={content} />

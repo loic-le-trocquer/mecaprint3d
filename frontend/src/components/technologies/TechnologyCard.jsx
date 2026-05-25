@@ -24,9 +24,10 @@ export default function TechnologyCard({
 
   return (
     <article className="group overflow-hidden rounded-3xl border border-white/10 bg-zinc-900/80 p-5 shadow-2xl shadow-black/30 transition duration-500 hover:-translate-y-1 hover:border-orange-500/40">
+    <div className="absolute inset-0 bg-gradient-to-br from-orange-500/0 via-orange-500/0 to-orange-500/5 opacity-0 transition duration-500 group-hover:opacity-100"></div>
 
       {/* MEDIA */}
-      <div className="relative overflow-hidden rounded-3xl bg-black">
+      <div className="absolute left-4 top-4 rounded-full border border-orange-500/20 bg-black/70 px-4 py-2 text-xs font-black uppercase tracking-widest text-orange-300 backdrop-blur-xl">
 
         <Media item={item} />
 
@@ -50,7 +51,7 @@ export default function TechnologyCard({
       </div>
 
       {/* CONTENT */}
-      <div className="pt-6">
+     <div className="relative z-10 pt-6">
 
         {/* PROCESS */}
         <p className="text-sm font-bold uppercase tracking-[0.25em] text-orange-400">

@@ -28,12 +28,13 @@ export default function Technologies({ content }) {
   if (!technologies.length) return null;
 
   return (
-    <section
-      id="technologies"
-      className="border-t border-white/10 px-6 py-24"
-    >
+   <section
+  id="technologies"
+  className="relative overflow-hidden border-t border-white/10 bg-zinc-950 px-6 py-24"
+>
+  <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-orange-500/10 blur-3xl"></div>
 
-      <div className="mx-auto max-w-7xl">
+      <div className="relative z-10 mx-auto max-w-7xl">
 
         {/* INTRO */}
         <TechnologiesIntro
