@@ -114,8 +114,8 @@ export default function Realisations({ content }) {
           )}
 
           {/* ================= GRID ================= */}
-          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-
+          <div className="columns-1 gap-8 space-y-8 md:columns-2 xl:columns-3">
+            
             {hasRealisations ? (
 
               filteredRealisations.map((item, index) => (

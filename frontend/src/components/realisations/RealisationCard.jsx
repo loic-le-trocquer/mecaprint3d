@@ -23,7 +23,7 @@ export default function RealisationCard({
   // ================= RENDER =================
   return (
 
-    <article className="group relative overflow-hidden rounded-[32px] border border-white/10 bg-zinc-900/80 shadow-2xl shadow-black/40 backdrop-blur-xl transition duration-500 hover:-translate-y-2 hover:border-orange-500/40 hover:shadow-[0_0_50px_rgba(249,115,22,0.15)]">
+    <article className="break-inside-avoid group relative mb-8 overflow-hidden rounded-[32px] border border-white/10 bg-zinc-900/80 shadow-2xl shadow-black/40 backdrop-blur-xl transition duration-500 hover:-translate-y-2 hover:border-orange-500/40 hover:shadow-[0_0_50px_rgba(249,115,22,0.15)]">
 
       {/* ================= MAIN MEDIA ================= */}
       {activeMedia && (
