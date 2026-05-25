@@ -26,19 +26,20 @@ export default function Transformations({ content }) {
 
             <p className="text-sm font-black uppercase tracking-[0.35em] text-orange-500">
 
-              {intro.eyebrow}
+              {intro.eyebrow || "Transformations"}
 
             </p>
 
             <h2 className="mt-6 text-5xl font-black leading-none tracking-tight text-white md:text-7xl">
 
-              {intro.title}
+              {intro.title || "Avant / Après premium"}
 
             </h2>
 
             <p className="mt-8 max-w-3xl text-lg leading-relaxed text-zinc-400">
 
-              {intro.description}
+              {intro.description ||
+  "Découvrez l’impact des réalisations MecaPrint3D à travers des transformations avant/après immersives."}
 
             </p>
 
