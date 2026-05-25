@@ -38,7 +38,7 @@ export default function Hero({ content = {} }) {
   // ================= RENDER =================
   return (
 
-    <section className="relative min-h-screen overflow-hidden bg-slate-950 pt-20 text-white">
+    <section className="relative min-h-[85vh] overflow-hidden bg-slate-950 pt-20 text-white">
 
       {/* ================= BACKGROUND ================= */}
       <div className="absolute inset-0">

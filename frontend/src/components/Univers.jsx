@@ -17,7 +17,7 @@ export default function Univers({ content = {} }) {
 
     <section
       id="univers"
-      className="relative overflow-hidden border-t border-white/10 bg-black px-6 py-28 text-white lg:px-8"
+      className="relative overflow-hidden border-t border-white/10 bg-black px-6 py-20 text-white lg:px-8"
     >
 
       {/* GLOW */}

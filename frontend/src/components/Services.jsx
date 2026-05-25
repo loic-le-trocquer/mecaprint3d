@@ -20,7 +20,7 @@ export default function Services({ content }) {
   return (
     <section
       id="services"
-      className="relative overflow-hidden border-t border-white/10 bg-black px-6 py-24"
+      className="relative overflow-hidden border-t border-white/10 bg-black px-6 py-20"
     >
       {/* Background glow */}
       <div className="absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-orange-500/10 blur-3xl"></div>
