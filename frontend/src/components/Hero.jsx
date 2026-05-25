@@ -22,9 +22,11 @@ export default function Hero({ content = {} }) {
     hero.secondaryButton || "Découvrir nos univers";
 
   const backgroundVideo = hero.videoUrl || "";
+ 
   const backgroundImage =
   hero.imageUrl ||
   "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=80";
+ 
   return (
     <section className="relative min-h-[90vh] overflow-hidden bg-slate-950 text-white">
       {/* Background video / image */}
