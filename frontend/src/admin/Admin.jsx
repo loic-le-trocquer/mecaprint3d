@@ -603,7 +603,180 @@ export default function Admin({ content, setContent }) {
               />
             ))}
           </Card>
+          {/* ================= UNIVERS ================= */}
+          <Card title="Univers">
+            <Field
+              label="Petit titre"
+              value={draft.universIntro?.eyebrow}
+              onChange={(v) => update("universIntro.eyebrow", v)}
+            />
 
+            <Field
+              label="Titre"
+              value={draft.universIntro?.title}
+              onChange={(v) => update("universIntro.title", v)}
+            />
+
+            <Field
+              label="Description"
+              value={draft.universIntro?.description}
+              onChange={(v) => update("universIntro.description", v)}
+              textarea
+            />
+
+            {(draft.univers?.items || []).map((item, index) => (
+              <div
+                key={index}
+                className="rounded-2xl border border-white/10 bg-black/30 p-5"
+              >
+                {item.imageUrl && (
+                  <div className="mb-4 overflow-hidden rounded-2xl border border-white/10">
+                    <img
+                      src={item.imageUrl}
+                      alt=""
+                      className="h-48 w-full object-cover"
+                    />
+                  </div>
+                )}
+
+                <div className="grid gap-4 md:grid-cols-3">
+                  <Field
+                    label="Titre"
+                    value={item.title}
+                    onChange={(v) => {
+                      const items = [...draft.univers.items];
+                      items[index].title = v;
+                      update("univers.items", items);
+                    }}
+                  />
+
+                  <Field
+                    label="Sous titre"
+                    value={item.subtitle}
+                    onChange={(v) => {
+                      const items = [...draft.univers.items];
+                      items[index].subtitle = v;
+                      update("univers.items", items);
+                    }}
+                  />
+
+                  <Field
+                    label="Lien"
+                    value={item.link}
+                    onChange={(v) => {
+                      const items = [...draft.univers.items];
+                      items[index].link = v;
+                      update("univers.items", items);
+                    }}
+                  />
+                </div>
+
+                <div className="mt-4">
+                  <Field
+                    label="Description"
+                    value={item.description}
+                    onChange={(v) => {
+                      const items = [...draft.univers.items];
+                      items[index].description = v;
+                      update("univers.items", items);
+                    }}
+                    textarea
+                  />
+                </div>
+
+                <div className="mt-4 grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
+                  <Field
+                    label="Image URL"
+                    value={item.imageUrl}
+                    onChange={(v) => {
+                      const items = [...draft.univers.items];
+                      items[index].imageUrl = v;
+                      update("univers.items", items);
+                    }}
+                  />
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+
+                      try {
+                        const formData = new FormData();
+                        formData.append("image", file);
+
+                        const response = await fetch(
+                          `${API_URL}/api/site-content/admin/upload`,
+                          {
+                            method: "POST",
+                            headers: {
+                              Authorization: `Bearer ${token}`,
+                            },
+                            body: formData,
+                          }
+                        );
+
+                        const data = await response.json();
+
+                        if (!response.ok || !data.success) {
+                          throw new Error(data.error || "Upload impossible");
+                        }
+
+                        const items = [...draft.univers.items];
+                        items[index].imageUrl = data.imageUrl;
+
+                        update("univers.items", items);
+
+                        setMessage(
+                          "Image univers ajoutée. Pense à enregistrer."
+                        );
+                      } catch (error) {
+                        setMessage(error.message);
+                      }
+                    }}
+                    className="block w-full max-w-xs rounded-xl border border-white/10 bg-black/40 p-3 text-zinc-300"
+                  />
+                </div>
+
+                <div className="mt-4">
+                  <button
+                    onClick={() => {
+                      const items = draft.univers.items.filter(
+                        (_, i) => i !== index
+                      );
+
+                      update("univers.items", items);
+                    }}
+                    className="rounded-xl border border-red-500/30 px-4 py-3 font-bold text-red-300 hover:bg-red-500/10"
+                  >
+                    Supprimer
+                  </button>
+                </div>
+              </div>
+            ))}
+
+            <button
+              onClick={() => {
+                const items = [...(draft.univers?.items || [])];
+
+                items.push({
+                  title: "",
+                  subtitle: "",
+                  description: "",
+                  imageUrl: "",
+                  link: "#",
+                });
+
+                update("univers.items", items);
+              }}
+              className="rounded-xl border border-orange-500/40 px-5 py-3 font-bold text-orange-300 hover:bg-orange-500/10"
+            >
+              Ajouter un univers
+            </button>
+          </Card>
+
+        
           {/* ================= SERVICES INTRO ================= */}
           <Card title="Introduction services">
             <Field
