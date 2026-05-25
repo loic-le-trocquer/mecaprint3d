@@ -1,5 +1,7 @@
 // ================= IMPORTS =================
 import { ArrowRight, Sparkles, Wrench, Layers } from "lucide-react";
+import FadeInSection from "./ui/FadeInSection";
+
 
 // ================= HERO COMPONENT =================
 export default function Hero({ content = {} }) {
@@ -78,7 +80,7 @@ export default function Hero({ content = {} }) {
       {/* ================= CONTENT ================= */}
       <div className="relative z-10 mx-auto flex min-h-[calc(88vh-9rem)] max-w-7xl items-start px-6 py-10 lg:px-8">
 
-        <div className="max-w-5xl">
+        <FadeInSection className="max-w-5xl">
 
           {/* ================= BADGE ================= */}
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-white/10 px-4 py-2 text-sm font-medium text-orange-100 backdrop-blur">
@@ -136,75 +138,77 @@ export default function Hero({ content = {} }) {
             </a>
 
           </div>
+{/* ================= MINI UNIVERS ================= */}
+<div className="mt-12 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-3">
 
-          {/* ================= MINI UNIVERS ================= */}
-          <div className="mt-12 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-3">
+  {/* TECH */}
+  <a
+    href="#univers"
+    className="group rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur transition duration-300 hover:-translate-y-2 hover:border-orange-500/40 hover:bg-white/15 hover:shadow-[0_0_35px_rgba(255,115,0,0.18)]"
+  >
 
-            {/* TECH */}
-            <div className="rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur transition hover:border-orange-500/40 hover:bg-white/15">
+    <Wrench
+      className="mb-3 text-orange-400"
+      size={24}
+    />
 
-              <Wrench
-                className="mb-3 text-orange-400"
-                size={24}
-              />
+    <h3 className="font-bold tracking-wide">
+      TECH
+    </h3>
 
-              <h3 className="font-bold tracking-wide">
-                TECH
-              </h3>
+    <p className="mt-2 text-sm leading-relaxed text-slate-300">
+      Impression 3D, scan, CAO et fabrication de pièces techniques.
+    </p>
 
-              <p className="mt-2 text-sm leading-relaxed text-slate-300">
+  </a>
 
-                Impression 3D, scan, CAO et fabrication de pièces techniques.
+  {/* DESIGN */}
+  <a
+    href="#univers"
+    className="group rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur transition duration-300 hover:-translate-y-2 hover:border-orange-500/40 hover:bg-white/15 hover:shadow-[0_0_35px_rgba(255,115,0,0.18)]"
+  >
 
-              </p>
+    <Layers
+      className="mb-3 text-orange-400"
+      size={24}
+    />
 
-            </div>
+    <h3 className="font-bold tracking-wide">
+      DESIGN
+    </h3>
 
-            {/* DESIGN */}
-            <div className="rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur transition hover:border-orange-500/40 hover:bg-white/15">
+    <p className="mt-2 text-sm leading-relaxed text-slate-300">
+      Covering, rénovation intérieure, mobilier, cuisines et commerces.
+    </p>
 
-              <Layers
-                className="mb-3 text-orange-400"
-                size={24}
-              />
+  </a>
 
-              <h3 className="font-bold tracking-wide">
-                DESIGN
-              </h3>
+  {/* CAMPER */}
+  <a
+    href="#univers"
+    className="group rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur transition duration-300 hover:-translate-y-2 hover:border-orange-500/40 hover:bg-white/15 hover:shadow-[0_0_35px_rgba(255,115,0,0.18)]"
+  >
 
-              <p className="mt-2 text-sm leading-relaxed text-slate-300">
+    <Sparkles
+      className="mb-3 text-orange-400"
+      size={24}
+    />
 
-                Covering, rénovation intérieure, mobilier, cuisines et commerces.
+    <h3 className="font-bold tracking-wide">
+      CAMPER
+    </h3>
 
-              </p>
+    <p className="mt-2 text-sm leading-relaxed text-slate-300">
+      Vans, fourgons et camping-cars personnalisés et rénovés sur mesure.
+    </p>
 
-            </div>
+  </a>
 
-            {/* CAMPER */}
-            <div className="rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur transition hover:border-orange-500/40 hover:bg-white/15">
+</div>
 
-              <Sparkles
-                className="mb-3 text-orange-400"
-                size={24}
-              />
-
-              <h3 className="font-bold tracking-wide">
-                CAMPER
-              </h3>
-
-              <p className="mt-2 text-sm leading-relaxed text-slate-300">
-
-                Vans, fourgons et camping-cars personnalisés et rénovés sur mesure.
-
-              </p>
-
-            </div>
-
-          </div>
+         </FadeInSection>
 
         </div>
-
-      </div>
 
     </section>
 
