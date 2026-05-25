@@ -7,15 +7,18 @@ module.exports = {
     location: "France",
   },
   hero: {
-    badge: "Fabrication locale • Devis personnalisé • Impression 3D sur mesure",
-    title: "Réparez, reproduisez et créez vos pièces grâce à",
-    highlight: "l’impression 3D",
-    description:
-      "MecaPrint3D accompagne particuliers et professionnels pour transformer une idée, une pièce cassée ou un besoin technique en solution concrète.",
-    slogan:
+badge: "Atelier de conception & rénovation sur mesure",
+
+title:
+  "Fabrication 3D, covering premium & rénovation design",
+
+highlight: "sur mesure",
+
+description:
+  "De la pièce technique à la rénovation complète, MecaPrint3D conçoit, fabrique et transforme vos projets grâce à la fabrication numérique, au covering décoratif et au sur-mesure.",    slogan:
       "L’impression 3D est devenue accessible. La conception reste la clé d’une pièce performante.",
     primaryButton: "Demander un devis",
-    secondaryButton: "Voir les technologies",
+    secondaryButton: "Découvrir nos univers",
     imageUrl: "",
     videoUrl: "",
   },
@@ -31,41 +34,38 @@ module.exports = {
       "Chaque demande est étudiée selon l’usage, la matière, la résistance attendue et le rendu souhaité.",
   },
   services: [
-    {
-      number: "01",
-      title: "Impression 3D sur mesure",
-      description:
-        "Fabrication de pièces techniques, prototypes, supports, caches, objets utiles ou décoratifs.",
-      badge: "Sur devis",
-    },
-    {
-      number: "02",
-      title: "Réparation de pièces cassées",
-      description:
-        "Reproduction de pièces introuvables, remplacement d’éléments plastiques et amélioration de pièces fragiles.",
-      badge: "Sur devis",
-    },
-    {
-      number: "03",
-      title: "Restauration auto / moto",
-      description:
-        "Création de petites pièces pour véhicules anciens : clips, caches, supports, enjoliveurs, inserts et pièces spécifiques.",
-      badge: "Sur devis",
-    },
-    {
-      number: "04",
-      title: "Goodies personnalisés",
-      description:
-        "Objets personnalisés, logos, cadeaux, accessoires, porte-clés, décorations et petites séries.",
-      badge: "Sur devis",
-    },
-  ],
-  technologiesIntro: {
-    eyebrow: "Technologies & matériaux",
-    title: "Le bon procédé pour la bonne pièce",
+  {
+    number: "01",
+    title: "Fabrication 3D & pièces techniques",
     description:
-      "Nous choisissons la technologie selon l’usage réel : résistance mécanique, précision, finition, coût, délai et environnement d’utilisation.",
+      "Conception et fabrication de pièces sur mesure, prototypes, réparations et solutions techniques adaptées à vos besoins.",
+    badge: "TECH",
   },
+
+  {
+    number: "02",
+    title: "Scan 3D & rétroconception",
+    description:
+      "Numérisation, reproduction et adaptation de pièces introuvables grâce au scan 3D et à la CAO.",
+    badge: "SCAN & CAO",
+  },
+
+  {
+    number: "03",
+    title: "Covering & rénovation décorative",
+    description:
+      "Modernisation de mobilier, cuisines, commerces, hôtels et espaces professionnels grâce aux revêtements décoratifs premium.",
+    badge: "DESIGN",
+  },
+
+  {
+    number: "04",
+    title: "Rénovation camping-car & van",
+    description:
+      "Transformation intérieure, covering, personnalisation et fabrication de pièces sur mesure pour véhicules de loisirs.",
+    badge: "CAMPER",
+  },
+],
   technologies: [
     {
       process: "FDM / Dépôt de filament",
@@ -166,6 +166,55 @@ module.exports = {
       "Compatible particuliers et professionnels",
     ],
   },
+  univers: {
+  badge: "Nos univers",
+
+  title: "Un atelier, trois expertises complémentaires",
+
+  description:
+    "MecaPrint3D accompagne particuliers et professionnels de la conception technique à la transformation visuelle premium.",
+
+  items: [
+    {
+      title: "TECH",
+
+      subtitle: "Fabrication & ingénierie",
+
+      description:
+        "Impression 3D, scan, CAO, rétroconception et fabrication de pièces techniques sur mesure.",
+
+      imageUrl: "",
+
+      link: "#tech",
+    },
+
+    {
+      title: "DESIGN",
+
+      subtitle: "Covering & rénovation décorative",
+
+      description:
+        "Modernisation de mobilier, cuisines, hôtels, commerces et espaces professionnels.",
+
+      imageUrl: "",
+
+      link: "#design",
+    },
+
+    {
+      title: "CAMPER",
+
+      subtitle: "Vans & camping-cars",
+
+      description:
+        "Rénovation intérieure, personnalisation et covering premium pour véhicules de loisirs.",
+
+      imageUrl: "",
+
+      link: "#camper",
+    },
+  ],
+},
   footer: {
     description:
       "Impression 3D sur mesure, réparation de pièces, restauration et personnalisation.",

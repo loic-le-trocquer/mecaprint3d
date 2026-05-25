@@ -32,40 +32,40 @@ export default function Header({ content }) {
 
           {/* SLOGAN */}
           <p className="mt-4 text-xs uppercase tracking-[0.35em] text-zinc-300 md:text-sm">
-            Réparation • Conception • Impression 3D • Personnalisation
+            Conception • Fabrication • Rénovation sur mesure
           </p>
 
           {/* NAVBAR */}
-          <nav className="mt-8 flex flex-wrap items-center justify-center gap-4 border-t border-zinc-800 pt-6 text-sm font-semibold uppercase tracking-wider text-zinc-300 md:gap-8 md:text-base">
-            
-            <a href="#services" className="transition hover:text-orange-400">
-              Services
-            </a>
+     <nav className="mt-8 flex flex-wrap items-center justify-center gap-4 border-t border-zinc-800 pt-6 text-sm font-semibold uppercase tracking-wider text-zinc-300 md:gap-8 md:text-base">
 
-            <a href="#technologies" className="transition hover:text-orange-400">
-              Technologies
-            </a>
+  <a href="#univers" className="transition hover:text-orange-400">
+    Univers
+  </a>
 
-            <a href="#realisations" className="transition hover:text-orange-400">
-              Réalisations
-            </a>
+  <a href="#services" className="transition hover:text-orange-400">
+    Services
+  </a>
 
-            <a href="#devis" className="transition hover:text-orange-400">
-              Devis
-            </a>
+  <a href="#technologies" className="transition hover:text-orange-400">
+    Technologies
+  </a>
 
-            <a href="#contact" className="transition hover:text-orange-400">
-              Contact
-            </a>
+  <a href="#realisations" className="transition hover:text-orange-400">
+    Réalisations
+  </a>
 
-            <a
-              href="#devis"
-              className="rounded-full bg-orange-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-orange-500/20 transition hover:scale-105 hover:bg-orange-400"
-            >
-              Demander un devis
-            </a>
+  <a href="#devis" className="transition hover:text-orange-400">
+    Devis
+  </a>
 
-          </nav>
+  <a
+    href="#devis"
+    className="rounded-full bg-orange-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-orange-500/20 transition hover:scale-105 hover:bg-orange-400"
+  >
+    Demander un devis
+  </a>
+
+</nav>
         </div>
       </div>
     </header>

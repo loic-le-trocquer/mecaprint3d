@@ -4,6 +4,7 @@
     "tailwindcss": "^4.3.0"
   },
   "dependencies": {
+    "lucide-react": "^1.16.0",
     "pdfkit": "^0.18.0"
   }
 }
