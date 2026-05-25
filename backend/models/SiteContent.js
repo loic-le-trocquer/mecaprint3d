@@ -73,6 +73,24 @@ const SiteContentSchema = new mongoose.Schema(
       description: String,
     },
     services: [ServiceSchema],
+
+    // ================= UNIVERS =================
+universIntro: {
+  eyebrow: String,
+  title: String,
+  description: String,
+},
+univers: {
+  items: [
+    {
+      title: String,
+      subtitle: String,
+      description: String,
+      imageUrl: String,
+      link: String,
+    },
+  ],
+},
     technologiesIntro: {
       eyebrow: String,
       title: String,

@@ -1,4 +1,4 @@
-export default function Universs({ content }) {
+export default function Univers({ content }) {
   const intro = content?.universIntro || {};
   const items = content?.univers?.items || [];
 
