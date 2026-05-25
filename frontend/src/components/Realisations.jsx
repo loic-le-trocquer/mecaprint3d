@@ -154,13 +154,7 @@ export default function Realisations({ content }) {
         lightbox={lightbox}
         onClose={() => setLightbox(null)}
       />
-      {/* ================= BeforeAfter ================= */}
-      <BeforeAfterSlider
-        before="/images/avant.jpg"
-        after="/images/apres.jpg"
-        title="Cuisine rénovée premium"
-  c     ategory="DESIGN"
-      />
+      
     </section>
 
   );
