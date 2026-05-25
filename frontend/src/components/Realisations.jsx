@@ -115,7 +115,7 @@ export default function Realisations({ content }) {
 
           {/* ================= GRID ================= */}
           <div className="columns-1 gap-8 space-y-8 md:columns-2 xl:columns-3">
-            
+
             {hasRealisations ? (
 
               filteredRealisations.map((item, index) => (
@@ -154,7 +154,13 @@ export default function Realisations({ content }) {
         lightbox={lightbox}
         onClose={() => setLightbox(null)}
       />
-
+      {/* ================= BeforeAfter ================= */}
+      <BeforeAfterSlider
+        before="/images/avant.jpg"
+        after="/images/apres.jpg"
+        title="Cuisine rénovée premium"
+  c     ategory="DESIGN"
+      />
     </section>
 
   );

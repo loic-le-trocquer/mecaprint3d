@@ -6,6 +6,8 @@ import Technologies from "./components/Technologies";
 import Realisations from "./components/Realisations";
 import QuoteForm from "./components/QuoteForm";
 import Footer from "./components/Footer";
+import Transformations from "./components/showroom/Transformations";
+
 
 import Admin from "./admin/Admin";
 import AdminQuotes from "./admin/AdminQuotes";
@@ -42,6 +44,8 @@ export default function App() {
 
         <Realisations content={content} />
 
+        <Transformations content={content} />
+        
         <QuoteForm content={content} />
       </main>
 
