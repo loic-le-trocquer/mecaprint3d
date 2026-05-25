@@ -38,7 +38,7 @@ export default function Hero({ content = {} }) {
   // ================= RENDER =================
   return (
 
-    <section className="relative min-h-[85vh] overflow-hidden bg-slate-950 pt-20 text-white">
+      <section className="relative min-h-[88vh] overflow-hidden bg-slate-950 pt-36 text-white">
 
       {/* ================= BACKGROUND ================= */}
       <div className="absolute inset-0">
@@ -76,7 +76,7 @@ export default function Hero({ content = {} }) {
       </div>
 
       {/* ================= CONTENT ================= */}
-      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-5rem)] max-w-7xl items-center px-6 py-16 lg:px-8">
+      <div className="relative z-10 mx-auto flex min-h-[calc(88vh-9rem)] max-w-7xl items-start px-6 py-10 lg:px-8">
 
         <div className="max-w-5xl">
 
@@ -93,7 +93,7 @@ export default function Hero({ content = {} }) {
           </div>
 
           {/* ================= TITLE ================= */}
-          <h1 className="max-w-5xl text-4xl font-black leading-[0.95] tracking-tight sm:text-5xl lg:text-7xl">
+          <h1 className="max-w-5xl text-4xl font-black leading-[1.02] tracking-tight sm:text-5xl lg:text-6xl">
 
             {title}{" "}
 
