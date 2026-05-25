@@ -33,6 +33,44 @@ export const defaultContent = {
     "Nous analysons la faisabilité",
     "Vous recevez un devis clair",
   ],
+  
+universIntro: {
+  eyebrow: "NOS UNIVERS",
+  title: "Un atelier, trois expertises complémentaires",
+  description:
+    "MecaPrint3D accompagne particuliers et professionnels de la conception technique à la transformation visuelle premium.",
+},
+
+univers: {
+  items: [
+    {
+      title: "TECH",
+      subtitle: "Impression 3D & scan",
+      description:
+        "Impression 3D, scan, CAO et fabrication de pièces techniques.",
+      imageUrl: "",
+      link: "#",
+    },
+
+    {
+      title: "DESIGN",
+      subtitle: "Covering & mobilier",
+      description:
+        "Covering, rénovation intérieure, mobilier, cuisines et commerces.",
+      imageUrl: "",
+      link: "#",
+    },
+
+    {
+      title: "CAMPER",
+      subtitle: "Van & camping-car",
+      description:
+        "Vans, fourgons et camping-cars personnalisés et rénovés sur mesure.",
+      imageUrl: "",
+      link: "#",
+    },
+  ],
+},
 
   servicesIntro: {
     eyebrow: "Nos expertises",

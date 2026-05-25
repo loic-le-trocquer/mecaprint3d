@@ -145,28 +145,34 @@ export default function Admin({ content, setContent }) {
 
   // ================= SAVE GLOBAL =================
   const save = async () => {
-    setSaving(true);
-    setMessage("");
+  setSaving(true);
+  setMessage("");
 
-    try {
-      const data = await apiFetch("/api/site-content/admin", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(draft),
-      });
+  try {
+    console.log("📦 CONTENU ENVOYÉ ADMIN :", draft);
 
-      setContent(data.content);
-      setDraft(data.content);
-      setMessage("Modifications enregistrées avec succès.");
-    } catch (error) {
-      setMessage(error.message);
-    } finally {
-      setSaving(false);
-    }
-  };
+    const data = await apiFetch("/api/site-content/admin", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(draft),
+    });
+
+    console.log("✅ RÉPONSE SAVE ADMIN :", data);
+
+    setContent(data.content);
+    setDraft(data.content);
+    setMessage("Modifications enregistrées avec succès.");
+  } catch (error) {
+    console.error("❌ ERREUR SAVE ADMIN :", error);
+    setMessage(error.message);
+  } finally {
+    setSaving(false);
+  }
+};
+
 
   // ================= UPLOAD IMAGE SIMPLE =================
   const uploadImage = async (file, path) => {
