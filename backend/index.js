@@ -1,6 +1,3 @@
-console.log("🔥 FICHIER INDEX CHARGÉ");
-
-
 // ================= ENV =================
 require("dotenv").config();
 
@@ -14,10 +11,18 @@ const rateLimit = require("express-rate-limit");
 const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
+
+console.log(
+  "STRIPE KEY:",
+  process.env.STRIPE_SECRET_KEY ? "OK" : "ABSENTE"
+);
+
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
 const multer = require("multer");
 const quotesRoutes = require("./routes/quotes");
 const siteContentRoutes = require("./routes/siteContent");
+
 // ================= CONFIG =================
 const PORT = process.env.PORT || 4242;
 
@@ -144,6 +149,7 @@ app.post("/webhook", express.raw({ type: "application/json" }), async (req, res)
 app.use(cors({
   origin: [
     "http://localhost:5173",
+    "http://localhost:5174",
     "https://mecaprint3d-fr.vercel.app",
     "https://mecaprint3d.fr",
     "https://www.mecaprint3d.fr",

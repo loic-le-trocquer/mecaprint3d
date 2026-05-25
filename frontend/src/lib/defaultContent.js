@@ -6,23 +6,39 @@ export const defaultContent = {
     location: "France",
   },
   hero: {
-    badge: "Fabrication locale • Devis personnalisé • Impression 3D sur mesure",
-    title: "Réparez, reproduisez et créez vos pièces grâce à",
-    highlight: "l’impression 3D",
-    description:
-      "MecaPrint3D accompagne particuliers et professionnels pour transformer une idée, une pièce cassée ou un besoin technique en solution concrète.",
-    slogan:
-      "L’impression 3D est devenue accessible. La conception reste la clé d’une pièce performante.",
-    primaryButton: "Demander un devis",
-    secondaryButton: "Voir les technologies",
-    imageUrl: "",
-    videoUrl: "",
-  },
+  badge: "Atelier de conception & rénovation sur mesure",
+  title: "Fabrication 3D, covering premium & rénovation design",
+  highlight: "sur mesure",
+  description:
+    "De la pièce technique à la rénovation complète, MecaPrint3D conçoit, fabrique et transforme vos projets grâce à la fabrication numérique, au covering décoratif et au sur-mesure.",
+  slogan:
+    "L’impression 3D est devenue accessible. La conception reste la clé d’une pièce performante.",
+  primaryButton: "Demander un devis",
+  secondaryButton: "Découvrir nos univers",
+  imageUrl: "",
+  videoUrl: "",
+},
+
   steps: [
     "Vous envoyez votre besoin",
     "Nous analysons la faisabilité",
     "Vous recevez un devis clair",
   ],
+
+  hero: {
+  badge: "Atelier de conception & rénovation sur mesure",
+  title: "Fabrication 3D, covering premium & rénovation design",
+  highlight: "sur mesure",
+  description:
+    "De la pièce technique à la rénovation complète, MecaPrint3D conçoit, fabrique et transforme vos projets grâce à la fabrication numérique, au covering décoratif et au sur-mesure.",
+  slogan:
+    "L’impression 3D est devenue accessible. La conception reste la clé d’une pièce performante.",
+  primaryButton: "Demander un devis",
+  secondaryButton: "Découvrir nos univers",
+  imageUrl: "",
+  videoUrl: "",
+},
+
   servicesIntro: {
     eyebrow: "Nos expertises",
     title: "Des solutions concrètes pour vos pièces et vos projets",
@@ -30,35 +46,38 @@ export const defaultContent = {
       "Chaque demande est étudiée selon l’usage, la matière, la résistance attendue et le rendu souhaité.",
   },
   services: [
-    {
-      number: "01",
-      title: "Impression 3D sur mesure",
-      description:
-        "Fabrication de pièces techniques, prototypes, supports, caches, objets utiles ou décoratifs.",
-      badge: "Sur devis",
-    },
-    {
-      number: "02",
-      title: "Réparation de pièces cassées",
-      description:
-        "Reproduction de pièces introuvables, remplacement d’éléments plastiques et amélioration de pièces fragiles.",
-      badge: "Sur devis",
-    },
-    {
-      number: "03",
-      title: "Restauration auto / moto",
-      description:
-        "Création de petites pièces pour véhicules anciens : clips, caches, supports, enjoliveurs, inserts et pièces spécifiques.",
-      badge: "Sur devis",
-    },
-    {
-      number: "04",
-      title: "Goodies personnalisés",
-      description:
-        "Objets personnalisés, logos, cadeaux, accessoires, porte-clés, décorations et petites séries.",
-      badge: "Sur devis",
-    },
-  ],
+  {
+    number: "01",
+    title: "Fabrication 3D technique",
+    description:
+      "Pièces sur mesure, prototypes, reproduction et réparation de composants introuvables.",
+    badge: "TECH",
+  },
+
+  {
+    number: "02",
+    title: "Covering & rénovation design",
+    description:
+      "Transformation de cuisines, meubles, commerces, hôtels et surfaces décoratives.",
+    badge: "DESIGN",
+  },
+
+  {
+    number: "03",
+    title: "Aménagement van & camping-car",
+    description:
+      "Personnalisation intérieure, habillage et optimisation esthétique des véhicules de loisirs.",
+    badge: "CAMPER",
+  },
+
+  {
+    number: "04",
+    title: "Signalétique & goodies",
+    description:
+      "Création de logos, objets personnalisés, plaques, enseignes et accessoires premium.",
+    badge: "CUSTOM",
+  },
+],
   technologiesIntro: {
     eyebrow: "Technologies & matériaux",
     title: "Le bon procédé pour la bonne pièce",
