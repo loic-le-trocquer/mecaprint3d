@@ -70,7 +70,7 @@ contact@mecaprint3d.fr
             Partenaires & solutions utilisées
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-10">
+          <div className="flex flex-wrap items-center justify-center gap-16">
             {partners.map((partner, index) => (
               <a
                 key={`${partner.name}-${index}`}
@@ -83,7 +83,7 @@ contact@mecaprint3d.fr
                   <img
                     src={partner.logoUrl}
                     alt={partner.name}
-                    className="h-10 w-auto object-contain grayscale transition duration-300 hover:grayscale-0"
+                    className="h-16 w-auto object-contain opacity-80 brightness-110 transition duration-300 hover:scale-105 hover:opacity-100"
                   />
                 ) : (
                   <span className="text-sm font-black uppercase tracking-[0.25em] text-zinc-400 hover:text-orange-400">
