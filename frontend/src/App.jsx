@@ -8,6 +8,9 @@ import QuoteForm from "./components/QuoteForm";
 import Footer from "./components/Footer";
 import Transformations from "./components/showroom/Transformations";
 import WhyMecaPrint from "./components/WhyMecaPrint";
+import ProcessTimeline from "./components/ProcessTimeline";
+
+
 
 import Admin from "./admin/Admin";
 import AdminQuotes from "./admin/AdminQuotes";
@@ -41,6 +44,8 @@ export default function App() {
         <Services content={content} />
 
         <WhyMecaPrint />
+        
+        <ProcessTimeline />
 
         <Technologies content={content} />
 
