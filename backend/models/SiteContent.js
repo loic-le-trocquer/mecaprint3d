@@ -109,6 +109,22 @@ univers: {
       description: String,
       bullets: [String],
     },
+    // ================= TRANSFORMATIONS =================
+transformationsIntro: {
+  eyebrow: String,
+  title: String,
+  description: String,
+},
+
+transformations: [
+  {
+    title: String,
+    category: String,
+    beforeImage: String,
+    afterImage: String,
+  },
+],
+
     footer: {
       description: String,
       legal: String,
