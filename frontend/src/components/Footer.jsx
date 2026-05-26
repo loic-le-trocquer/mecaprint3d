@@ -27,13 +27,29 @@ export default function Footer({ content }) {
         </div>
 
         <div>
-          <h4 className="mb-4 font-bold text-white">Contact</h4>
-          <div className="space-y-2 text-zinc-400">
-            <p>{brand.email || "contact@mecaprint3d.fr"}</p>
-            <p>{brand.location || "France"}</p>
-            <p>Devis personnalisé avant fabrication</p>
-          </div>
-        </div>
+  <h4 className="mb-4 font-bold text-white">
+    Contact
+  </h4>
+
+  <div className="space-y-2 text-zinc-400">
+
+    <p className="whitespace-pre-line leading-8">
+
+      {brand.location || `Tel +33 06 27 49 70 55
+
+contact@mecaprint3d.fr
+
+19 rue de la cote des monts
+76570 GOUPILLIERES, France`}
+
+    </p>
+
+    <p>
+      Devis personnalisé avant fabrication
+    </p>
+
+  </div>
+</div>
       </div>
 
       <div className="mx-auto mt-10 max-w-7xl border-t border-white/10 pt-6 text-sm text-zinc-500">
