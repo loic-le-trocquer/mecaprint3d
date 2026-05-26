@@ -22,6 +22,9 @@ export default function AdminQuotes() {
   const [showArchived, setShowArchived] =
     useState(false);
 
+  const [search, setSearch] =
+    useState("");  
+
   // =====================================================
   // LOAD QUOTES
   // =====================================================
@@ -115,24 +118,40 @@ export default function AdminQuotes() {
   // =====================================================
   // FILTERS
   // =====================================================
-  const filteredQuotes = quotes.filter(
-    (quote) => {
+  const filteredQuotes = quotes.filter((quote) => {
+  const matchStatus =
+    statusFilter === "Tous" ||
+    quote.status === statusFilter;
 
-      const matchStatus =
-        statusFilter === "Tous" ||
-        quote.status === statusFilter;
+  const matchArchive =
+    showArchived
+      ? true
+      : quote.archived !== true;
 
-      const matchArchive =
-        showArchived
-        ? true
-        : quote.archived !== true;
+  const searchText = [
+    quote.name,
+    quote.email,
+    quote.phone,
+    quote.project,
+    quote.material,
+    quote.surface,
+    quote.vehicle,
+    quote.coveringReference,
+    quote.dimensions,
+    quote.message,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
 
-      return (
-        matchStatus && matchArchive
-      );
+  const matchSearch =
+    !search.trim() ||
+    searchText.includes(search.toLowerCase());
 
-    }
-  );
+  return matchStatus && matchArchive && matchSearch;
+});
+
+
 // ================= KPI =================
 const totalQuotes =
   quotes.length;
@@ -202,12 +221,16 @@ const vanQuotes =
         )}
 
       {/* FILTERS */}
-      <QuoteFilters
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        showArchived={showArchived}
-        setShowArchived={setShowArchived}
-      />
+      <div className="mb-8 rounded-3xl border border-white/10 bg-zinc-900/70 p-5">
+  <input
+    type="text"
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    placeholder="Rechercher un devis : nom, email, projet, véhicule, CoverStyl..."
+    className="w-full rounded-2xl border border-white/10 bg-black/40 px-5 py-4 text-white outline-none transition placeholder:text-zinc-500 focus:border-orange-500"
+  />
+</div>
+
 {/* ================= KPI ================= */}
 <div className="mb-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
 
