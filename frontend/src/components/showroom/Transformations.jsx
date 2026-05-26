@@ -13,8 +13,7 @@ export default function Transformations({ content }) {
   return (
     
     <section 
-    
-    id="showroom"
+        id="showroom"
     className="relative overflow-hidden border-t border-white/10 bg-zinc-950 px-6 py-28">
 
           {/* ================= BACKGROUND ================= */}

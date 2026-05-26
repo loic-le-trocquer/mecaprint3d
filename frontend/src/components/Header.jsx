@@ -26,6 +26,9 @@ export default function Header({ content }) {
           <a href="#univers" className="transition hover:text-orange-400">
   Univers
 </a>
+<a href="#univers" className="transition hover:text-orange-400">
+  Univers
+</a>
 
 <a href="#services" className="transition hover:text-orange-400">
   Services

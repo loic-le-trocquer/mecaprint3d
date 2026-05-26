@@ -11,7 +11,9 @@ export default function Univers({ content }) {
   // ================= RENDER =================
   return (
 
-    <section className="relative overflow-hidden border-y border-white/5 bg-black py-28">
+    <section 
+    id="univers"
+    className="relative overflow-hidden border-y border-white/5 bg-black py-28">
 
       {/* ================= BACKGROUND ================= */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(249,115,22,0.18),transparent_55%)]" />
