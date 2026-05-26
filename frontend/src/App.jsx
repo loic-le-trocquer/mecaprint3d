@@ -7,7 +7,7 @@ import Realisations from "./components/Realisations";
 import QuoteForm from "./components/QuoteForm";
 import Footer from "./components/Footer";
 import Transformations from "./components/showroom/Transformations";
-
+import WhyMecaPrint from "./components/WhyMecaPrint";
 
 import Admin from "./admin/Admin";
 import AdminQuotes from "./admin/AdminQuotes";
@@ -39,6 +39,8 @@ export default function App() {
         <Univers content={content} />
 
         <Services content={content} />
+
+        <WhyMecaPrint />
 
         <Technologies content={content} />
 
