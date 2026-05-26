@@ -1,3 +1,5 @@
+id="methodologie"
+
 // ================= IMPORTS =================
 import FadeInSection from "./ui/FadeInSection";
 

@@ -1,3 +1,5 @@
+id="showroom"
+
 // ================= IMPORTS =================
 import FadeInSection from "../ui/FadeInSection";
 import BeforeAfterSlider from "./BeforeAfterSlider";
