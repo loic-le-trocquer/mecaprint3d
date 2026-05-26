@@ -44,10 +44,6 @@ export default function Header({ content }) {
   Showroom
 </a>
 
-<a href="#Simulation IA" className="transition hover:text-orange-400">
-  #Simulation IA
-</a>
-
 <a href="#realisations" className="transition hover:text-orange-400">
   Réalisations
 </a>
