@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import Transformations from "./components/showroom/Transformations";
 import WhyMecaPrint from "./components/WhyMecaPrint";
 import ProcessTimeline from "./components/ProcessTimeline";
+import CoverStylAI from "./components/CoverStylAI";
 
 
 
@@ -50,6 +51,8 @@ export default function App() {
         <Technologies content={content} />
 
         <Realisations content={content} />
+
+        <CoverStylAI />
 
         <Transformations content={content} />
         
