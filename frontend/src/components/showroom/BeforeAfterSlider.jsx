@@ -101,7 +101,7 @@ export default function BeforeAfterSlider({
         <img
           src={after}
           alt="Après"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
         />
 
         {/* ================= BEFORE ================= */}
@@ -113,7 +113,7 @@ export default function BeforeAfterSlider({
           <img
             src={before}
             alt="Avant"
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
           />
 
         </div>
