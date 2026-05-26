@@ -1,7 +1,6 @@
 // ================= IMPORTS =================
-import { ArrowRight, Sparkles, Wrench, Layers } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import FadeInSection from "./ui/FadeInSection";
-
 
 // ================= HERO COMPONENT =================
 export default function Hero({ content = {} }) {
@@ -40,7 +39,7 @@ export default function Hero({ content = {} }) {
   // ================= RENDER =================
   return (
 
-      <section className="relative min-h-[88vh] overflow-hidden bg-slate-950 pt-36 text-white">
+    <section className="relative min-h-[88vh] overflow-hidden bg-slate-950 pt-36 text-white">
 
       {/* ================= BACKGROUND ================= */}
       <div className="absolute inset-0">
@@ -100,7 +99,9 @@ export default function Hero({ content = {} }) {
             {title}{" "}
 
             <span className="bg-gradient-to-r from-orange-400 to-amber-200 bg-clip-text text-transparent">
+
               {highlight}
+
             </span>
 
           </h1>
@@ -138,77 +139,10 @@ export default function Hero({ content = {} }) {
             </a>
 
           </div>
-{/* ================= MINI UNIVERS ================= */}
-<div className="mt-12 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-3">
 
-  {/* TECH */}
-  <a
-    href="#univers"
-    className="group rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur transition duration-300 hover:-translate-y-2 hover:border-orange-500/40 hover:bg-white/15 hover:shadow-[0_0_35px_rgba(255,115,0,0.18)]"
-  >
+        </FadeInSection>
 
-    <Wrench
-      className="mb-3 text-orange-400"
-      size={24}
-    />
-
-    <h3 className="font-bold tracking-wide">
-      TECH
-    </h3>
-
-    <p className="mt-2 text-sm leading-relaxed text-slate-300">
-      Impression 3D, scan, CAO et fabrication de pièces techniques.
-    </p>
-
-  </a>
-
-  {/* DESIGN */}
-  <a
-    href="#univers"
-    className="group rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur transition duration-300 hover:-translate-y-2 hover:border-orange-500/40 hover:bg-white/15 hover:shadow-[0_0_35px_rgba(255,115,0,0.18)]"
-  >
-
-    <Layers
-      className="mb-3 text-orange-400"
-      size={24}
-    />
-
-    <h3 className="font-bold tracking-wide">
-      DESIGN
-    </h3>
-
-    <p className="mt-2 text-sm leading-relaxed text-slate-300">
-      Covering, rénovation intérieure, mobilier, cuisines et commerces.
-    </p>
-
-  </a>
-
-  {/* CAMPER */}
-  <a
-    href="#univers"
-    className="group rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur transition duration-300 hover:-translate-y-2 hover:border-orange-500/40 hover:bg-white/15 hover:shadow-[0_0_35px_rgba(255,115,0,0.18)]"
-  >
-
-    <Sparkles
-      className="mb-3 text-orange-400"
-      size={24}
-    />
-
-    <h3 className="font-bold tracking-wide">
-      CAMPER
-    </h3>
-
-    <p className="mt-2 text-sm leading-relaxed text-slate-300">
-      Vans, fourgons et camping-cars personnalisés et rénovés sur mesure.
-    </p>
-
-  </a>
-
-</div>
-
-         </FadeInSection>
-
-        </div>
+      </div>
 
     </section>
 
