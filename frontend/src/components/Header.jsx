@@ -60,7 +60,7 @@ export default function Header({ content }) {
 
         <a
         href="#Simulation IA"
-        className="rounded-full border border-orange-500/30 bg-orange-500/10 px-5 py-3 text-sm font-bold text-orange-300 backdrop-blur-xl transition hover:border-orange-500 hover:bg-orange-500/20"
+        className="hidden rounded-full border border-orange-500/30 bg-orange-500/10 px-5 py-3 text-sm font-bold text-orange-300 backdrop-blur-xl transition hover:border-orange-500 hover:bg-orange-500/20"
         >
         Simulation IA
         </a>
