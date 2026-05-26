@@ -1,4 +1,3 @@
-id="showroom"
 
 // ================= IMPORTS =================
 import FadeInSection from "../ui/FadeInSection";
@@ -12,8 +11,11 @@ export default function Transformations({ content }) {
   if (!transformations.length) return null;
 
   return (
-
-    <section className="relative overflow-hidden border-t border-white/10 bg-zinc-950 px-6 py-28">
+    
+    <section 
+    
+    id="showroom"
+    className="relative overflow-hidden border-t border-white/10 bg-zinc-950 px-6 py-28">
 
           {/* ================= BACKGROUND ================= */}
           <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-orange-500/10 blur-3xl" />

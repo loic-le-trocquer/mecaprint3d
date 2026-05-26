@@ -1,4 +1,4 @@
-id="methodologie"
+
 
 // ================= IMPORTS =================
 import FadeInSection from "./ui/FadeInSection";
@@ -34,7 +34,9 @@ const steps = [
 // ================= COMPONENT =================
 export default function ProcessTimeline() {
   return (
-    <section className="relative overflow-hidden border-t border-white/10 bg-zinc-950 px-6 py-28">
+    <section 
+    id="methodologie"
+    className="relative overflow-hidden border-t border-white/10 bg-zinc-950 px-6 py-28">
       {/* BACKGROUND */}
       <div className="absolute left-1/2 top-1/2 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange-500/10 blur-3xl" />
 
