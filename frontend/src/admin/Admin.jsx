@@ -496,6 +496,7 @@ export default function Admin({ content, setContent }) {
                 label="Localisation"
                 value={draft.brand?.location}
                 onChange={(v) => update("brand.location", v)}
+                textarea
               />
 
               <Field
