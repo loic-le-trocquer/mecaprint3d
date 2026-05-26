@@ -38,6 +38,12 @@ const emptyTransformation = {
   beforeImage: "",
   afterImage: "",
 };
+// ================= PARTNER VIDE =================
+const emptyPartner = {
+  name: "",
+  url: "",
+  logoUrl: "",
+};
 
 // ================= CHAMP TEXTE =================
 function Field({ label, value, onChange, textarea = false, placeholder = "" }) {
@@ -1323,6 +1329,112 @@ export default function Admin({ content, setContent }) {
               />
             ))}
           </Card>
+          
+{/* ================= PARTNERS ================= */}
+<Card title="Partenaires">
+
+  {(draft.partners || []).map((partner, index) => (
+
+    <div
+      key={index}
+      className="mb-6 rounded-2xl border border-white/10 bg-black/30 p-5"
+    >
+
+      {/* LOGO */}
+      <div className="mb-5">
+
+        {partner.logoUrl && (
+          <img
+            src={partner.logoUrl}
+            alt=""
+            className="mb-4 h-16 w-auto object-contain"
+          />
+        )}
+
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) =>
+            uploadImage(
+              e.target.files?.[0],
+              `partners.${index}.logoUrl`
+            )
+          }
+          className="block w-full rounded-xl border border-white/10 bg-black/40 p-3 text-zinc-300"
+        />
+
+      </div>
+
+      {/* INFOS */}
+      <div className="grid gap-4 md:grid-cols-2">
+
+        <Field
+          label="Nom"
+          value={partner.name}
+          onChange={(v) =>
+            updateArrayItem(
+              "partners",
+              index,
+              "name",
+              v
+            )
+          }
+        />
+
+        <Field
+          label="URL"
+          value={partner.url}
+          onChange={(v) =>
+            updateArrayItem(
+              "partners",
+              index,
+              "url",
+              v
+            )
+          }
+        />
+
+      </div>
+
+      {/* DELETE */}
+      <div className="mt-5">
+
+        <button
+          onClick={() =>
+            removeArrayItem(
+              "partners",
+              index
+            )
+          }
+          className="rounded-xl border border-red-500/30 px-4 py-3 font-bold text-red-300 hover:bg-red-500/10"
+        >
+
+          Supprimer
+
+        </button>
+
+      </div>
+
+    </div>
+
+  ))}
+
+  {/* ADD */}
+  <button
+    onClick={() =>
+      addArrayItem(
+        "partners",
+        { ...emptyPartner }
+      )
+    }
+    className="rounded-xl border border-orange-500/40 px-5 py-3 font-bold text-orange-300 hover:bg-orange-500/10"
+  >
+
+    Ajouter un partenaire
+
+  </button>
+
+</Card>
 
           {/* ================= FOOTER ================= */}
           <Card title="Pied de page">
