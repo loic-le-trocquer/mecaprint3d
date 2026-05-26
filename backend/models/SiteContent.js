@@ -115,6 +115,14 @@ transformationsIntro: {
   title: String,
   description: String,
 },
+// ================= PARTNERS =================
+partners: [
+  {
+    name: String,
+    url: String,
+    logoUrl: String,
+  },
+],
 
 transformations: [
   {

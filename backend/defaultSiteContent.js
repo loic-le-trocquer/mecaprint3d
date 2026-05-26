@@ -215,6 +215,20 @@ description:
     },
   ],
 },
+
+partners: [
+  {
+    name: "Cover Styl",
+    url: "https://coverstyl.com/fr/",
+    logoUrl: "",
+  },
+  {
+    name: "EMTC",
+    url: "https://www.emtc-chaudronnerie.com/",
+    logoUrl: "",
+  },
+],
+
   footer: {
     description:
       "Impression 3D sur mesure, réparation de pièces, restauration et personnalisation.",
