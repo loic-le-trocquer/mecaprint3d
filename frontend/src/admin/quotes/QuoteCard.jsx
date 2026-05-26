@@ -1,198 +1,317 @@
+// ================= IMPORTS =================
 import QuoteStatusSelect from "./QuoteStatusSelect";
-import QuoteAdminNotes from "./QuoteAdminNotes";
 import QuoteFiles from "./QuoteFiles";
-import { API_URL } from "../../lib/api";
+import QuoteAdminNotes from "./QuoteAdminNotes";
 import QuoteCommercial from "./QuoteCommercial";
 
+// ================= STATUS COLORS =================
+const statusConfig = {
+  nouveau: {
+    label: "Nouveau",
+    className:
+      "border-cyan-500/30 bg-cyan-500/10 text-cyan-300",
+  },
+
+  en_cours: {
+    label: "En cours",
+    className:
+      "border-orange-500/30 bg-orange-500/10 text-orange-300",
+  },
+
+  valide: {
+    label: "Validé",
+    className:
+      "border-green-500/30 bg-green-500/10 text-green-300",
+  },
+
+  termine: {
+    label: "Terminé",
+    className:
+      "border-zinc-500/30 bg-zinc-500/10 text-zinc-300",
+  },
+
+  archive: {
+    label: "Archivé",
+    className:
+      "border-red-500/20 bg-red-500/10 text-red-300",
+  },
+};
+
+// ================= COMPONENT =================
 export default function QuoteCard({
   quote,
   setQuotes,
   onUpdate,
 }) {
+
+  // ================= STATUS =================
+  const status =
+    statusConfig[quote.status] ||
+    statusConfig.nouveau;
+
+  // ================= FILES =================
+  const hasFiles =
+    quote.files?.length > 0;
+
+  // ================= PROJECT TYPE =================
+  const isCovering =
+    quote.project ===
+    "Covering intérieur";
+
+  const isVan =
+    quote.project ===
+    "Van / camping-car";
+
+  const isPrint =
+    quote.project ===
+    "Impression 3D";
+
+  // ================= RENDER =================
   return (
-    <div className="rounded-3xl border border-white/10 bg-zinc-900/80 p-6">
 
-      {/* TOP */}
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+    <article className="overflow-hidden rounded-[32px] border border-white/10 bg-zinc-900/80 shadow-[0_0_45px_rgba(0,0,0,0.25)] backdrop-blur-xl">
 
-        <div>
+      {/* ================= TOP ================= */}
+      <div className="border-b border-white/10 p-6">
 
-          {/* TITRE + STATUT */}
-          <div className="flex flex-wrap items-center gap-3">
+        {/* HEADER */}
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
 
-            <h2 className="text-2xl font-black">
-              {quote.project}
+          {/* CLIENT */}
+          <div>
+
+            <div className="flex flex-wrap items-center gap-3">
+
+              {/* STATUS */}
+              <div
+                className={`rounded-full border px-4 py-2 text-xs font-black uppercase tracking-[0.25em] ${status.className}`}
+              >
+
+                {status.label}
+
+              </div>
+
+              {/* FILES */}
+              {hasFiles && (
+
+                <div className="rounded-full border border-orange-500/20 bg-orange-500/10 px-4 py-2 text-xs font-black uppercase tracking-[0.25em] text-orange-300">
+
+                  {quote.files.length} fichier(s)
+
+                </div>
+
+              )}
+
+              {/* PROJECT */}
+              <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-black uppercase tracking-[0.25em] text-zinc-300">
+
+                {quote.project}
+
+              </div>
+
+            </div>
+
+            {/* NAME */}
+            <h2 className="mt-5 text-3xl font-black text-white">
+
+              {quote.name}
+
             </h2>
+
+            {/* CONTACT */}
+            <div className="mt-4 flex flex-col gap-2 text-zinc-400">
+
+              <p>
+                📧 {quote.email}
+              </p>
+
+              {quote.phone && (
+                <p>
+                  📞 {quote.phone}
+                </p>
+              )}
+
+            </div>
+
+          </div>
+
+          {/* STATUS SELECT */}
+          <div className="xl:min-w-[240px]">
 
             <QuoteStatusSelect
               quote={quote}
+              setQuotes={setQuotes}
               onUpdate={onUpdate}
             />
-
-          </div>
-          {/* INFOS CLIENT */}
-          <div className="mt-3 space-y-1 text-sm text-zinc-400">
-
-            <p>
-              👤 {quote.name}
-            </p>
-
-            <p>
-              📧 {quote.email}
-            </p>
-
-            {quote.phone && (
-              <p>
-                📱 {quote.phone}
-              </p>
-            )}
-
-            <p>
-              📅{" "}
-              {new Date(
-                quote.createdAt
-              ).toLocaleString()}
-            </p>
 
           </div>
 
         </div>
 
-        {/* INFOS PROJET */}
-        <div className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-zinc-300">
+        {/* ================= INFOS PROJET ================= */}
+        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
 
-          <p>
-            <strong>Quantité :</strong>{" "}
-            {quote.quantity || "—"}
-          </p>
+          {/* QUANTITE */}
+          <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
 
-          <p className="mt-1">
-            <strong>Matière :</strong>{" "}
-            {quote.material || "—"}
-          </p>
+            <p className="text-xs font-black uppercase tracking-[0.25em] text-orange-400">
+              Quantité
+            </p>
 
-{/* ARCHIVE */}
-<button
-  type="button"
+            <p className="mt-3 text-xl font-black text-white">
 
-  onClick={() =>
-    onUpdate(quote._id, {
-      status: quote.status,
-      adminNotes: quote.adminNotes,
-      archived: !quote.archived,
-    })
-  }
+              {quote.quantity || "—"}
 
-  className={`
-    mt-4 w-full rounded-xl border px-4 py-2
-    text-sm font-bold transition
+            </p>
 
-    ${
-      quote.archived
-        ? "border-green-500/40 text-green-300 hover:bg-green-500/10"
-        : "border-white/10 text-zinc-300 hover:border-red-500 hover:text-red-300"
-    }
-  `}
->
-  {quote.archived
-    ? "Désarchiver"
-    : "Archiver"}
-</button>
+          </div>
 
-{/* PDF */}
-<button
-  type="button"
+          {/* MATIERE */}
+          <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
 
-  onClick={async () => {
+            <p className="text-xs font-black uppercase tracking-[0.25em] text-orange-400">
+              Matière
+            </p>
 
-    try {
+            <p className="mt-3 text-xl font-black text-white">
 
-      const token =
-        localStorage.getItem(
-          "mecaprint3d_admin_token"
-        );
+              {quote.material || "À définir"}
 
-      const response = await fetch(
-        `${API_URL}/api/quotes/${quote._id}/pdf`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+            </p>
 
-      const blob =
-        await response.blob();
+          </div>
 
-      const url =
-        window.URL.createObjectURL(blob);
+          {/* DIMENSIONS */}
+          {isPrint && (
 
-      const link =
-        document.createElement("a");
+            <div className="rounded-2xl border border-cyan-500/10 bg-cyan-500/5 p-5">
 
-      link.href = url;
+              <p className="text-xs font-black uppercase tracking-[0.25em] text-cyan-300">
+                Dimensions
+              </p>
 
-      link.download =
-        `devis-${quote._id}.pdf`;
+              <p className="mt-3 text-xl font-black text-white">
 
-      link.click();
+                {quote.dimensions || "—"}
 
-      window.URL.revokeObjectURL(url);
+              </p>
 
-    } catch (error) {
+            </div>
 
-      console.error(error);
+          )}
 
-    }
+          {/* SURFACE */}
+          {(isCovering || isVan) && (
 
-  }}
+            <div className="rounded-2xl border border-orange-500/10 bg-orange-500/5 p-5">
 
-  className="
-    mt-3 block w-full rounded-xl
-    border border-orange-500/30
-    bg-orange-500/10
-    px-4 py-2 text-center
-    text-sm font-bold text-orange-300
-    transition hover:bg-orange-500/20
-  "
->
-  Générer PDF
-</button>
+              <p className="text-xs font-black uppercase tracking-[0.25em] text-orange-300">
+                Surface
+              </p>
+
+              <p className="mt-3 text-xl font-black text-white">
+
+                {quote.surface || "—"}
+
+              </p>
+
+            </div>
+
+          )}
+
+          {/* VEHICULE */}
+          {isVan && (
+
+            <div className="rounded-2xl border border-purple-500/10 bg-purple-500/5 p-5">
+
+              <p className="text-xs font-black uppercase tracking-[0.25em] text-purple-300">
+                Véhicule
+              </p>
+
+              <p className="mt-3 text-xl font-black text-white">
+
+                {quote.vehicle || "—"}
+
+              </p>
+
+            </div>
+
+          )}
+
+          {/* COVER STYL */}
+          {isCovering && (
+
+            <div className="rounded-2xl border border-amber-500/10 bg-amber-500/5 p-5">
+
+              <p className="text-xs font-black uppercase tracking-[0.25em] text-amber-300">
+                COVER STYL
+              </p>
+
+              <p className="mt-3 text-xl font-black text-white">
+
+                {quote.coveringReference || "—"}
+
+              </p>
+
+            </div>
+
+          )}
 
         </div>
 
       </div>
 
-      {/* MESSAGE */}
-      {quote.message && (
-        <div className="mt-6 rounded-2xl border border-white/10 bg-black/30 p-5">
+      {/* ================= MESSAGE ================= */}
+      <div className="border-b border-white/10 p-6">
 
-          <p className="mb-2 text-sm font-bold uppercase tracking-widest text-orange-400">
-            Message client
-          </p>
+        <p className="mb-4 text-xs font-black uppercase tracking-[0.25em] text-orange-400">
 
-          <p className="whitespace-pre-wrap text-zinc-300">
-            {quote.message}
-          </p>
+          Description du projet
+
+        </p>
+
+        <div className="rounded-2xl border border-white/10 bg-black/20 p-6 text-zinc-300">
+
+          {quote.message || "Aucun message."}
 
         </div>
+
+      </div>
+
+      {/* ================= FILES ================= */}
+      {hasFiles && (
+
+        <div className="border-b border-white/10 p-6">
+
+          <QuoteFiles quote={quote} />
+
+        </div>
+
       )}
 
-      {/* NOTES ADMIN */}
-      <QuoteAdminNotes
-        quote={quote}
-        setQuotes={setQuotes}
-        onUpdate={onUpdate}
-      />
-      <QuoteCommercial
-        quote={quote}
-        setQuotes={setQuotes}
-        onUpdate={onUpdate}
-      />
+      {/* ================= COMMERCIAL ================= */}
+      <div className="border-b border-white/10 p-6">
 
-      {/* FICHIERS */}
-      <QuoteFiles files={quote.files} />
+        <QuoteCommercial
+          quote={quote}
+          setQuotes={setQuotes}
+          onUpdate={onUpdate}
+        />
 
-    </div>
+      </div>
+
+      {/* ================= NOTES ================= */}
+      <div className="p-6">
+
+        <QuoteAdminNotes
+          quote={quote}
+          setQuotes={setQuotes}
+          onUpdate={onUpdate}
+        />
+
+      </div>
+
+    </article>
+
   );
 }
