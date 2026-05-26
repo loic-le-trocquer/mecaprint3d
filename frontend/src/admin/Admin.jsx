@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { API_URL, apiFetch } from "../lib/api";
 import { defaultContent } from "../lib/defaultContent";
 import AdminLayout from "./AdminLayout";
-
+import AdminTransformations from "./sections/AdminTransformations";
 
 // ================= OBJETS VIDES =================
 const emptyService = {
@@ -30,6 +30,13 @@ const emptyTechnology = {
   benefits: [],
   mediaUrl: "",
   mediaType: "image",
+};
+// ================= TRANSFORMATION VIDE =================
+const emptyTransformation = {
+  title: "",
+  category: "",
+  beforeImage: "",
+  afterImage: "",
 };
 
 // ================= CHAMP TEXTE =================
@@ -1087,6 +1094,19 @@ export default function Admin({ content, setContent }) {
               Ajouter une technologie
             </button>
           </Card>
+
+{/* ================= TRANSFORMATIONS ================= */}
+
+<AdminTransformations
+  Card={Card}
+  Field={Field}
+  draft={draft}
+  uploadImage={uploadImage}
+  update={update}
+  updateArrayItem={updateArrayItem}
+  addArrayItem={addArrayItem}
+  removeArrayItem={removeArrayItem}
+/>
 
           {/* ================= REALISATIONS ================= */}
           <Card title="Réalisations avec photos / vidéos">
