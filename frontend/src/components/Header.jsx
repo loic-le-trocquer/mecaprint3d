@@ -12,7 +12,7 @@ export default function Header({ content }) {
             <img
               src={brand.logoUrl}
               alt={name}
-              className="h-12 w-auto object-contain"
+              className="h-16 w-auto object-contain transition duration-300 hover:scale-105"
             />
           ) : (
             <div className="text-2xl font-black tracking-tight text-white">

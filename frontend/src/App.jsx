@@ -50,11 +50,11 @@ export default function App() {
 
         <Technologies content={content} />
 
-        <Realisations content={content} />
+        <Transformations content={content} />
 
         <CoverStylAI />
 
-        <Transformations content={content} />
+        <Realisations content={content} />
         
         <QuoteForm content={content} />
       </main>
