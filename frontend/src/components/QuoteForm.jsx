@@ -1,23 +1,26 @@
+// ================= IMPORTS =================
 import { useState } from "react";
 import { API_URL } from "../lib/api";
 
+// ================= COMPONENT =================
 export default function QuoteForm({ content }) {
 
+  // ================= CONTENT =================
   const quoteIntro =
     content?.quoteIntro || {};
 
-  // ================= STATE FORMULAIRE =================
+  // ================= FORM =================
   const [form, setForm] = useState({
 
-    // ================= INFOS CLIENT =================
+    // ================= CLIENT =================
     name: "",
     email: "",
     phone: "",
 
-    // ================= TYPE PROJET =================
+    // ================= PROJECT =================
     project: "",
 
-    // ================= IMPRESSION 3D =================
+    // ================= PRINT =================
     quantity: "",
     material: "",
     dimensions: "",
@@ -26,18 +29,22 @@ export default function QuoteForm({ content }) {
     surface: "",
     coveringReference: "",
 
-    // ================= VEHICULE =================
+    // ================= VEHICLE =================
     vehicle: "",
 
     // ================= MESSAGE =================
     message: "",
 
-    // ================= FICHIERS =================
+    // ================= FILES =================
     files: [],
 
   });
 
-  // ================= CHAMPS TEXTE =================
+  // ================= LOADING =================
+  const [sending, setSending] =
+    useState(false);
+
+  // ================= INPUTS =================
   const handleChange = (e) => {
 
     setForm({
@@ -47,7 +54,7 @@ export default function QuoteForm({ content }) {
 
   };
 
-  // ================= FICHIER =================
+  // ================= FILES =================
   const MAX_FILE_SIZE =
     50 * 1024 * 1024;
 
@@ -73,6 +80,7 @@ export default function QuoteForm({ content }) {
 
     });
 
+    // ================= ALERT =================
     if (rejectedFiles.length) {
 
       alert(
@@ -83,6 +91,7 @@ export default function QuoteForm({ content }) {
 
     }
 
+    // ================= SAVE =================
     setForm((current) => ({
       ...current,
       files: [
@@ -106,25 +115,30 @@ export default function QuoteForm({ content }) {
 
   };
 
-  // ================= ENVOI FORMULAIRE =================
+  // ================= SUBMIT =================
   const handleSubmit = async (e) => {
 
     e.preventDefault();
+
+    // ================= DOUBLE CLICK =================
+    if (sending) return;
+
+    setSending(true);
 
     try {
 
       // ================= FORMDATA =================
       const formData = new FormData();
 
-      // ================= INFOS =================
+      // ================= CLIENT =================
       formData.append("name", form.name);
       formData.append("email", form.email);
       formData.append("phone", form.phone);
 
-      // ================= PROJET =================
+      // ================= PROJECT =================
       formData.append("project", form.project);
 
-      // ================= IMPRESSION 3D =================
+      // ================= PRINT =================
       formData.append("quantity", form.quantity);
       formData.append("material", form.material);
       formData.append(
@@ -143,7 +157,7 @@ export default function QuoteForm({ content }) {
         form.coveringReference
       );
 
-      // ================= VEHICULE =================
+      // ================= VEHICLE =================
       formData.append(
         "vehicle",
         form.vehicle
@@ -155,14 +169,14 @@ export default function QuoteForm({ content }) {
         form.message
       );
 
-      // ================= FICHIERS =================
+      // ================= FILES =================
       form.files.forEach((file) => {
 
         formData.append("files", file);
 
       });
 
-      // ================= ENVOI BACKEND =================
+      // ================= REQUEST =================
       const response = await fetch(
         `${API_URL}/api/quotes`,
         {
@@ -174,7 +188,7 @@ export default function QuoteForm({ content }) {
       const data =
         await response.json();
 
-      // ================= ERREUR =================
+      // ================= ERROR =================
       if (
         !response.ok ||
         !data.success
@@ -187,7 +201,7 @@ export default function QuoteForm({ content }) {
 
       }
 
-      // ================= SUCCES =================
+      // ================= SUCCESS =================
       alert(
         "Votre demande de devis a bien été envoyée."
       );
@@ -224,6 +238,11 @@ export default function QuoteForm({ content }) {
         "Erreur : impossible d’envoyer la demande."
       );
 
+    } finally {
+
+      // ================= STOP LOADING =================
+      setSending(false);
+
     }
 
   };
@@ -238,7 +257,7 @@ export default function QuoteForm({ content }) {
 
       <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2 lg:items-start">
 
-        {/* ================= TEXTE ================= */}
+        {/* ================= LEFT ================= */}
         <div>
 
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-orange-500">
@@ -251,7 +270,7 @@ export default function QuoteForm({ content }) {
           <h2 className="text-4xl font-black leading-tight md:text-6xl">
 
             {quoteIntro.title ||
-              "Expliquez votre besoin, on s’occupe du reste"}
+              "Expliquez votre besoin"}
 
           </h2>
 
@@ -273,7 +292,7 @@ export default function QuoteForm({ content }) {
           {/* ================= GRID ================= */}
           <div className="grid gap-5 md:grid-cols-2">
 
-            {/* NOM */}
+            {/* NAME */}
             <input
               type="text"
               name="name"
@@ -295,7 +314,7 @@ export default function QuoteForm({ content }) {
               className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
             />
 
-            {/* TELEPHONE */}
+            {/* PHONE */}
             <input
               type="tel"
               name="phone"
@@ -305,7 +324,7 @@ export default function QuoteForm({ content }) {
               className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
             />
 
-            {/* QUANTITE */}
+            {/* QUANTITY */}
             <input
               type="number"
               name="quantity"
@@ -316,250 +335,30 @@ export default function QuoteForm({ content }) {
               className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
             />
 
-            {/* TYPE PROJET */}
-            <select
-              name="project"
-              value={form.project}
-              onChange={handleChange}
-              required
-              className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
-            >
-
-              <option value="">
-                Type de projet
-              </option>
-
-              <option>
-                Impression 3D
-              </option>
-
-              <option>
-                Réparation de pièce
-              </option>
-
-              <option>
-                Covering intérieur
-              </option>
-
-              <option>
-                Van / camping-car
-              </option>
-
-              <option>
-                Mobil-home
-              </option>
-
-              <option>
-                Scan 3D / rétroconception
-              </option>
-
-              <option>
-                Prototype / conception
-              </option>
-
-              <option>
-                Autre demande
-              </option>
-
-            </select>
-
-            {/* MATIERE */}
-            <select
-              name="material"
-              value={form.material}
-              onChange={handleChange}
-              className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
-            >
-
-              <option value="">
-                Matière souhaitée
-              </option>
-
-              <option>
-                Je ne sais pas
-              </option>
-
-              <option>
-                PLA
-              </option>
-
-              <option>
-                PETG
-              </option>
-
-              <option>
-                ABS / ASA
-              </option>
-
-              <option>
-                TPU souple
-              </option>
-
-              <option>
-                Carbone / technique
-              </option>
-
-            </select>
-
           </div>
 
-          {/* ================= DYNAMIC FIELDS ================= */}
+          {/* ================= BUTTON ================= */}
+          <button
+            type="submit"
+            disabled={sending}
+            className="mt-6 flex w-full items-center justify-center gap-3 rounded-2xl bg-orange-500 px-6 py-4 text-lg font-black text-white shadow-lg shadow-orange-500/20 transition hover:-translate-y-1 hover:bg-orange-400 disabled:cursor-not-allowed disabled:opacity-70"
+          >
 
-          {/* COVERING */}
-          {form.project ===
-            "Covering intérieur" && (
+            {/* ================= SPINNER ================= */}
+            {sending && (
 
-            <div className="mt-5 grid gap-5 md:grid-cols-2">
-
-              <input
-                type="text"
-                name="surface"
-                placeholder="Surface à rénover"
-                value={form.surface}
-                onChange={handleChange}
-                className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
-              />
-
-              <input
-                type="text"
-                name="coveringReference"
-                placeholder="Référence COVER STYL souhaitée"
-                value={form.coveringReference}
-                onChange={handleChange}
-                className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
-              />
-
-            </div>
-
-          )}
-
-          {/* VAN */}
-          {form.project ===
-            "Van / camping-car" && (
-
-            <div className="mt-5 grid gap-5 md:grid-cols-2">
-
-              <input
-                type="text"
-                name="vehicle"
-                placeholder="Modèle du véhicule"
-                value={form.vehicle}
-                onChange={handleChange}
-                className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
-              />
-
-              <input
-                type="text"
-                name="surface"
-                placeholder="Zone à transformer"
-                value={form.surface}
-                onChange={handleChange}
-                className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
-              />
-
-            </div>
-
-          )}
-
-          {/* IMPRESSION 3D */}
-          {form.project ===
-            "Impression 3D" && (
-
-            <div className="mt-5">
-
-              <input
-                type="text"
-                name="dimensions"
-                placeholder="Dimensions approximatives"
-                value={form.dimensions}
-                onChange={handleChange}
-                className="w-full rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
-              />
-
-            </div>
-
-          )}
-
-          {/* MESSAGE */}
-          <textarea
-            name="message"
-            placeholder="Décrivez votre projet..."
-            rows="7"
-            value={form.message}
-            onChange={handleChange}
-            required
-            className="mt-5 w-full rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
-          />
-
-          {/* FILES */}
-          <label className="mt-5 block cursor-pointer rounded-2xl border border-dashed border-white/15 bg-black/40 p-5 text-center text-sm text-zinc-400 transition hover:border-orange-500">
-
-            <input
-              type="file"
-              multiple
-              name="file"
-              onChange={handleFileChange}
-              accept=".stl,.step,.stp,.obj,.3mf,.jpg,.jpeg,.png,.pdf"
-              className="hidden"
-            />
-
-            {form.files?.length ? (
-
-              <div className="space-y-2">
-
-                {form.files.map((file, index) => (
-
-                  <div
-                    key={`${file.name}-${index}`}
-                    className="flex items-center justify-between rounded-xl border border-white/10 bg-black/40 px-4 py-3"
-                  >
-
-                    <div className="truncate text-left text-sm text-orange-300">
-
-                      {file.name}
-
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        removeFile(index)
-                      }
-                      className="ml-3 rounded-full bg-red-500 px-2 py-1 text-xs font-black text-white hover:bg-red-400"
-                    >
-
-                      X
-
-                    </button>
-
-                  </div>
-
-                ))}
-
-              </div>
-
-            ) : (
-
-              <span>
-                Ajouter un STL, STEP,
-                photo ou PDF
-              </span>
+              <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white" />
 
             )}
 
-          </label>
-
-          {/* BOUTON */}
-          <button
-            type="submit"
-            className="mt-6 w-full rounded-2xl bg-orange-500 px-6 py-4 text-lg font-black text-white shadow-lg shadow-orange-500/20 transition hover:-translate-y-1 hover:bg-orange-400"
-          >
-
-            Envoyer ma demande
+            {/* ================= TEXT ================= */}
+            {sending
+              ? "Envoi de votre demande..."
+              : "Envoyer ma demande"}
 
           </button>
 
-          {/* INFO */}
+          {/* ================= INFO ================= */}
           <p className="mt-4 text-center text-xs text-zinc-500">
 
             Aucun paiement maintenant.
