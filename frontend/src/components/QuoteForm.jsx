@@ -1,15 +1,17 @@
-// ================= IMPORTS =================
 import { useState } from "react";
 import { API_URL } from "../lib/api";
 
-// ================= COMPONENT =================
 export default function QuoteForm({ content }) {
 
-  // ================= CONTENT =================
+  // =====================================================
+  // CONTENT
+  // =====================================================
   const quoteIntro =
     content?.quoteIntro || {};
 
-  // ================= FORM =================
+  // =====================================================
+  // FORM STATE
+  // =====================================================
   const [form, setForm] = useState({
 
     // ================= CLIENT =================
@@ -40,11 +42,15 @@ export default function QuoteForm({ content }) {
 
   });
 
-  // ================= LOADING =================
+  // =====================================================
+  // LOADING
+  // =====================================================
   const [sending, setSending] =
     useState(false);
 
-  // ================= INPUTS =================
+  // =====================================================
+  // INPUTS
+  // =====================================================
   const handleChange = (e) => {
 
     setForm({
@@ -54,7 +60,9 @@ export default function QuoteForm({ content }) {
 
   };
 
-  // ================= FILES =================
+  // =====================================================
+  // FILES
+  // =====================================================
   const MAX_FILE_SIZE =
     50 * 1024 * 1024;
 
@@ -86,7 +94,7 @@ export default function QuoteForm({ content }) {
       alert(
         `Fichier trop volumineux :\n\n${rejectedFiles.join(
           "\n"
-        )}\n\nTaille maximale : 100 Mo par fichier`
+        )}\n\nTaille maximale : 50 Mo par fichier`
       );
 
     }
@@ -102,7 +110,9 @@ export default function QuoteForm({ content }) {
 
   };
 
-  // ================= REMOVE FILE =================
+  // =====================================================
+  // REMOVE FILE
+  // =====================================================
   const removeFile = (fileIndex) => {
 
     setForm((current) => ({
@@ -115,7 +125,9 @@ export default function QuoteForm({ content }) {
 
   };
 
-  // ================= SUBMIT =================
+  // =====================================================
+  // SUBMIT
+  // =====================================================
   const handleSubmit = async (e) => {
 
     e.preventDefault();
@@ -140,7 +152,12 @@ export default function QuoteForm({ content }) {
 
       // ================= PRINT =================
       formData.append("quantity", form.quantity);
-      formData.append("material", form.material);
+
+      formData.append(
+        "material",
+        form.material
+      );
+
       formData.append(
         "dimensions",
         form.dimensions
@@ -247,7 +264,9 @@ export default function QuoteForm({ content }) {
 
   };
 
-  // ================= RENDER =================
+  // =====================================================
+  // RENDER
+  // =====================================================
   return (
 
     <section
@@ -257,7 +276,9 @@ export default function QuoteForm({ content }) {
 
       <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2 lg:items-start">
 
-        {/* ================= LEFT ================= */}
+        {/* =====================================================
+            LEFT
+        ===================================================== */}
         <div>
 
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-orange-500">
@@ -270,7 +291,7 @@ export default function QuoteForm({ content }) {
           <h2 className="text-4xl font-black leading-tight md:text-6xl">
 
             {quoteIntro.title ||
-              "Expliquez votre besoin"}
+              "Expliquez votre besoin, on s’occupe du reste"}
 
           </h2>
 
@@ -283,7 +304,9 @@ export default function QuoteForm({ content }) {
 
         </div>
 
-        {/* ================= FORM ================= */}
+        {/* =====================================================
+            FORM
+        ===================================================== */}
         <form
           onSubmit={handleSubmit}
           className="rounded-3xl border border-white/10 bg-zinc-900/90 p-6 shadow-2xl shadow-black/40 md:p-8"
@@ -335,9 +358,244 @@ export default function QuoteForm({ content }) {
               className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
             />
 
+            {/* TYPE PROJET */}
+            <select
+              name="project"
+              value={form.project}
+              onChange={handleChange}
+              required
+              className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+            >
+
+              <option value="">
+                Type de projet
+              </option>
+
+              <option>
+                Impression 3D
+              </option>
+
+              <option>
+                Réparation de pièce
+              </option>
+
+              <option>
+                Covering intérieur
+              </option>
+
+              <option>
+                Van / camping-car
+              </option>
+
+              <option>
+                Mobil-home
+              </option>
+
+              <option>
+                Scan 3D / rétroconception
+              </option>
+
+              <option>
+                Prototype / conception
+              </option>
+
+              <option>
+                Autre demande
+              </option>
+
+            </select>
+
+            {/* MATERIAL */}
+            <select
+              name="material"
+              value={form.material}
+              onChange={handleChange}
+              className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+            >
+
+              <option value="">
+                Matière souhaitée
+              </option>
+
+              <option>
+                Je ne sais pas
+              </option>
+
+              <option>
+                PLA
+              </option>
+
+              <option>
+                PETG
+              </option>
+
+              <option>
+                ABS / ASA
+              </option>
+
+              <option>
+                TPU souple
+              </option>
+
+              <option>
+                Carbone / technique
+              </option>
+
+            </select>
+
           </div>
 
-          {/* ================= BUTTON ================= */}
+          {/* =====================================================
+              DYNAMIC FIELDS
+          ===================================================== */}
+
+          {/* ================= COVERING ================= */}
+          {form.project ===
+            "Covering intérieur" && (
+
+            <div className="mt-5 grid gap-5 md:grid-cols-2">
+
+              <input
+                type="text"
+                name="surface"
+                placeholder="Surface à rénover"
+                value={form.surface}
+                onChange={handleChange}
+                className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+              />
+
+              <input
+                type="text"
+                name="coveringReference"
+                placeholder="Référence COVER STYL souhaitée"
+                value={form.coveringReference}
+                onChange={handleChange}
+                className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+              />
+
+            </div>
+
+          )}
+
+          {/* ================= VAN ================= */}
+          {form.project ===
+            "Van / camping-car" && (
+
+            <div className="mt-5 grid gap-5 md:grid-cols-2">
+
+              <input
+                type="text"
+                name="vehicle"
+                placeholder="Modèle du véhicule"
+                value={form.vehicle}
+                onChange={handleChange}
+                className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+              />
+
+              <input
+                type="text"
+                name="surface"
+                placeholder="Zone à transformer"
+                value={form.surface}
+                onChange={handleChange}
+                className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+              />
+
+            </div>
+
+          )}
+
+          {/* ================= PRINT ================= */}
+          {form.project ===
+            "Impression 3D" && (
+
+            <div className="mt-5">
+
+              <input
+                type="text"
+                name="dimensions"
+                placeholder="Dimensions approximatives"
+                value={form.dimensions}
+                onChange={handleChange}
+                className="w-full rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+              />
+
+            </div>
+
+          )}
+
+          {/* ================= MESSAGE ================= */}
+          <textarea
+            name="message"
+            placeholder="Décrivez votre projet..."
+            rows="7"
+            value={form.message}
+            onChange={handleChange}
+            required
+            className="mt-5 w-full rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+          />
+
+          {/* ================= FILES ================= */}
+          <label className="mt-5 block cursor-pointer rounded-2xl border border-dashed border-white/15 bg-black/40 p-5 text-center text-sm text-zinc-400 transition hover:border-orange-500">
+
+            <input
+              type="file"
+              multiple
+              name="file"
+              onChange={handleFileChange}
+              accept=".stl,.step,.stp,.obj,.3mf,.jpg,.jpeg,.png,.pdf"
+              className="hidden"
+            />
+
+            {form.files?.length ? (
+
+              <div className="space-y-2">
+
+                {form.files.map((file, index) => (
+
+                  <div
+                    key={`${file.name}-${index}`}
+                    className="flex items-center justify-between rounded-xl border border-white/10 bg-black/40 px-4 py-3"
+                  >
+
+                    <div className="truncate text-left text-sm text-orange-300">
+
+                      {file.name}
+
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        removeFile(index)
+                      }
+                      className="ml-3 rounded-full bg-red-500 px-2 py-1 text-xs font-black text-white hover:bg-red-400"
+                    >
+
+                      X
+
+                    </button>
+
+                  </div>
+
+                ))}
+
+              </div>
+
+            ) : (
+
+              <span>
+                Ajouter un STL, STEP,
+                photo ou PDF
+              </span>
+
+            )}
+
+          </label>
+
+          {/* =====================================================
+              BUTTON
+          ===================================================== */}
           <button
             type="submit"
             disabled={sending}
@@ -358,7 +616,9 @@ export default function QuoteForm({ content }) {
 
           </button>
 
-          {/* ================= INFO ================= */}
+          {/* =====================================================
+              INFO
+          ===================================================== */}
           <p className="mt-4 text-center text-xs text-zinc-500">
 
             Aucun paiement maintenant.
