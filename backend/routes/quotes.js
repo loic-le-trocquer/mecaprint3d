@@ -1,262 +1,153 @@
 // =====================================================
-// 📧 EMAIL CLIENT
+// ✏️ MISE À JOUR D’UN DEVIS
+// PUT /api/quotes/:id
 // =====================================================
-await sendEmail({
+router.put("/:id", requireAdmin, async (req, res) => {
 
-  to: quote.email,
+  try {
 
-  subject: "Votre demande de devis MecaPrint3D",
+    // ================= FIND CURRENT =================
+    const existingQuote =
+      await Quote.findById(req.params.id);
 
-  html: `
-  <div style="margin:0;padding:0;background:#f4f4f5;font-family:Arial,sans-serif;">
+    if (!existingQuote) {
 
-    <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 0;">
-      <tr>
-        <td align="center">
+      return res.status(404).json({
+        success: false,
+        error: "Devis introuvable",
+      });
 
-          <table
-            width="620"
-            cellpadding="0"
-            cellspacing="0"
-            style="
-              background:#18181b;
-              border-radius:24px;
-              overflow:hidden;
-              border:1px solid #27272a;
-            "
-          >
+    }
 
-            <!-- ================= HEADER ================= -->
-            <tr>
-              <td
-                style="
-                  padding:40px;
-                  background:linear-gradient(135deg,#f97316,#ea580c);
-                "
-              >
+    // ================= OLD STATUS =================
+    const oldStatus =
+      existingQuote.status;
+
+    // ================= UPDATE =================
+    existingQuote.status =
+      req.body.status;
+
+    existingQuote.adminNotes =
+      req.body.adminNotes;
+
+    existingQuote.archived =
+      req.body.archived;
+
+    existingQuote.quoteLines =
+      req.body.quoteLines;
+
+    existingQuote.quoteAmount =
+      req.body.quoteAmount;
+
+    existingQuote.quoteDelay =
+      req.body.quoteDelay;
+
+    existingQuote.quoteComment =
+      req.body.quoteComment;
+
+    await existingQuote.save();
+
+    // =====================================================
+    // 📧 EMAIL CHANGEMENT STATUT
+    // =====================================================
+    if (
+      req.body.status &&
+      req.body.status !== oldStatus
+    ) {
+
+      // ================= LABELS =================
+      const statusLabels = {
+
+        nouveau:
+          "Nouveau devis reçu",
+
+        en_cours:
+          "Projet en cours d’étude",
+
+        valide:
+          "Devis validé",
+
+        termine:
+          "Projet terminé",
+
+        archive:
+          "Projet archivé",
+
+      };
+
+      // ================= MESSAGES =================
+      const statusMessages = {
+
+        nouveau:
+          "Votre demande a bien été enregistrée.",
+
+        en_cours:
+          "Votre projet est actuellement en cours d’étude par notre atelier.",
+
+        valide:
+          "Votre devis a été validé. Nous revenons rapidement vers vous pour la suite du projet.",
+
+        termine:
+          "Votre projet est terminé.",
+
+        archive:
+          "Votre demande a été archivée.",
+
+      };
+
+      // ================= EMAIL =================
+      await sendEmail({
+
+        to: existingQuote.email,
+
+        subject: `Mise à jour de votre projet - ${statusLabels[existingQuote.status]}`,
+
+        html: `
+          <div style="font-family:Arial,sans-serif;background:#f4f4f5;padding:40px;">
+
+            <div style="max-width:620px;margin:auto;background:#18181b;border-radius:24px;overflow:hidden;border:1px solid #27272a;">
+
+              <!-- HEADER -->
+              <div style="padding:40px;background:linear-gradient(135deg,#f97316,#ea580c);">
 
                 <img
                   src="https://mecaprint3d.fr/logo-mail.jpg"
+                  width="280"
                   alt="MecaPrint3D"
-                  width="320"
-                  style="
-                    display:block;
-                    border:0;
-                    outline:none;
-                    text-decoration:none;
-                  "
                 />
 
-                <p
-                  style="
-                    margin:24px 0 0 0;
-                    color:white;
-                    font-size:16px;
-                    line-height:1.6;
-                  "
-                >
-                  Votre demande de devis a bien été reçue.
+              </div>
+
+              <!-- CONTENT -->
+              <div style="padding:40px;color:#e4e4e7;">
+
+                <h1 style="margin-top:0;color:white;">
+
+                  Bonjour ${existingQuote.name},
+
+                </h1>
+
+                <p style="font-size:16px;line-height:1.7;color:#d4d4d8;">
+
+                  ${statusMessages[existingQuote.status]}
+
                 </p>
 
-              </td>
-            </tr>
+                <div style="margin-top:30px;padding:24px;background:#09090b;border-radius:18px;border:1px solid #27272a;">
 
-            <!-- ================= CONTENT ================= -->
-            <tr>
-              <td style="padding:40px;color:#e4e4e7;">
-
-                <p style="font-size:16px;line-height:1.7;">
-                  Bonjour <strong>${quote.name}</strong>,
-                </p>
-
-                <p
-                  style="
-                    font-size:16px;
-                    line-height:1.7;
-                    color:#d4d4d8;
-                  "
-                >
-                  Merci pour votre demande de devis.
-                  Votre projet est maintenant en cours
-                  d’analyse par notre atelier.
-                </p>
-
-                <!-- ================= RECAP ================= -->
-                <div
-                  style="
-                    margin-top:30px;
-                    padding:24px;
-                    border-radius:18px;
-                    background:#09090b;
-                    border:1px solid #27272a;
-                  "
-                >
-
-                  <h2
-                    style="
-                      margin-top:0;
-                      color:#f97316;
-                      font-size:20px;
-                    "
-                  >
-                    Récapitulatif du projet
-                  </h2>
-
-                  {/* ================= TYPE PROJET ================= */}
                   <p>
                     <strong>Projet :</strong>
-                    ${quote.project}
+                    ${existingQuote.project}
                   </p>
 
-                  {/* ================= QUANTITE ================= */}
                   <p>
-                    <strong>Quantité :</strong>
-                    ${quote.quantity || "Non précisée"}
-                  </p>
-
-                  {/* ================= MATIERE ================= */}
-                  <p>
-                    <strong>Matière :</strong>
-                    ${quote.material || "À définir"}
-                  </p>
-
-                  {/* ================= DIMENSIONS ================= */}
-                  ${
-                    quote.dimensions
-                      ? `
-                        <p>
-                          <strong>Dimensions :</strong>
-                          ${quote.dimensions}
-                        </p>
-                      `
-                      : ""
-                  }
-
-                  {/* ================= SURFACE ================= */}
-                  ${
-                    quote.surface
-                      ? `
-                        <p>
-                          <strong>Surface :</strong>
-                          ${quote.surface}
-                        </p>
-                      `
-                      : ""
-                  }
-
-                  {/* ================= VEHICULE ================= */}
-                  ${
-                    quote.vehicle
-                      ? `
-                        <p>
-                          <strong>Véhicule :</strong>
-                          ${quote.vehicle}
-                        </p>
-                      `
-                      : ""
-                  }
-
-                  {/* ================= COVER STYL ================= */}
-                  ${
-                    quote.coveringReference
-                      ? `
-                        <p>
-                          <strong>Référence COVER STYL :</strong>
-                          ${quote.coveringReference}
-                        </p>
-                      `
-                      : ""
-                  }
-
-                  {/* ================= MESSAGE ================= */}
-                  <p>
-                    <strong>Message :</strong><br/>
-                    ${quote.message || "Aucun message"}
+                    <strong>Statut :</strong>
+                    ${statusLabels[existingQuote.status]}
                   </p>
 
                 </div>
 
-                <!-- ================= FICHIERS ================= -->
-                <div style="margin-top:30px;">
-
-                  <h2 style="color:#f97316;font-size:20px;">
-                    Fichiers transmis
-                  </h2>
-
-                  ${
-                    quote.files?.length
-                      ? `
-                        <ul style="padding-left:20px;color:#d4d4d8;">
-
-                          ${quote.files
-                            .map(
-                              (file) => `
-                                <li style="margin-bottom:10px;">
-
-                                  <a
-                                    href="${file.path}"
-                                    style="
-                                      color:#fb923c;
-                                      text-decoration:none;
-                                    "
-                                  >
-                                    ${file.originalName}
-                                  </a>
-
-                                </li>
-                              `
-                            )
-                            .join("")}
-
-                        </ul>
-                      `
-                      : `
-                        <p style="color:#a1a1aa;">
-                          Aucun fichier joint.
-                        </p>
-                      `
-                  }
-
-                </div>
-
-                <!-- ================= INFOS ================= -->
-                <div
-                  style="
-                    margin-top:35px;
-                    padding:22px;
-                    border-radius:18px;
-                    background:#27272a;
-                  "
-                >
-
-                  <p
-                    style="
-                      margin:0;
-                      font-size:15px;
-                      line-height:1.7;
-                      color:#fafafa;
-                    "
-                  >
-                    Nous revenons vers vous rapidement avec :
-                  </p>
-
-                  <ul
-                    style="
-                      margin-top:14px;
-                      color:#d4d4d8;
-                      line-height:1.8;
-                    "
-                  >
-                    <li>Analyse technique</li>
-                    <li>Choix matériau / technologie</li>
-                    <li>Délai estimé</li>
-                    <li>Tarification</li>
-                  </ul>
-
-                </div>
-
-                <!-- ================= CTA ================= -->
-                <div style="margin-top:40px;text-align:center;">
+                <div style="margin-top:35px;text-align:center;">
 
                   <a
                     href="https://mecaprint3d.fr"
@@ -268,177 +159,44 @@ await sendEmail({
                       padding:16px 28px;
                       border-radius:14px;
                       font-weight:800;
-                      font-size:15px;
                     "
                   >
-                    Accéder au site MECAPRINT3D
+
+                    Accéder au site
+
                   </a>
 
                 </div>
 
-              </td>
-            </tr>
+              </div>
 
-            <!-- ================= FOOTER ================= -->
-            <tr>
-              <td
-                style="
-                  padding:28px;
-                  background:#09090b;
-                  border-top:1px solid #27272a;
-                "
-              >
+            </div>
 
-                <p
-                  style="
-                    margin:0;
-                    color:#71717a;
-                    font-size:13px;
-                    text-align:center;
-                    line-height:1.7;
-                  "
-                >
-                  MECAPRINT3D — Impression 3D • Prototypage • Réparation • Conception
-                </p>
+          </div>
+        `,
 
-              </td>
-            </tr>
+      });
 
-          </table>
-
-        </td>
-      </tr>
-    </table>
-
-  </div>
-  `,
-});
-
-// =====================================================
-// 📧 EMAIL ADMIN
-// =====================================================
-await sendEmail({
-
-  to: process.env.ADMIN_EMAIL,
-
-  subject: `Nouvelle demande - ${quote.project}`,
-
-  html: `
-
-    <h1>Nouvelle demande de devis</h1>
-
-    {/* ================= CLIENT ================= */}
-    <p>
-      <strong>Nom :</strong>
-      ${quote.name}
-    </p>
-
-    <p>
-      <strong>Email :</strong>
-      ${quote.email}
-    </p>
-
-    <p>
-      <strong>Téléphone :</strong>
-      ${quote.phone || "Non renseigné"}
-    </p>
-
-    {/* ================= PROJET ================= */}
-    <p>
-      <strong>Projet :</strong>
-      ${quote.project}
-    </p>
-
-    {/* ================= QUANTITE ================= */}
-    <p>
-      <strong>Quantité :</strong>
-      ${quote.quantity || "Non précisée"}
-    </p>
-
-    {/* ================= MATIERE ================= */}
-    <p>
-      <strong>Matière :</strong>
-      ${quote.material || "À définir"}
-    </p>
-
-    {/* ================= DIMENSIONS ================= */}
-    ${
-      quote.dimensions
-        ? `
-          <p>
-            <strong>Dimensions :</strong>
-            ${quote.dimensions}
-          </p>
-        `
-        : ""
     }
 
-    {/* ================= SURFACE ================= */}
-    ${
-      quote.surface
-        ? `
-          <p>
-            <strong>Surface :</strong>
-            ${quote.surface}
-          </p>
-        `
-        : ""
-    }
+    // ================= RESPONSE =================
+    res.json({
+      success: true,
+      quote: existingQuote,
+    });
 
-    {/* ================= VEHICULE ================= */}
-    ${
-      quote.vehicle
-        ? `
-          <p>
-            <strong>Véhicule :</strong>
-            ${quote.vehicle}
-          </p>
-        `
-        : ""
-    }
+  } catch (error) {
 
-    {/* ================= COVER STYL ================= */}
-    ${
-      quote.coveringReference
-        ? `
-          <p>
-            <strong>Référence COVER STYL :</strong>
-            ${quote.coveringReference}
-          </p>
-        `
-        : ""
-    }
+    console.error(
+      "❌ Erreur mise à jour devis :",
+      error
+    );
 
-    {/* ================= MESSAGE ================= */}
-    <p>
-      <strong>Message :</strong><br/>
-      ${quote.message}
-    </p>
+    res.status(500).json({
+      success: false,
+      error: "Erreur serveur",
+    });
 
-    {/* ================= FICHIERS ================= */}
-    <p>
-      <strong>Fichiers :</strong>
-    </p>
+  }
 
-    <ul>
-
-      ${
-        quote.files?.length
-          ? quote.files
-              .map(
-                (file) => `
-                  <li>
-                    <a href="${file.path}">
-                      ${file.originalName}
-                    </a>
-                  </li>
-                `
-              )
-              .join("")
-          : "<li>Aucun fichier</li>"
-      }
-
-    </ul>
-
-  `,
 });
