@@ -218,12 +218,12 @@ export default function AdminQuotes() {
 
       {/* FILTERS STATUS EXISTANTS */}
       <QuoteFilters
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        showArchived={showArchived}
-        setShowArchived={setShowArchived}
-      />
-
+  statusFilter={statusFilter}
+  setStatusFilter={setStatusFilter}
+  showArchived={showArchived}
+  setShowArchived={setShowArchived}
+  quotes={quotes}
+/>
       {/* SEARCH + PROJECT + SORT */}
       <div className="mb-8 grid gap-4 rounded-[28px] border border-white/10 bg-zinc-900/70 p-5 backdrop-blur-xl lg:grid-cols-[1fr_260px_220px]">
         <input
