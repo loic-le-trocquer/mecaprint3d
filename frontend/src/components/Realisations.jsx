@@ -125,17 +125,24 @@ return (
 
             {hasRealisations ? (
 
-              filteredRealisations.map((item, index) => (
+            filteredRealisations.map((item, index) => (
 
-                <RealisationCard
-                  key={`${item.title}-${index}`}
-                  item={item}
-                  onOpen={(selectedItem) =>
-                    setSelectedProject(selectedItem)
-                  }
-                />
+  <div
+    key={`${item.title}-${index}`}
+    className="animate-[cardReveal_700ms_ease-out_both]"
+    style={{
+      animationDelay: `${index * 120}ms`,
+    }}
+  >
+    <RealisationCard
+      item={item}
+      onOpen={(selectedItem) =>
+        setSelectedProject(selectedItem)
+      }
+    />
+  </div>
 
-              ))
+))
 
             ) : (
 
@@ -152,6 +159,22 @@ return (
       </div>
 
     </section>
+  
+    <style>{`
+  @keyframes cardReveal {
+    from {
+      opacity: 0;
+      transform: translateY(40px) scale(0.96);
+      filter: blur(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+`}</style>       
+  
   </>
 );
 }
