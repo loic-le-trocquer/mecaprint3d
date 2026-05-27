@@ -1,186 +1,209 @@
 // ================= IMPORTS =================
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import normalizeMedia from "./normalizeMedia";
+import MediaPreview from "./MediaPreview";
 
-// ================= ANIMATION =================
-import FadeInSection from "./ui/FadeInSection";
+// ================= PROJECT MODAL =================
+export default function ProjectModal({ project, onClose }) {
+  const [activeIndex, setActiveIndex] = useState(0);
 
-// ================= REALISATIONS =================
-import RealisationCard from "./realisations/RealisationCard";
-import RealisationsLightbox from "./realisations/RealisationsLightbox";
-import ProjectModal from "./realisations/ProjectModal";
+  const mediaList = useMemo(() => {
+    return project ? normalizeMedia(project) : [];
+  }, [project]);
 
-// ================= REALISATIONS COMPONENT =================
-export default function Realisations({ content }) {
+  const activeMedia = mediaList[activeIndex];
 
-  // ================= DATA =================
-  const intro = content?.realisationsIntro || {};
-  const realisations = content?.realisations || [];
+  useEffect(() => {
+    if (!project) return;
 
-  // ================= STATES =================
-  const [lightbox, setLightbox] = useState(null);
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") onClose();
 
-  const [selectedProject, setSelectedProject] =
-    useState(null);
-
-  // ================= FILTRE =================
-  const [selectedCategory, setSelectedCategory] =
-    useState("TOUT");
-
-  // ================= CATEGORIES =================
-  const categories = useMemo(() => {
-
-    const allCategories =
-      realisations
-        .map((item) => item.category)
-        .filter(Boolean);
-
-    return ["TOUT", ...new Set(allCategories)];
-
-  }, [realisations]);
-
-  // ================= FILTERED REALISATIONS =================
-  const filteredRealisations =
-    selectedCategory === "TOUT"
-      ? realisations
-      : realisations.filter(
-          (item) => item.category === selectedCategory
+      if (event.key === "ArrowRight") {
+        setActiveIndex((prev) =>
+          prev + 1 >= mediaList.length ? 0 : prev + 1
         );
+      }
 
-  // ================= EMPTY =================
-  const hasRealisations =
-    filteredRealisations.length > 0;
+      if (event.key === "ArrowLeft") {
+        setActiveIndex((prev) =>
+          prev - 1 < 0 ? mediaList.length - 1 : prev - 1
+        );
+      }
+    };
 
-  // ================= RENDER =================
+    window.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [project, mediaList.length, onClose]);
+
+  if (!project) return null;
+
+  const previousMedia = () => {
+    setActiveIndex((prev) =>
+      prev - 1 < 0 ? mediaList.length - 1 : prev - 1
+    );
+  };
+
+  const nextMedia = () => {
+    setActiveIndex((prev) =>
+      prev + 1 >= mediaList.length ? 0 : prev + 1
+    );
+  };
+
   return (
-
-    <>
-    
-      {/* ================= PROJECT MODAL ================= */}
-      <ProjectModal
-        project={selectedProject}
-        onClose={() => setSelectedProject(null)}
+    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/85 p-4 backdrop-blur-2xl">
+      {/* CLOSE BACKDROP */}
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute inset-0 cursor-default"
+        aria-label="Fermer"
       />
 
-      {/* ================= LIGHTBOX ================= */}
-      <RealisationsLightbox
-        lightbox={lightbox}
-        onClose={() => setLightbox(null)}
-      />
+      {/* MODAL */}
+      <div className="relative z-10 grid max-h-[92vh] w-full max-w-7xl overflow-hidden rounded-[34px] border border-white/10 bg-zinc-950 shadow-[0_0_80px_rgba(0,0,0,0.65)] lg:grid-cols-[1.4fr_0.8fr]">
+        {/* MEDIA */}
+        <div className="relative flex min-h-[420px] items-center justify-center bg-black lg:min-h-[720px]">
+          {activeMedia && (
+            <MediaPreview
+              key={activeMedia.url}
+              media={activeMedia}
+              title={project.title}
+              className="h-full max-h-[720px] w-full object-contain animate-[modalFade_500ms_ease-out]"
+            />
+          )}
 
-      {/* ================= SECTION ================= */}
-      <section
-        id="realisations"
-        className="relative overflow-hidden border-t border-white/10 bg-black px-6 py-24"
-      >
+          {/* NAV */}
+          {mediaList.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={previousMedia}
+                className="absolute left-5 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/60 text-2xl font-black text-white backdrop-blur-xl transition hover:border-orange-500 hover:bg-orange-500"
+              >
+                ‹
+              </button>
 
-        {/* ================= BACKGROUND GLOW ================= */}
-        <div className="absolute left-0 top-0 h-[450px] w-[450px] rounded-full bg-orange-500/10 blur-3xl" />
+              <button
+                type="button"
+                onClick={nextMedia}
+                className="absolute right-5 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/60 text-2xl font-black text-white backdrop-blur-xl transition hover:border-orange-500 hover:bg-orange-500"
+              >
+                ›
+              </button>
+            </>
+          )}
 
-        {/* ================= CONTAINER ================= */}
-        <div className="relative z-10 mx-auto max-w-7xl">
-
-          <FadeInSection>
-
-            {/* ================= INTRO ================= */}
-            <div className="mb-16 max-w-3xl">
-
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-orange-500">
-
-                {intro.eyebrow || "Réalisations"}
-
-              </p>
-
-              <h2 className="text-4xl font-black leading-tight text-white md:text-6xl">
-
-                {intro.title || "Des projets concrets, utiles et sur mesure"}
-
-              </h2>
-
-              <p className="mt-6 text-lg leading-relaxed text-zinc-300">
-
-                {intro.description ||
-                  "Découvrez quelques exemples de réalisations MecaPrint3D : fabrication, rénovation, covering et personnalisation."}
-
-              </p>
-
+          {/* COUNTER */}
+          {mediaList.length > 1 && (
+            <div className="absolute bottom-5 left-5 rounded-full border border-white/10 bg-black/70 px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-white backdrop-blur-xl">
+              {activeIndex + 1} / {mediaList.length}
             </div>
-
-            {/* ================= FILTERS ================= */}
-            {categories.length > 1 && (
-
-              <div className="mb-12 flex flex-wrap gap-3">
-
-                {categories.map((category) => (
-
-                  <button
-                    key={category}
-                    onClick={() =>
-                      setSelectedCategory(category)
-                    }
-                    className={`rounded-full border px-5 py-3 text-sm font-black uppercase tracking-[0.2em] transition duration-300 ${
-                      selectedCategory === category
-                        ? "border-orange-500 bg-orange-500 text-white shadow-[0_0_25px_rgba(249,115,22,0.25)]"
-                        : "border-white/10 bg-white/5 text-zinc-300 hover:border-orange-500/40 hover:text-white"
-                    }`}
-                  >
-
-                    {category}
-
-                  </button>
-
-                ))}
-
-              </div>
-
-            )}
-
-            {/* ================= GRID ================= */}
-            <div className="columns-1 gap-8 space-y-8 md:columns-2 xl:columns-3">
-
-              {hasRealisations ? (
-
-                filteredRealisations.map((item, index) => (
-
-                  <div
-                    key={`${item.title}-${index}`}
-                    onDoubleClick={() =>
-                      setSelectedProject(item)
-                    }
-                  >
-
-                    <RealisationCard
-                      item={item}
-                      onOpen={(selectedItem, selectedIndex) =>
-                        setLightbox({
-                          item: selectedItem,
-                          index: selectedIndex,
-                        })
-                      }
-                    />
-
-                  </div>
-
-                ))
-
-              ) : (
-
-                <div className="rounded-3xl border border-dashed border-white/10 bg-white/5 p-10 text-center text-zinc-400">
-
-                  Aucune réalisation disponible pour cette catégorie.
-
-                </div>
-
-              )}
-
-            </div>
-
-          </FadeInSection>
-
+          )}
         </div>
 
-      </section>
+        {/* CONTENT */}
+        <div className="flex flex-col overflow-y-auto border-l border-white/10 p-6">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.3em] text-orange-400">
+                {project.category || "Réalisation"}
+              </p>
 
-    </>
+              <h3 className="mt-3 text-3xl font-black text-white">
+                {project.title}
+              </h3>
+            </div>
 
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xl font-black text-white transition hover:border-red-500 hover:bg-red-500"
+            >
+              ×
+            </button>
+          </div>
+
+          <p className="mt-6 leading-relaxed text-zinc-300">
+            {project.description || "Aucune description disponible."}
+          </p>
+
+          {/* THUMBNAILS */}
+          {mediaList.length > 1 && (
+            <div className="mt-8">
+              <p className="mb-4 text-xs font-black uppercase tracking-[0.25em] text-zinc-500">
+                Médias du projet
+              </p>
+
+              <div className="grid grid-cols-3 gap-3">
+                {mediaList.map((media, index) => (
+                  <button
+                    key={`${media.url}-${index}`}
+                    type="button"
+                    onClick={() => setActiveIndex(index)}
+                    className={`relative h-24 overflow-hidden rounded-2xl border transition ${
+                      activeIndex === index
+                        ? "border-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.25)]"
+                        : "border-white/10 hover:border-orange-500/50"
+                    }`}
+                  >
+                    {media.type === "video" ? (
+                      <>
+                        <video
+                          src={media.url}
+                          className="h-full w-full object-cover"
+                          muted
+                          loop
+                          playsInline
+                        />
+
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white">
+                          ▶
+                        </div>
+                      </>
+                    ) : (
+                      <img
+                        src={media.url}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="mt-auto pt-8">
+            <div className="rounded-2xl border border-orange-500/10 bg-orange-500/5 p-5">
+              <p className="text-xs font-black uppercase tracking-[0.25em] text-orange-300">
+                Projet MecaPrint3D
+              </p>
+              <p className="mt-2 text-sm text-zinc-300">
+                Fabrication, personnalisation, rénovation ou covering selon le besoin client.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes modalFade {
+          from {
+            opacity: 0;
+            transform: scale(0.98);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+      `}</style>
+    </div>
   );
 }
