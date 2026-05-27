@@ -1,5 +1,9 @@
 // ================= IMPORTS =================
-import { useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import normalizeMedia from "./normalizeMedia";
 import MediaPreview from "./MediaPreview";
@@ -18,12 +22,56 @@ export default function RealisationCard({
   const [activeIndex, setActiveIndex] =
     useState(0);
 
-  const activeMedia = mediaList[activeIndex];
+  // ================= HOVER STATE =================
+  const [isHovered, setIsHovered] =
+    useState(false);
+
+  // ================= ACTIVE MEDIA =================
+  const activeMedia =
+    mediaList[activeIndex];
+
+  // =====================================================
+  // AUTO SLIDER
+  // Défile automatiquement uniquement sur les images
+  // Les vidéos restent fixes
+  // Pause au survol
+  // =====================================================
+  useEffect(() => {
+
+    // Pas assez de médias
+    if (mediaList.length <= 1) return;
+
+    // Pause hover
+    if (isHovered) return;
+
+    const interval = setInterval(() => {
+
+      setActiveIndex((prev) => {
+
+        let next = prev + 1;
+
+        if (next >= mediaList.length) {
+          next = 0;
+        }
+
+        return next;
+
+      });
+
+    }, 3000);
+
+    return () => clearInterval(interval);
+
+  }, [mediaList, isHovered]);
 
   // ================= RENDER =================
   return (
 
-    <article className="break-inside-avoid group relative mb-8 overflow-hidden rounded-[32px] border border-white/10 bg-zinc-900/80 shadow-2xl shadow-black/40 backdrop-blur-xl transition duration-500 hover:-translate-y-2 hover:border-orange-500/40 hover:shadow-[0_0_50px_rgba(249,115,22,0.15)]">
+    <article
+      className="break-inside-avoid group relative mb-8 overflow-hidden rounded-[32px] border border-white/10 bg-zinc-900/80 shadow-2xl shadow-black/40 backdrop-blur-xl transition duration-500 hover:-translate-y-2 hover:border-orange-500/40 hover:shadow-[0_0_50px_rgba(249,115,22,0.15)]"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
 
       {/* ================= MAIN MEDIA ================= */}
       {activeMedia && (
@@ -94,6 +142,28 @@ export default function RealisationCard({
             </div>
 
           </div>
+
+          {/* ================= SLIDER DOTS ================= */}
+          {mediaList.length > 1 && (
+
+            <div className="absolute bottom-5 right-5 flex gap-2">
+
+              {mediaList.map((_, index) => (
+
+                <div
+                  key={index}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    index === activeIndex
+                      ? "w-8 bg-orange-400"
+                      : "w-2 bg-white/40"
+                  }`}
+                />
+
+              ))}
+
+            </div>
+
+          )}
 
         </button>
 
