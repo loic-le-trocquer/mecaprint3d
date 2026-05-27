@@ -211,16 +211,34 @@ export default function QuoteCommercial({ quote, setQuotes, onUpdate }) {
           <p className="mt-3 text-xs text-zinc-500">
             TVA non applicable — art. 293 B du CGI
           </p>
+<div className="mt-4 grid gap-3">
+  {/* SAVE */}
+  <button
+    type="button"
+    onClick={saveCommercialQuote}
+    className="w-full rounded-xl bg-orange-500 px-4 py-3 font-black text-white transition hover:bg-orange-400"
+  >
+    Enregistrer le devis
+  </button>
 
+  {/* PDF */}
+  <button
+    type="button"
+    className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 font-black text-white transition hover:border-orange-500 hover:bg-orange-500/10"
+  >
+    Télécharger le PDF
+  </button>
+
+            {/* SEND */}
           <button
             type="button"
-            onClick={saveCommercialQuote}
-            className="mt-4 w-full rounded-xl bg-orange-500 px-4 py-3 font-black text-white hover:bg-orange-400"
+            className="w-full rounded-xl border border-green-500/20 bg-green-500/10 px-4 py-3 font-black text-green-300 transition hover:bg-green-500 hover:text-white"
           >
-            Enregistrer le devis
+            Envoyer au client
           </button>
         </div>
       </div>
+    </div>
     </div>
   );
 }
