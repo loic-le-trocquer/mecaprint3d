@@ -6,7 +6,7 @@ export default function CreateQuoteModal({
   onClose,
 }) {
   const [loading, setLoading] = useState(false);
-
+  const [files, setFiles] = useState([]);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -25,33 +25,37 @@ export default function CreateQuoteModal({
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      await fetch(`${API_URL}/api/quotes`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...form,
-          manual: true,
-        }),
-      });
+    const formData = new FormData();
 
-      onClose();
+    Object.entries(form).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
 
-      window.location.reload();
+    formData.append("manual", "true");
 
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
+
+    await fetch(`${API_URL}/api/quotes`, {
+      method: "POST",
+      body: formData,
+    });
+
+    onClose();
+    window.location.reload();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/80 p-4 backdrop-blur-xl">
@@ -66,6 +70,19 @@ export default function CreateQuoteModal({
               Ajouter un devis manuel
             </h2>
           </div>
+
+    <div className="rounded-2xl border border-dashed border-white/10 bg-black/30 p-5">
+        <p className="mb-3 text-xs font-black uppercase tracking-[0.25em] text-orange-400">
+        Pièces jointes
+        </p>
+
+        <input
+            type="file"
+            multiple
+            onChange={(e) => setFiles(Array.from(e.target.files || []))}
+            className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-zinc-300 file:mr-4 file:rounded-xl file:border-0 file:bg-orange-500 file:px-4 file:py-2 file:text-sm file:font-bold file:text-white"
+            />
+        </div>
 
           <button
             type="button"
