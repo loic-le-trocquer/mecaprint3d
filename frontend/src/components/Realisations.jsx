@@ -19,9 +19,7 @@ export default function Realisations({ content }) {
   // ================= STATES =================
   const [lightbox, setLightbox] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
-  const [selectedProject, setSelectedProject] =
-  useState(null);
-
+  
   // ================= FILTRE =================
   const [selectedCategory, setSelectedCategory] =
     useState("TOUT");
