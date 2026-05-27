@@ -6,7 +6,7 @@ router.put("/:id", requireAdmin, async (req, res) => {
 
   try {
 
-    // ================= FIND CURRENT =================
+    // ================= FIND =================
     const existingQuote =
       await Quote.findById(req.params.id);
 
@@ -48,14 +48,13 @@ router.put("/:id", requireAdmin, async (req, res) => {
     await existingQuote.save();
 
     // =====================================================
-    // 📧 EMAIL CHANGEMENT STATUT
+    // 📧 EMAIL STATUS UPDATE
     // =====================================================
     if (
       req.body.status &&
       req.body.status !== oldStatus
     ) {
 
-      // ================= LABELS =================
       const statusLabels = {
 
         nouveau:
@@ -75,7 +74,6 @@ router.put("/:id", requireAdmin, async (req, res) => {
 
       };
 
-      // ================= MESSAGES =================
       const statusMessages = {
 
         nouveau:
@@ -107,7 +105,6 @@ router.put("/:id", requireAdmin, async (req, res) => {
 
             <div style="max-width:620px;margin:auto;background:#18181b;border-radius:24px;overflow:hidden;border:1px solid #27272a;">
 
-              <!-- HEADER -->
               <div style="padding:40px;background:linear-gradient(135deg,#f97316,#ea580c);">
 
                 <img
@@ -118,19 +115,14 @@ router.put("/:id", requireAdmin, async (req, res) => {
 
               </div>
 
-              <!-- CONTENT -->
               <div style="padding:40px;color:#e4e4e7;">
 
                 <h1 style="margin-top:0;color:white;">
-
                   Bonjour ${existingQuote.name},
-
                 </h1>
 
                 <p style="font-size:16px;line-height:1.7;color:#d4d4d8;">
-
                   ${statusMessages[existingQuote.status]}
-
                 </p>
 
                 <div style="margin-top:30px;padding:24px;background:#09090b;border-radius:18px;border:1px solid #27272a;">
@@ -161,9 +153,7 @@ router.put("/:id", requireAdmin, async (req, res) => {
                       font-weight:800;
                     "
                   >
-
                     Accéder au site
-
                   </a>
 
                 </div>
