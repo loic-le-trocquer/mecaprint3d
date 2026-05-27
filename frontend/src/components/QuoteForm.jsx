@@ -48,6 +48,13 @@ export default function QuoteForm({ content }) {
   const [sending, setSending] =
     useState(false);
 
+// ================= FEEDBACK =================
+const [successMessage, setSuccessMessage] =
+  useState("");
+
+const [errorMessage, setErrorMessage] =
+  useState("");
+
   // =====================================================
   // INPUTS
   // =====================================================
@@ -219,10 +226,11 @@ export default function QuoteForm({ content }) {
       }
 
       // ================= SUCCESS =================
-      alert(
-        "Votre demande de devis a bien été envoyée."
+      setSuccessMessage(
+      "Votre demande de devis a bien été envoyée."
       );
 
+      setErrorMessage("");
       // ================= RESET =================
       setForm({
 
@@ -251,11 +259,13 @@ export default function QuoteForm({ content }) {
 
       console.error(error);
 
-      alert(
+      setErrorMessage(
         "Erreur : impossible d’envoyer la demande."
       );
 
-    } finally {
+      setSuccessMessage("");
+
+      } finally {
 
       // ================= STOP LOADING =================
       setSending(false);
@@ -564,6 +574,8 @@ export default function QuoteForm({ content }) {
 
                     </div>
 
+                      {/* ================= BUTTON ================= */}
+
                     <button
                       type="button"
                       onClick={() =>
@@ -592,6 +604,32 @@ export default function QuoteForm({ content }) {
             )}
 
           </label>
+
+{/* =====================================================
+    SUCCESS
+===================================================== */}
+{successMessage && (
+
+  <div className="mt-6 rounded-2xl border border-green-500/20 bg-green-500/10 px-5 py-4 text-sm font-semibold text-green-300 shadow-[0_0_25px_rgba(34,197,94,0.12)]">
+
+    ✅ {successMessage}
+
+  </div>
+
+)}
+
+{/* =====================================================
+    ERROR
+===================================================== */}
+{errorMessage && (
+
+  <div className="mt-6 rounded-2xl border border-red-500/20 bg-red-500/10 px-5 py-4 text-sm font-semibold text-red-300 shadow-[0_0_25px_rgba(239,68,68,0.12)]">
+
+    ❌ {errorMessage}
+
+  </div>
+
+)}
 
           {/* =====================================================
               BUTTON
