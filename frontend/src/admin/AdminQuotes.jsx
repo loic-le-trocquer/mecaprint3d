@@ -1,3 +1,4 @@
+// ================= IMPORTS =================
 import { useEffect, useMemo, useState } from "react";
 
 import { API_URL } from "../lib/api";
@@ -6,10 +7,17 @@ import AdminLayout from "./AdminLayout";
 
 import QuoteCard from "./quotes/QuoteCard";
 import QuoteFilters from "./quotes/QuoteFilters";
+import CreateQuoteModal from "./quotes/CreateQuoteModal";
 
+// ================= ADMIN QUOTES =================
 export default function AdminQuotes() {
+  // =====================================================
+  // STATES
+  // =====================================================
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [createModal, setCreateModal] = useState(false);
 
   const [statusFilter, setStatusFilter] = useState("Tous");
   const [projectFilter, setProjectFilter] = useState("Tous");
@@ -32,6 +40,7 @@ export default function AdminQuotes() {
         });
 
         const data = await response.json();
+
         setQuotes(data.quotes || []);
       } catch (error) {
         console.error(error);
@@ -111,6 +120,7 @@ export default function AdminQuotes() {
           quote.coveringReference,
           quote.dimensions,
           quote.message,
+          quote.source,
         ]
           .filter(Boolean)
           .join(" ")
@@ -182,12 +192,22 @@ export default function AdminQuotes() {
     (q) => q.project === "Van / camping-car"
   ).length;
 
+  const manualQuotes = quotes.filter(
+    (q) => q.manual === true
+  ).length;
+
   // =====================================================
   // RENDER
   // =====================================================
   return (
     <AdminLayout title="Demandes de devis">
-      {/* HEADER DASHBOARD */}
+      {/* ================= CREATE MODAL ================= */}
+      <CreateQuoteModal
+        open={createModal}
+        onClose={() => setCreateModal(false)}
+      />
+
+      {/* ================= HEADER DASHBOARD ================= */}
       <div className="mb-8 rounded-[32px] border border-white/10 bg-gradient-to-br from-zinc-900 via-black to-zinc-950 p-6 shadow-2xl shadow-black/30">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -209,6 +229,7 @@ export default function AdminQuotes() {
             <p className="text-xs font-black uppercase tracking-[0.25em] text-orange-300">
               Résultats affichés
             </p>
+
             <p className="mt-1 text-3xl font-black text-white">
               {visibleQuotes}
             </p>
@@ -216,21 +237,33 @@ export default function AdminQuotes() {
         </div>
       </div>
 
-      {/* FILTERS STATUS EXISTANTS */}
+      {/* ================= CREATE BUTTON ================= */}
+      <div className="mb-8 flex justify-end">
+        <button
+          type="button"
+          onClick={() => setCreateModal(true)}
+          className="rounded-2xl bg-orange-500 px-6 py-4 text-sm font-black uppercase tracking-[0.2em] text-white shadow-[0_0_25px_rgba(249,115,22,0.3)] transition duration-300 hover:-translate-y-1 hover:bg-orange-400"
+        >
+          + Ajouter une demande
+        </button>
+      </div>
+
+      {/* ================= STATUS FILTERS ================= */}
       <QuoteFilters
-  statusFilter={statusFilter}
-  setStatusFilter={setStatusFilter}
-  showArchived={showArchived}
-  setShowArchived={setShowArchived}
-  quotes={quotes}
-/>
-      {/* SEARCH + PROJECT + SORT */}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        showArchived={showArchived}
+        setShowArchived={setShowArchived}
+        quotes={quotes}
+      />
+
+      {/* ================= SEARCH + PROJECT + SORT ================= */}
       <div className="mb-8 grid gap-4 rounded-[28px] border border-white/10 bg-zinc-900/70 p-5 backdrop-blur-xl lg:grid-cols-[1fr_260px_220px]">
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Rechercher : nom, email, téléphone, projet, véhicule, CoverStyl..."
+          placeholder="Rechercher : nom, email, téléphone, projet, source..."
           className="w-full rounded-2xl border border-white/10 bg-black/40 px-5 py-4 text-white outline-none transition placeholder:text-zinc-500 focus:border-orange-500"
         />
 
@@ -240,7 +273,11 @@ export default function AdminQuotes() {
           className="rounded-2xl border border-white/10 bg-black/40 px-5 py-4 text-white outline-none transition focus:border-orange-500"
         >
           {projects.map((project) => (
-            <option key={project} value={project} className="bg-zinc-950">
+            <option
+              key={project}
+              value={project}
+              className="bg-zinc-950"
+            >
               {project === "Tous" ? "Tous les projets" : project}
             </option>
           ))}
@@ -254,13 +291,14 @@ export default function AdminQuotes() {
           <option value="recent" className="bg-zinc-950">
             Plus récent
           </option>
+
           <option value="oldest" className="bg-zinc-950">
             Plus ancien
           </option>
         </select>
       </div>
 
-      {/* KPI PRINCIPAUX */}
+      {/* ================= KPI PRINCIPAUX ================= */}
       <div className="mb-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         <KpiCard label="Total devis" value={totalQuotes} color="orange" />
         <KpiCard label="Nouveaux" value={newQuotes} color="cyan" />
@@ -268,8 +306,9 @@ export default function AdminQuotes() {
         <KpiCard label="Devis envoyés" value={validatedQuotes} color="green" />
       </div>
 
-      {/* KPI SECONDAIRES */}
-      <div className="mb-12 grid gap-5 md:grid-cols-3 xl:grid-cols-5">
+      {/* ================= KPI SECONDAIRES ================= */}
+      <div className="mb-12 grid gap-5 md:grid-cols-3 xl:grid-cols-6">
+        <SmallKpi label="Manuels" value={manualQuotes} />
         <SmallKpi label="Avec fichiers" value={withFilesQuotes} />
         <SmallKpi label="Archivés" value={archivedQuotes} />
         <SmallKpi label="Covering" value={coveringQuotes} />
@@ -277,21 +316,21 @@ export default function AdminQuotes() {
         <SmallKpi label="Vans" value={vanQuotes} />
       </div>
 
-      {/* LOADING */}
+      {/* ================= LOADING ================= */}
       {loading && (
         <div className="rounded-3xl border border-white/10 bg-zinc-900/80 p-10 text-center text-zinc-400">
           Chargement des devis...
         </div>
       )}
 
-      {/* EMPTY */}
+      {/* ================= EMPTY ================= */}
       {!loading && filteredQuotes.length === 0 && (
         <div className="rounded-3xl border border-white/10 bg-zinc-900/80 p-10 text-center text-zinc-400">
           Aucun devis ne correspond aux filtres.
         </div>
       )}
 
-      {/* LISTE DEVIS */}
+      {/* ================= QUOTES LIST ================= */}
       {!loading && filteredQuotes.length > 0 && (
         <div className="grid gap-6">
           {filteredQuotes.map((quote) => (
