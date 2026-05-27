@@ -1,3 +1,5 @@
+import { API_URL } from "../../lib/api";
+
 export default function QuoteCommercial({ quote, setQuotes, onUpdate }) {
   const quoteLines = quote.quoteLines || [];
 
@@ -64,7 +66,7 @@ export default function QuoteCommercial({ quote, setQuotes, onUpdate }) {
           : item
       )
     );
-  };
+0  };
 
   const saveCommercialQuote = () => {
     onUpdate(quote._id, {
@@ -77,6 +79,15 @@ export default function QuoteCommercial({ quote, setQuotes, onUpdate }) {
       quoteComment: quote.quoteComment,
     });
   };
+
+const downloadPdf = () => {
+  const token = localStorage.getItem("mecaprint3d_admin_token");
+
+  window.open(
+    `${API_URL}/api/quotes/${quote._id}/pdf?token=${token}`,
+    "_blank"
+  );
+};
 
   return (
     <div className="mt-6 rounded-2xl border border-white/10 bg-black/30 p-5">
@@ -223,11 +234,12 @@ export default function QuoteCommercial({ quote, setQuotes, onUpdate }) {
 
   {/* PDF */}
   <button
-    type="button"
-    className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 font-black text-white transition hover:border-orange-500 hover:bg-orange-500/10"
-  >
-    Télécharger le PDF
-  </button>
+  type="button"
+  onClick={downloadPdf}
+  className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 font-black text-white transition hover:border-orange-500 hover:bg-orange-500/10"
+>
+  Télécharger le PDF
+</button>
 
             {/* SEND */}
           <button

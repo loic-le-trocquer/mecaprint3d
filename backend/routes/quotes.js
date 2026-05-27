@@ -42,7 +42,15 @@ function uploadToCloudinary(file) {
 // =====================================================
 function requireAdmin(req, res, next) {
   const auth = req.headers.authorization || "";
-  const token = auth.replace("Bearer ", "");
+
+  const headerToken =
+    auth.replace("Bearer ", "");
+
+  const queryToken =
+    req.query.token;
+
+  const token =
+    headerToken || queryToken;
 
   if (!token || token !== process.env.ADMIN_TOKEN) {
     return res.status(401).json({
