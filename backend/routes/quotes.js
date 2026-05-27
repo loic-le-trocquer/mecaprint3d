@@ -57,6 +57,39 @@ function requireAdmin(req, res, next) {
 // 📋 LISTE DES DEVIS ADMIN
 // GET /api/quotes
 // =====================================================
+
+// =====================================================
+// 📋 LISTE DES DEVIS
+// GET /api/quotes
+// =====================================================
+router.get("/", requireAdmin, async (req, res) => {
+
+  try {
+
+    const quotes = await Quote.find()
+      .sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      quotes,
+    });
+
+  } catch (error) {
+
+    console.error(
+      "❌ Erreur récupération devis :",
+      error
+    );
+
+    res.status(500).json({
+      success: false,
+      error: "Erreur serveur",
+    });
+
+  }
+
+});
+
 // =====================================================
 // ✏️ MISE À JOUR D’UN DEVIS
 // PUT /api/quotes/:id
