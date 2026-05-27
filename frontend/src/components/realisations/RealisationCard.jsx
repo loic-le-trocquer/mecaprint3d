@@ -43,36 +43,36 @@ export default function RealisationCard({ item, onOpen }) {
   }
 
   return (
-    <article
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+   <article
+  onMouseEnter={() => setIsHovered(true)}
+
+  onMouseMove={(e) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const rotateX = ((y / rect.height) - 0.5) * -6;
+    const rotateY = ((x / rect.width) - 0.5) * 6;
+
+    card.style.transform = `
+      perspective(1200px)
+      rotateX(${rotateX}deg)
+      rotateY(${rotateY}deg)
+      translateY(-8px)
+    `;
+  }}
+
+  onMouseLeave={(e) => {
+    setIsHovered(false);
+
+    e.currentTarget.style.transform =
+      "perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0)";
+  }}
+
+  className="break-inside-avoid group relative mb-8 overflow-hidden rounded-[32px] border border-white/10 bg-zinc-900/80 shadow-2xl shadow-black/40 backdrop-blur-xl transition duration-300 hover:border-orange-500/40 hover:shadow-[0_0_60px_rgba(249,115,22,0.22)]"
 >
-    <div className="pointer-events-none absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100">
-      <div className="absolute -left-1/2 top-0 h-full w-1/2 rotate-12 bg-gradient-to-r from-transparent via-white/15 to-transparent blur-md transition duration-700 group-hover:left-full" />
-    </div>
-      
-        onMouseMove={(e) => {
-  const card = e.currentTarget;
-  const rect = card.getBoundingClientRect();
-
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-
-  const rotateX = ((y / rect.height) - 0.5) * -6;
-  const rotateY = ((x / rect.width) - 0.5) * 6;
-
-  card.style.transform = `
-    perspective(1200px)
-    rotateX(${rotateX}deg)
-    rotateY(${rotateY}deg)
-    translateY(-8px)
-  `;
-}}
-onMouseLeave={(e) => {
-  setIsHovered(false);
-  e.currentTarget.style.transform =
-    "perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0)";
-}}
 
       {/* ================= MAIN MEDIA ================= */}
       {activeMedia && (
