@@ -114,26 +114,23 @@ export default function Realisations({ content }) {
           )}
 
           {/* ================= GRID ================= */}
-          <div className="columns-1 gap-8 space-y-8 md:columns-2 xl:columns-3">
+        <div className="columns-1 gap-8 space-y-8 md:columns-2 xl:columns-3">
 
-            {hasRealisations ? (
+  {hasRealisations ? (
 
-              filteredRealisations.map((item, index) => (
+    filteredRealisations.map((item, index) => (
 
-                <RealisationCard
-                  key={`${item.title}-${index}`}
-                  item={item}
-                  onOpen={(selectedItem, selectedIndex) =>
-                    setLightbox({
-                      item: selectedItem,
-                      index: selectedIndex,
-                    })
-                  }
-                />
+      <RealisationCard
+        key={`${item.title}-${index}`}
+        item={item}
+        onOpen={(selectedItem) =>
+          setSelectedProject(selectedItem)
+        }
+      />
 
-              ))
+    ))
 
-            ) : (
+  ) : (
 
               <div className="rounded-3xl border border-white/10 bg-zinc-900/50 p-10 text-center text-zinc-400">
 
