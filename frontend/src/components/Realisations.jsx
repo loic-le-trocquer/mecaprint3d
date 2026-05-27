@@ -1,5 +1,6 @@
 // ================= IMPORTS =================
 import { useMemo, useState } from "react";
+import ProjectModal from "./realisations/ProjectModal";
 
 // ================= ANIMATION =================
 import FadeInSection from "./ui/FadeInSection";
@@ -18,7 +19,8 @@ export default function Realisations({ content }) {
   // ================= STATES =================
   const [lightbox, setLightbox] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
-
+  const [selectedProject, setSelectedProject] =
+  useState(null);
 
   // ================= FILTRE =================
   const [selectedCategory, setSelectedCategory] =
@@ -49,8 +51,21 @@ export default function Realisations({ content }) {
     filteredRealisations.length > 0;
 
   // ================= RENDER =================
-  return (
+return (
+  <>
+    {/* ================= PROJECT MODAL ================= */}
+    <ProjectModal
+      project={selectedProject}
+      onClose={() => setSelectedProject(null)}
+    />
 
+    {/* ================= LIGHTBOX ================= */}
+    <RealisationsLightbox
+      lightbox={lightbox}
+      onClose={() => setLightbox(null)}
+    />
+
+    {/* ================= SECTION ================= */}
     <section
       id="realisations"
       className="relative overflow-hidden border-t border-white/10 bg-black px-6 py-24"
@@ -68,22 +83,16 @@ export default function Realisations({ content }) {
           <div className="mb-16 max-w-3xl">
 
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-orange-500">
-
               {intro.eyebrow || "Réalisations"}
-
             </p>
 
             <h2 className="text-4xl font-black leading-tight text-white md:text-6xl">
-
               {intro.title || "Des projets concrets, utiles et sur mesure"}
-
             </h2>
 
             <p className="mt-6 text-lg leading-relaxed text-zinc-300">
-
               {intro.description ||
                 "Découvrez quelques exemples de réalisations MecaPrint3D : fabrication, rénovation, covering et personnalisation."}
-
             </p>
 
           </div>
@@ -104,9 +113,7 @@ export default function Realisations({ content }) {
                       : "border-white/10 bg-white/5 text-zinc-300 hover:border-orange-500/40 hover:text-white"
                   }`}
                 >
-
                   {category}
-
                 </button>
 
               ))}
@@ -116,28 +123,26 @@ export default function Realisations({ content }) {
           )}
 
           {/* ================= GRID ================= */}
-        <div className="columns-1 gap-8 space-y-8 md:columns-2 xl:columns-3">
+          <div className="columns-1 gap-8 space-y-8 md:columns-2 xl:columns-3">
 
-  {hasRealisations ? (
+            {hasRealisations ? (
 
-    filteredRealisations.map((item, index) => (
+              filteredRealisations.map((item, index) => (
 
-      <RealisationCard
-        key={`${item.title}-${index}`}
-        item={item}
-        onOpen={(selectedItem) =>
-          setSelectedProject(selectedItem)
-        }
-      />
+                <RealisationCard
+                  key={`${item.title}-${index}`}
+                  item={item}
+                  onOpen={(selectedItem) =>
+                    setSelectedProject(selectedItem)
+                  }
+                />
 
-    ))
+              ))
 
-  ) : (
+            ) : (
 
               <div className="rounded-3xl border border-white/10 bg-zinc-900/50 p-10 text-center text-zinc-400">
-
                 Aucun projet disponible dans cette catégorie.
-
               </div>
 
             )}
@@ -148,13 +153,7 @@ export default function Realisations({ content }) {
 
       </div>
 
-      {/* ================= LIGHTBOX ================= */}
-      <RealisationsLightbox
-        lightbox={lightbox}
-        onClose={() => setLightbox(null)}
-      />
-      
     </section>
-
-  );
+  </>
+);
 }
