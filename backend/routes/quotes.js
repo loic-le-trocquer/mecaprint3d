@@ -2,48 +2,65 @@ const express = require("express");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
-
-const Quote = require("../models/Quote");
-const sendEmail = require("../utils/sendEmail");
-const generateQuotePdf = require("../utils/generateQuotePdf");
-const router = express.Router();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
+const Quote = require("../models/Quote");
 
+const sendEmail = require("../utils/sendEmail");
+const generateQuotePdf = require("../utils/generateQuotePdf");
+
+const router = express.Router();
+
+// =====================================================
+// ☁️ CLOUDINARY CONFIG
+// =====================================================
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+// =====================================================
+// 📦 MULTER CONFIG
+// =====================================================
 const upload = multer({
   storage: multer.memoryStorage(),
+
   limits: {
     fileSize: 100 * 1024 * 1024,
   },
 });
 
+// =====================================================
+// ☁️ UPLOAD CLOUDINARY
+// =====================================================
 function uploadToCloudinary(file) {
   return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      {
-        folder: "mecaprint3d/devis",
-        resource_type: "auto",
-      },
-      (error, result) => {
-        if (error) reject(error);
-        else resolve(result);
-      }
-    );
+    const stream =
+      cloudinary.uploader.upload_stream(
+        {
+          folder: "mecaprint3d/devis",
+          resource_type: "auto",
+        },
 
-    streamifier.createReadStream(file.buffer).pipe(stream);
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+
+    streamifier
+      .createReadStream(file.buffer)
+      .pipe(stream);
   });
 }
+
 // =====================================================
-// 🔐 MIDDLEWARE ADMIN SIMPLE
+// 🔐 ADMIN MIDDLEWARE
 // =====================================================
 function requireAdmin(req, res, next) {
-  const auth = req.headers.authorization || "";
+  const auth =
+    req.headers.authorization || "";
 
   const headerToken =
     auth.replace("Bearer ", "");
@@ -54,7 +71,10 @@ function requireAdmin(req, res, next) {
   const token =
     headerToken || queryToken;
 
-  if (!token || token !== process.env.ADMIN_TOKEN) {
+  if (
+    !token ||
+    token !== process.env.ADMIN_TOKEN
+  ) {
     return res.status(401).json({
       success: false,
       error: "Accès non autorisé",
@@ -63,14 +83,13 @@ function requireAdmin(req, res, next) {
 
   next();
 }
+
 // =====================================================
 // 📋 LISTE DES DEVIS
 // GET /api/quotes
 // =====================================================
 router.get("/", requireAdmin, async (req, res) => {
-
   try {
-
     const quotes = await Quote.find()
       .sort({ createdAt: -1 });
 
@@ -92,18 +111,19 @@ router.get("/", requireAdmin, async (req, res) => {
     });
 
   }
-
 });
 
 // =====================================================
-// ✏️ MISE À JOUR D’UN DEVIS
+// ✏️ UPDATE QUOTE
 // PUT /api/quotes/:id
 // =====================================================
 router.put("/:id", requireAdmin, async (req, res) => {
 
   try {
 
-    // ================= FIND =================
+    // =====================================================
+    // FIND EXISTING QUOTE
+    // =====================================================
     const existingQuote =
       await Quote.findById(req.params.id);
 
@@ -116,11 +136,15 @@ router.put("/:id", requireAdmin, async (req, res) => {
 
     }
 
-    // ================= OLD STATUS =================
+    // =====================================================
+    // OLD STATUS
+    // =====================================================
     const oldStatus =
       existingQuote.status;
 
-    // ================= UPDATE =================
+    // =====================================================
+    // UPDATE FIELDS
+    // =====================================================
     existingQuote.status =
       req.body.status;
 
@@ -142,10 +166,24 @@ router.put("/:id", requireAdmin, async (req, res) => {
     existingQuote.quoteComment =
       req.body.quoteComment;
 
+    // =====================================================
+    // 📅 DATE ENVOI DEVIS
+    // =====================================================
+    if (
+      req.body.status === "Devis envoyé" &&
+      oldStatus !== "Devis envoyé"
+    ) {
+      existingQuote.quoteSentAt =
+        new Date();
+    }
+
+    // =====================================================
+    // SAVE
+    // =====================================================
     await existingQuote.save();
 
     // =====================================================
-    // 📧 EMAIL STATUS UPDATE
+    // 📧 EMAIL AUTOMATIQUE CHANGEMENT STATUT
     // =====================================================
     if (
       req.body.status &&
@@ -154,119 +192,135 @@ router.put("/:id", requireAdmin, async (req, res) => {
 
       const statusLabels = {
 
-        nouveau:
+        "Nouveau":
           "Nouveau devis reçu",
 
-        en_cours:
+        "En analyse":
           "Projet en cours d’étude",
 
-        valide:
-          "Devis validé",
+        "Devis envoyé":
+          "Votre devis est disponible",
 
-        termine:
+        "En fabrication":
+          "Projet en fabrication",
+
+        "Terminé":
           "Projet terminé",
 
-        archive:
-          "Projet archivé",
+        "Refusé":
+          "Projet clôturé",
 
       };
 
       const statusMessages = {
 
-        nouveau:
+        "Nouveau":
           "Votre demande a bien été enregistrée.",
 
-        en_cours:
-          "Votre projet est actuellement en cours d’étude par notre atelier.",
+        "En analyse":
+          "Votre projet est actuellement en cours d’analyse par notre atelier.",
 
-        valide:
-          "Votre devis a été validé. Nous revenons rapidement vers vous pour la suite du projet.",
+        "Devis envoyé":
+          "Votre devis est maintenant disponible.",
 
-        termine:
-          "Votre projet est terminé.",
+        "En fabrication":
+          "Votre projet est actuellement en fabrication.",
 
-        archive:
-          "Votre demande a été archivée.",
+        "Terminé":
+          "Votre projet est terminé et prêt.",
+
+        "Refusé":
+          "Votre demande a été clôturée.",
 
       };
 
-      // ================= EMAIL =================
+      // =====================================================
+      // SEND EMAIL
+      // =====================================================
       await sendEmail({
 
         to: existingQuote.email,
 
-        subject: `Mise à jour de votre projet - ${statusLabels[existingQuote.status]}`,
+        subject:
+          `Mise à jour de votre projet - ${statusLabels[existingQuote.status]}`,
 
         html: `
-          <div style="font-family:Arial,sans-serif;background:#f4f4f5;padding:40px;">
+        <div style="font-family:Arial,sans-serif;background:#f4f4f5;padding:40px;">
 
-            <div style="max-width:620px;margin:auto;background:#18181b;border-radius:24px;overflow:hidden;border:1px solid #27272a;">
+          <div style="max-width:620px;margin:auto;background:#18181b;border-radius:24px;overflow:hidden;border:1px solid #27272a;">
 
-              <div style="padding:40px;background:linear-gradient(135deg,#f97316,#ea580c);">
+            <div style="padding:40px;background:linear-gradient(135deg,#f97316,#ea580c);">
 
-                <img
-                  src="https://mecaprint3d.fr/logo-mail.jpg"
-                  width="280"
-                  alt="MecaPrint3D"
-                />
+              <img
+                src="https://mecaprint3d.fr/logo-mail.jpg"
+                width="280"
+                alt="MecaPrint3D"
+              />
 
-              </div>
+            </div>
 
-              <div style="padding:40px;color:#e4e4e7;">
+            <div style="padding:40px;color:#e4e4e7;">
 
-                <h1 style="margin-top:0;color:white;">
-                  Bonjour ${existingQuote.name},
-                </h1>
+              <h1 style="margin-top:0;color:white;">
+                Bonjour ${existingQuote.name},
+              </h1>
 
-                <p style="font-size:16px;line-height:1.7;color:#d4d4d8;">
-                  ${statusMessages[existingQuote.status]}
+              <p style="font-size:16px;line-height:1.7;color:#d4d4d8;">
+                ${statusMessages[existingQuote.status]}
+              </p>
+
+              <div style="margin-top:30px;padding:24px;background:#09090b;border-radius:18px;border:1px solid #27272a;">
+
+                <p>
+                  <strong>Projet :</strong>
+                  ${existingQuote.project}
                 </p>
 
-                <div style="margin-top:30px;padding:24px;background:#09090b;border-radius:18px;border:1px solid #27272a;">
-
-                  <p>
-                    <strong>Projet :</strong>
-                    ${existingQuote.project}
-                  </p>
-
-                  <p>
-                    <strong>Statut :</strong>
-                    ${statusLabels[existingQuote.status]}
-                  </p>
-
-                </div>
-
-                <div style="margin-top:35px;text-align:center;">
-
-                  <a
-                    href="https://mecaprint3d.fr"
-                    style="
-                      display:inline-block;
-                      background:#f97316;
-                      color:white;
-                      text-decoration:none;
-                      padding:16px 28px;
-                      border-radius:14px;
-                      font-weight:800;
-                    "
-                  >
-                    Accéder au site
-                  </a>
-
-                </div>
+                <p>
+                  <strong>Statut :</strong>
+                  ${statusLabels[existingQuote.status]}
+                </p>
 
               </div>
+
+              ${
+                existingQuote.status === "Devis envoyé"
+                  ? `
+                    <div style="margin-top:35px;text-align:center;">
+
+                      <a
+                        href="https://mecaprint3d.fr/commande/${existingQuote._id}"
+                        style="
+                          display:inline-block;
+                          background:#f97316;
+                          color:white;
+                          text-decoration:none;
+                          padding:16px 28px;
+                          border-radius:14px;
+                          font-weight:800;
+                        "
+                      >
+                        Commander / Régler le devis
+                      </a>
+
+                    </div>
+                  `
+                  : ""
+              }
 
             </div>
 
           </div>
-        `,
 
+        </div>
+        `,
       });
 
     }
 
-    // ================= RESPONSE =================
+    // =====================================================
+    // RESPONSE
+    // =====================================================
     res.json({
       success: true,
       quote: existingQuote,
@@ -289,84 +343,56 @@ router.put("/:id", requireAdmin, async (req, res) => {
 });
 
 // =====================================================
-// ✏️ MISE À JOUR D’UN DEVIS
-// PUT /api/quotes/:id
+// 📄 PDF DEVIS
+// GET /api/quotes/:id/pdf
 // =====================================================
-router.put("/:id", requireAdmin, async (req, res) => {
+router.get("/:id/pdf", requireAdmin, async (req, res) => {
 
   try {
 
-    const quote = await Quote.findByIdAndUpdate(
+    const quote =
+      await Quote.findById(req.params.id)
+        .lean();
 
-      req.params.id,
-{
-  status: req.body.status,
-  adminNotes: req.body.adminNotes,
-  archived: req.body.archived,
+    if (!quote) {
 
-  quoteLines: req.body.quoteLines,
+      return res.status(404).json({
+        success: false,
+        error: "Devis introuvable",
+      });
 
-  quoteAmount: req.body.quoteAmount,
-  quoteDelay: req.body.quoteDelay,
-  quoteComment: req.body.quoteComment,
-},
+    }
 
-      {new: true}
-
-    );
-
-    res.json({
-      success: true,
-      quote,
-    });
+    generateQuotePdf(res, quote);
 
   } catch (error) {
 
     console.error(
-      "❌ Erreur mise à jour devis :",
+      "❌ Erreur génération PDF :",
       error
     );
 
     res.status(500).json({
       success: false,
-      error: "Erreur serveur",
-    });
-
-  }
-
-});
-
-// =====================================================
-// 📄 GENERATION PDF DEVIS
-// GET /api/quotes/:id/pdf
-// =====================================================
-router.get("/:id/pdf", requireAdmin, async (req, res) => {
-  try {
-    const quote = await Quote.findById(req.params.id).lean();
-
-    if (!quote) {
-      return res.status(404).json({
-        success: false,
-        error: "Devis introuvable",
-      });
-    }
-
-    generateQuotePdf(res, quote);
-  } catch (error) {
-    console.error("❌ Erreur génération PDF :", error);
-
-    res.status(500).json({
-      success: false,
       error: "Erreur génération PDF",
     });
+
   }
+
 });
+
+// =====================================================
+// 📩 CREATE QUOTE
+// POST /api/quotes
+// =====================================================
 router.post(
   "/",
+
   upload.fields([
     { name: "file", maxCount: 1 },
     { name: "files", maxCount: 10 },
   ]),
+
   async (req, res) => {
 
     try {
@@ -379,7 +405,7 @@ router.post(
       ];
 
       // =====================================================
-      // 📦 UPLOAD DES FICHIERS SUR CLOUDINARY
+      // ☁️ CLOUDINARY UPLOAD
       // =====================================================
       if (receivedFiles.length) {
 
@@ -387,13 +413,13 @@ router.post(
 
           receivedFiles.map(async (file) => {
 
-            const cloudinaryResult =
+            const result =
               await uploadToCloudinary(file);
 
             return {
               originalName: file.originalname,
-              filename: cloudinaryResult.public_id,
-              path: cloudinaryResult.secure_url,
+              filename: result.public_id,
+              path: result.secure_url,
               mimetype: file.mimetype,
               size: file.size,
             };
@@ -405,389 +431,200 @@ router.post(
       }
 
       // =====================================================
-      // 💾 ENREGISTREMENT DU DEVIS EN BASE
+      // 💾 SAVE QUOTE
       // =====================================================
-// =====================================================
-// 💾 ENREGISTREMENT DU DEVIS EN BASE
-// =====================================================
-const quote = await Quote.create({
-  ...req.body,
-  files: uploadedFiles,
-});
+      const quote = await Quote.create({
+        ...req.body,
+        files: uploadedFiles,
+      });
 
-console.log("📩 Nouveau devis :", quote._id);
-console.log("📧 EMAIL CLIENT =", quote.email);
+      console.log(
+        "📩 Nouveau devis :",
+        quote._id
+      );
 
-// =====================================================
-// 📧 EMAIL CLIENT
-// =====================================================
-await sendEmail({
+      // =====================================================
+      // 📧 EMAIL CLIENT
+      // =====================================================
+      await sendEmail({
+        to: quote.email,
+        subject:
+          "Votre demande de devis MecaPrint3D",
 
-  to: quote.email,
+        html: `
+          <h1>Bonjour ${quote.name}</h1>
 
-  subject: "Votre demande de devis MecaPrint3D",
+          <p>
+            Votre demande de devis a bien été reçue.
+          </p>
+        `,
+      });
 
-  html: `
-  <div style="margin:0;padding:0;background:#f4f4f5;font-family:Arial,sans-serif;">
+      // =====================================================
+      // 📧 EMAIL ADMIN
+      // =====================================================
+      await sendEmail({
 
-    <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 0;">
-      <tr>
-        <td align="center">
+        to: process.env.ADMIN_EMAIL,
 
-          <table
-            width="620"
-            cellpadding="0"
-            cellspacing="0"
-            style="
-              background:#18181b;
-              border-radius:24px;
-              overflow:hidden;
-              border:1px solid #27272a;
-            "
-          >
+        subject:
+          `Nouvelle demande - ${quote.project}`,
 
-            <!-- HEADER -->
-            <tr>
-              <td
-                style="
-                  padding:40px;
-                  background:linear-gradient(135deg,#f97316,#ea580c);
-                "
-              >
+        html: `
+          <h1>Nouvelle demande</h1>
 
-                <img
-                  src="https://mecaprint3d.fr/logo-mail.jpg"
-                  alt="MecaPrint3D"
-                  width="320"
-                  style="
-                    display:block;
-                    border:0;
-                    outline:none;
-                    text-decoration:none;
-                  "
-                />
+          <p>
+            <strong>Client :</strong>
+            ${quote.name}
+          </p>
+        `,
+      });
 
-                <p
-                  style="
-                    margin:24px 0 0 0;
-                    color:white;
-                    font-size:16px;
-                    line-height:1.6;
-                  "
-                >
-                  Votre demande de devis a bien été reçue.
-                </p>
+      // =====================================================
+      // RESPONSE
+      // =====================================================
+      res.json({
+        success: true,
+        quote,
+      });
 
-              </td>
-            </tr>
+    } catch (error) {
 
-            <!-- CONTENT -->
-            <tr>
-              <td style="padding:40px;color:#e4e4e7;">
+      console.error(
+        "❌ Erreur devis :",
+        error
+      );
 
-                <p style="font-size:16px;line-height:1.7;">
-                  Bonjour <strong>${quote.name}</strong>,
-                </p>
+      res.status(500).json({
+        success: false,
+        error: "Erreur serveur",
+      });
 
-                <p
-                  style="
-                    font-size:16px;
-                    line-height:1.7;
-                    color:#d4d4d8;
-                  "
-                >
-                  Merci pour votre demande de devis.
-                  Votre projet est maintenant en cours
-                  d’analyse par notre atelier.
-                </p>
+    }
 
-                <!-- RECAP -->
-                <div
-                  style="
-                    margin-top:30px;
-                    padding:24px;
-                    border-radius:18px;
-                    background:#09090b;
-                    border:1px solid #27272a;
-                  "
-                >
-
-                  <h2
-                    style="
-                      margin-top:0;
-                      color:#f97316;
-                      font-size:20px;
-                    "
-                  >
-                    Récapitulatif du projet
-                  </h2>
-
-                  <p>
-                    <strong>Projet :</strong>
-                    ${quote.project}
-                  </p>
-
-                  <p>
-                    <strong>Quantité :</strong>
-                    ${quote.quantity || "Non précisée"}
-                  </p>
-
-                  <p>
-                    <strong>Matière :</strong>
-                    ${quote.material || "À définir"}
-                  </p>
-
-                  <p>
-                    <strong>Message :</strong><br/>
-                    ${quote.message || "Aucun message"}
-                  </p>
-
-                </div>
-
-                <!-- FICHIERS -->
-                <div style="margin-top:30px;">
-
-                  <h2 style="color:#f97316;font-size:20px;">
-                    Fichiers transmis
-                  </h2>
-
-                  ${
-                    quote.files?.length
-                      ? `
-                        <ul style="padding-left:20px;color:#d4d4d8;">
-
-                          ${quote.files
-                            .map(
-                              (file) => `
-                                <li style="margin-bottom:10px;">
-
-                                  <a
-                                    href="${file.path}"
-                                    style="
-                                      color:#fb923c;
-                                      text-decoration:none;
-                                    "
-                                  >
-                                    ${file.originalName}
-                                  </a>
-
-                                </li>
-                              `
-                            )
-                            .join("")}
-
-                        </ul>
-                      `
-                      : `
-                        <p style="color:#a1a1aa;">
-                          Aucun fichier joint.
-                        </p>
-                      `
-                  }
-
-                </div>
-
-                <!-- INFO -->
-                <div
-                  style="
-                    margin-top:35px;
-                    padding:22px;
-                    border-radius:18px;
-                    background:#27272a;
-                  "
-                >
-
-                  <p
-                    style="
-                      margin:0;
-                      font-size:15px;
-                      line-height:1.7;
-                      color:#fafafa;
-                    "
-                  >
-                    Nous revenons vers vous rapidement avec :
-                  </p>
-
-                  <ul
-                    style="
-                      margin-top:14px;
-                      color:#d4d4d8;
-                      line-height:1.8;
-                    "
-                  >
-                    <li>Analyse technique</li>
-                    <li>Choix matériau / technologie</li>
-                    <li>Délai estimé</li>
-                    <li>Tarification</li>
-                  </ul>
-
-                </div>
-
-                <!-- CTA -->
-                <div style="margin-top:40px;text-align:center;">
-
-                  <a
-                    href="https://mecaprint3d.fr"
-                    style="
-                      display:inline-block;
-                      background:#f97316;
-                      color:white;
-                      text-decoration:none;
-                      padding:16px 28px;
-                      border-radius:14px;
-                      font-weight:800;
-                      font-size:15px;
-                    "
-                  >
-                    Accéder au site MECAPRINT3D
-                  </a>
-
-                </div>
-
-              </td>
-            </tr>
-
-            <!-- FOOTER -->
-            <tr>
-              <td
-                style="
-                  padding:28px;
-                  background:#09090b;
-                  border-top:1px solid #27272a;
-                "
-              >
-
-                <p
-                  style="
-                    margin:0;
-                    color:#71717a;
-                    font-size:13px;
-                    text-align:center;
-                    line-height:1.7;
-                  "
-                >
-                  MECAPRINT3D — Impression 3D • Prototypage • Réparation • Conception
-                </p>
-
-              </td>
-            </tr>
-
-          </table>
-
-        </td>
-      </tr>
-    </table>
-
-  </div>
-  `,
-});
-
-    await sendEmail({
-      to: process.env.ADMIN_EMAIL,
-      subject: `Nouvelle demande - ${quote.project}`,
-      html: `
-        <h1>Nouvelle demande de devis</h1>
-        <p><strong>Nom :</strong> ${quote.name}</p>
-        <p><strong>Email :</strong> ${quote.email}</p>
-        <p><strong>Téléphone :</strong> ${quote.phone || "Non renseigné"}</p>
-        <p><strong>Projet :</strong> ${quote.project}</p>
-        <p><strong>Quantité :</strong> ${quote.quantity || "Non précisée"}</p>
-        <p><strong>Matière :</strong> ${quote.material || "À définir"}</p>
-        <p><strong>Message :</strong><br/>${quote.message}</p>
-        <p><strong>Fichiers :</strong></p>
-
-<ul>
-  ${
-    quote.files?.length
-      ? quote.files
-          .map(
-            (file) =>
-              `<li><a href="${file.path}">${file.originalName}</a></li>`
-          )
-          .join("")
-      : "<li>Aucun fichier</li>"
   }
-</ul>
-      `,
-    });
+);
 
-    res.json({
-      success: true,
-      quote,
-    });
-  } catch (error) {
-    console.error("❌ Erreur devis :", error);
-
-    res.status(500).json({
-      success: false,
-      error: "Erreur serveur",
-    });
-  }
-});
 // =====================================================
-// 💳 CHECKOUT STRIPE POUR DEVIS CLIENT
+// 💳 STRIPE CHECKOUT
 // POST /api/quotes/:id/checkout
 // =====================================================
 router.post("/:id/checkout", async (req, res) => {
+
   try {
-    const quote = await Quote.findById(req.params.id);
+
+    const quote =
+      await Quote.findById(req.params.id);
 
     if (!quote) {
+
       return res.status(404).json({
         success: false,
         error: "Devis introuvable",
       });
+
     }
 
-    const lines = quote.quoteLines || [];
+    const lines =
+      quote.quoteLines || [];
 
     if (!lines.length) {
+
       return res.status(400).json({
         success: false,
         error: "Aucune ligne de devis",
       });
+
     }
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      mode: "payment",
-      customer_email: quote.email,
+    // =====================================================
+    // CREATE STRIPE SESSION
+    // =====================================================
+    const session =
+      await stripe.checkout.sessions.create({
 
-      line_items: lines.map((line) => ({
-        price_data: {
-          currency: "eur",
-          product_data: {
-            name: line.label || "Prestation MecaPrint3D",
-          },
-          unit_amount: Math.round(Number(line.unitPrice || 0) * 100),
+        payment_method_types: ["card"],
+
+        mode: "payment",
+
+        customer_email:
+          quote.email,
+
+        line_items:
+          lines.map((line) => ({
+
+            price_data: {
+
+              currency: "eur",
+
+              product_data: {
+                name:
+                  line.label ||
+                  "Prestation MecaPrint3D",
+              },
+
+              unit_amount:
+                Math.round(
+                  Number(
+                    line.unitPrice || 0
+                  ) * 100
+                ),
+
+            },
+
+            quantity:
+              Number(
+                line.quantity || 1
+              ),
+
+          })),
+
+        success_url:
+          "https://mecaprint3d.fr/success",
+
+        cancel_url:
+          "https://mecaprint3d.fr/cancel",
+
+        metadata: {
+          quoteId:
+            String(quote._id),
         },
-        quantity: Number(line.quantity || 1),
-      })),
 
-      success_url: "https://mecaprint3d.fr/success",
-      cancel_url: "https://mecaprint3d.fr/cancel",
+      });
 
-      metadata: {
-        quoteId: String(quote._id),
-      },
-    });
+    // =====================================================
+    // SAVE STRIPE SESSION
+    // =====================================================
+    quote.stripeSessionId =
+      session.id;
 
-    quote.stripeSessionId = session.id;
-    quote.paymentStatus = "En attente";
+    quote.paymentStatus =
+      "En attente";
+
     await quote.save();
 
+    // =====================================================
+    // RESPONSE
+    // =====================================================
     res.json({
       success: true,
       url: session.url,
     });
+
   } catch (error) {
-    console.error("❌ Erreur checkout devis :", error);
+
+    console.error(
+      "❌ Erreur checkout devis :",
+      error
+    );
 
     res.status(500).json({
       success: false,
       error: "Erreur Stripe",
     });
+
   }
+
 });
 
 module.exports = router;
