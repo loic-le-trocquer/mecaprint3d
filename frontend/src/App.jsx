@@ -34,8 +34,8 @@ export default function App() {
     return <AdminQuotes />;
   }
 
-  if (window.location.pathname === "/admin/quotes") {
-    return <AdminQuotes />;
+  if (window.location.pathname === "/admin/chat") {
+    return <AdminChat />;
   }
 
   if (isQuoteCheckout) {
