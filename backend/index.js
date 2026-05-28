@@ -3,41 +3,34 @@ require("dotenv").config();
 
 // ================= IMPORTS =================
 const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const multer = require("multer");
+const path = require("path");
+
 const app = express();
 
-const cors = require("cors");
-const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
-const fs = require("fs");
-const path = require("path");
-const mongoose = require("mongoose");
-
-console.log(
-  "STRIPE KEY:",
-  process.env.STRIPE_SECRET_KEY ? "OK" : "ABSENTE"
-);
-
+// ================= STRIPE =================
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-const multer = require("multer");
+// ================= ROUTES =================
 const quotesRoutes = require("./routes/quotes");
 const siteContentRoutes = require("./routes/siteContent");
-
-// ================= CONFIG =================
-const PORT = process.env.PORT || 4242;
 
 // ================= MODELS =================
 const Order = require("./models/Order");
 const Quote = require("./models/Quote");
 
 // ================= UTILS =================
-// const createInvoice = require("./utils/createInvoice");
 const sendEmail = require("./utils/sendEmail");
-// const saveInvoice = require("./utils/saveInvoice");
-// const generateInvoiceNumber = require("./utils/invoiceNumber");
 
-// const generateDocument = require("./utils/generateDocument");
-const generateQuotePdf = require("./utils/generateQuotePdf");
+// ================= CONFIG =================
+const PORT = process.env.PORT || 4242;
+
+console.log(
+  "STRIPE KEY:",
+  process.env.STRIPE_SECRET_KEY ? "OK" : "ABSENTE"
+);
 
 // ================= DATABASE =================
 mongoose.connect(process.env.MONGO_URI);
@@ -46,20 +39,22 @@ mongoose.connection.on("connected", () => {
   console.log("🟢 MongoDB connecté");
 });
 
-// ================= STORAGE FILES =================
-// 👉 stockage local des fichiers uploadés
+// =====================================================
+// 📦 UPLOAD LOCAL TEMPORAIRE
+// =====================================================
 const storage = multer.diskStorage({
   destination: "uploads/",
+
   filename: (req, file, cb) => {
     cb(null, Date.now() + "-" + file.originalname);
-  }
+  },
 });
 
 const upload = multer({
   storage,
 
   limits: {
-    fileSize: 50 * 1024 * 1024
+    fileSize: 50 * 1024 * 1024,
   },
 
   fileFilter: (req, file, cb) => {
@@ -68,349 +63,357 @@ const upload = multer({
       ".obj",
       ".3mf",
       ".step",
-      ".stp"
+      ".stp",
     ];
 
-    const ext = path.extname(file.originalname).toLowerCase();
+    const ext = path
+      .extname(file.originalname)
+      .toLowerCase();
 
     if (!allowed.includes(ext)) {
-      return cb(new Error("Format de fichier non autorisé"));
+      return cb(
+        new Error("Format de fichier non autorisé")
+      );
     }
 
     cb(null, true);
-  }
+  },
 });
 
-// ================= WEBHOOK STRIPE =================
+// =====================================================
+// 💳 WEBHOOK STRIPE
 // ⚠️ DOIT ÊTRE AVANT express.json()
-app.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
-  console.log("📩 WEBHOOK REÇU");
+// =====================================================
+app.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  async (req, res) => {
+    console.log("📩 WEBHOOK REÇU");
 
-  const sig = req.headers["stripe-signature"];
-  let event;
+    const sig = req.headers["stripe-signature"];
+    let event;
 
-  try {
-    // 🔐 vérification signature Stripe
-    event = stripe.webhooks.constructEvent(
-      req.body,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET
-    );
+    // =====================================================
+    // 🔐 VÉRIFICATION SIGNATURE STRIPE
+    // =====================================================
+    try {
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        sig,
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
 
-    console.log("🔥 EVENT:", event.type);
+      console.log("🔥 EVENT:", event.type);
+    } catch (err) {
+      console.error("❌ Webhook error:", err.message);
+      return res.sendStatus(400);
+    }
 
-  } catch (err) {
-    console.error("❌ Webhook error:", err.message);
-    return res.sendStatus(400);
-  }
+    // =====================================================
+    // 🔄 TRAITEMENT ÉVÉNEMENT
+    // =====================================================
+    try {
+      if (event.type === "checkout.session.completed") {
+        const session = event.data.object;
 
-  try {
-    // ✅ paiement terminé
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object;
-      const orderId = session.metadata?.orderId;
+        const quoteId = session.metadata?.quoteId;
+        const orderId = session.metadata?.orderId;
 
-      if (!orderId) {
-        console.error("❌ orderId manquant");
+        // =====================================================
+        // 💳 CAS 1 : PAIEMENT D'UN DEVIS
+        // =====================================================
+        if (quoteId) {
+          const quote = await Quote.findById(quoteId);
+
+          if (!quote) {
+            console.error("❌ Devis introuvable :", quoteId);
+            return res.sendStatus(404);
+          }
+
+          // Évite le double traitement webhook
+          if (quote.paymentStatus === "Payé") {
+            console.log("⚠️ Devis déjà payé");
+            return res.sendStatus(200);
+          }
+
+          quote.paymentStatus = "Payé";
+          quote.status = "En fabrication";
+          quote.stripeSessionId = session.id;
+          quote.stripePaymentIntentId =
+            session.payment_intent || "";
+
+          await quote.save();
+
+          console.log("✅ Devis payé :", quote._id);
+
+          // ================= EMAIL CLIENT =================
+          await sendEmail({
+            to: quote.email,
+            subject: "Paiement reçu — MecaPrint3D",
+            html: `
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:30px 0;font-family:Arial,sans-serif;">
+                <tr>
+                  <td align="center">
+                    <table width="620" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #e5e7eb;">
+                      <tr>
+                        <td style="padding:28px;border-bottom:3px solid #f97316;">
+                          <h1 style="margin:0;color:#111827;font-size:24px;">
+                            Paiement confirmé
+                          </h1>
+                          <p style="margin:6px 0 0 0;color:#6b7280;font-size:14px;">
+                            MecaPrint3D
+                          </p>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding:30px;">
+                          <p style="margin:0 0 18px 0;color:#111827;font-size:16px;">
+                            Bonjour ${quote.name},
+                          </p>
+
+                          <p style="margin:0 0 18px 0;color:#374151;font-size:15px;line-height:1.6;">
+                            Nous avons bien reçu votre paiement.
+                            Votre projet passe maintenant en fabrication.
+                          </p>
+
+                          <p style="margin:0;color:#111827;font-size:14px;">
+                            <strong>Projet :</strong> ${quote.project || "-"}
+                          </p>
+
+                          <p style="margin:28px 0 0 0;color:#6b7280;font-size:13px;line-height:1.6;">
+                            Merci pour votre confiance,<br/>
+                            L’équipe MecaPrint3D
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            `,
+          });
+
+          // ================= EMAIL ADMIN =================
+          if (process.env.ADMIN_EMAIL) {
+            await sendEmail({
+              to: process.env.ADMIN_EMAIL,
+              subject: `Paiement reçu - ${quote.project}`,
+              html: `
+                <h1>Devis payé</h1>
+                <p><strong>Client :</strong> ${quote.name}</p>
+                <p><strong>Email :</strong> ${quote.email}</p>
+                <p><strong>Projet :</strong> ${quote.project}</p>
+                <p><strong>Montant :</strong> ${quote.quoteAmount || 0} €</p>
+                <p>Le devis est passé automatiquement en fabrication.</p>
+              `,
+            });
+          }
+
+          return res.sendStatus(200);
+        }
+
+        // =====================================================
+        // 📦 CAS 2 : ANCIENNE COMMANDE CLASSIQUE
+        // =====================================================
+        if (orderId) {
+          const order = await Order.findOne({ orderId });
+
+          if (!order) {
+            console.error("❌ Commande introuvable :", orderId);
+            return res.sendStatus(404);
+          }
+
+          if (order.status === "paid") {
+            console.log("⚠️ Commande déjà traitée");
+            return res.sendStatus(200);
+          }
+
+          order.status = "paid";
+          await order.save();
+
+          await handleOrder(order);
+
+          return res.sendStatus(200);
+        }
+
+        console.error("❌ Aucun quoteId ni orderId dans metadata");
         return res.sendStatus(400);
       }
 
-      // 🔍 récupération commande
-      const order = await Order.findOne({ orderId });
-
-      if (!order) {
-        console.error("❌ commande introuvable");
-        return res.sendStatus(404);
-      }
-
-      // ⚠️ éviter double traitement
-      if (order.status === "paid") {
-        console.log("⚠️ déjà traité");
-        return res.sendStatus(200);
-      }
-
-      // 🔄 mise à jour statut
-      order.status = "paid";
-      await order.save();
-
-      // 📦 traitement complet
-      await handleOrder(order);
+      // Événement Stripe reçu mais non utilisé
+      return res.sendStatus(200);
+    } catch (err) {
+      console.error("❌ Erreur traitement webhook :", err);
+      return res.sendStatus(500);
     }
-
-    res.sendStatus(200);
-
-  } catch (err) {
-    console.error("🔥 ERREUR WEBHOOK:", err);
-    res.sendStatus(500);
   }
-});
+);
 
-// ================= MIDDLEWARE =================
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "https://mecaprint3d-fr.vercel.app",
-    "https://mecaprint3d.fr",
-    "https://www.mecaprint3d.fr",
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-}));
+// =====================================================
+// 🌍 MIDDLEWARES
+// =====================================================
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "https://mecaprint3d-fr.vercel.app",
+      "https://mecaprint3d.fr",
+      "https://www.mecaprint3d.fr",
+    ],
+
+    methods: [
+      "GET",
+      "POST",
+      "PUT",
+      "DELETE",
+      "OPTIONS",
+    ],
+
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+    ],
+
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// =====================================================
+// 🧭 ROUTES API
+// =====================================================
 app.use("/api/quotes", quotesRoutes);
 app.use("/api/site-content", siteContentRoutes);
 
-// ================= UPLOAD =================
-// 👉 upload fichiers avant paiement
-app.post("/upload", upload.array("files"), (req, res) => {
-  const files = req.files.map(f => ({
-    name: f.originalname,
-    path: f.path
-  }));
+// =====================================================
+// 📂 UPLOAD LOCAL
+// =====================================================
+app.post(
+  "/upload",
+  upload.array("files"),
+  (req, res) => {
+    const files = req.files.map((file) => ({
+      name: file.originalname,
+      path: file.path,
+    }));
 
-  console.log("📂 Upload:", files);
+    console.log("📂 Upload:", files);
 
-  res.json({ files });
-});
+    res.json({ files });
+  }
+);
 
-// ================= CHECKOUT =================
+// =====================================================
+// 💳 ANCIEN CHECKOUT COMMANDE CLASSIQUE
+// =====================================================
 app.post("/create-checkout-session", async (req, res) => {
   try {
     const { files, email, uploadedFiles } = req.body;
 
-    // 🔒 validation
     if (!files || !files.length) {
-      return res.status(400).json({ error: "Aucun fichier" });
+      return res.status(400).json({
+        error: "Aucun fichier",
+      });
     }
 
     if (!email) {
-      return res.status(400).json({ error: "Email requis" });
+      return res.status(400).json({
+        error: "Email requis",
+      });
     }
 
-    // 🔐 nettoyage données
-    const safeFiles = files.map(f => ({
-      name: f.name,
-      price: Number(f.price),
-      quantity: Number(f.quantity)
+    const safeFiles = files.map((file) => ({
+      name: file.name,
+      price: Number(file.price),
+      quantity: Number(file.quantity),
     }));
 
-    // 💰 calcul total
     const total = safeFiles.reduce(
-      (sum, f) => sum + f.price * f.quantity,
+      (sum, file) =>
+        sum + file.price * file.quantity,
       0
     );
 
     if (total <= 0) {
-      return res.status(400).json({ error: "Montant invalide" });
+      return res.status(400).json({
+        error: "Montant invalide",
+      });
     }
 
-    // 🆔 ID commande unique
     const orderId = "ORD-" + Date.now();
 
-    // 💾 sauvegarde DB
     await Order.create({
       orderId,
       email,
       items: safeFiles,
       filePaths: uploadedFiles || [],
       total,
-      status: "pending"
+      status: "pending",
     });
 
-    console.log("🧾 Commande créée:", orderId);
+    const session =
+      await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        mode: "payment",
 
-    // 💳 Stripe session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      mode: "payment",
-    
-      line_items: safeFiles.map(f => ({
-        price_data: {
-          currency: "eur",
-          product_data: { name: f.name },
-          unit_amount: Math.round(f.price * 100)
+        line_items: safeFiles.map((file) => ({
+          price_data: {
+            currency: "eur",
+
+            product_data: {
+              name: file.name,
+            },
+
+            unit_amount: Math.round(
+              file.price * 100
+            ),
+          },
+
+          quantity: file.quantity,
+        })),
+
+        success_url:
+          "https://mecaprint3d.fr/success",
+
+        cancel_url:
+          "https://mecaprint3d.fr/cancel",
+
+        customer_email: email,
+
+        metadata: {
+          orderId,
         },
-        quantity: f.quantity
-      })),
-    
-      success_url: "https://mecaprint3d-fr.vercel.app/success",
-      cancel_url: "https://mecaprint3d-fr.vercel.app/cancel",
-    
-      // ✅ PRÉREMPLISSAGE EMAIL
-      customer_email: email,
-    
-      metadata: { orderId }
+      });
+
+    res.json({
+      url: session.url,
     });
-
-    res.json({ url: session.url });
-
   } catch (err) {
     console.error("🔥 ERREUR CHECKOUT:", err);
-    res.status(500).json({ error: "Erreur serveur" });
+
+    res.status(500).json({
+      error: "Erreur serveur",
+    });
   }
 });
 
-// ================= DEVIS =================
-app.post("/create-quote", async (req, res) => {
-  try {
-    console.log("🔥 ROUTE CREATE-QUOTE EXECUTÉE");
-    console.log("📩 BODY RECU:", req.body);
-
-    const { files, email, name, material, description } = req.body;
-
-    if (!email || !name) {
-      return res.status(400).json({ error: "Nom et email requis" });
-    }
-
-    const quoteId = "Q-" + Date.now();
-
-    const safeFiles = (files || []).map(f => ({
-      name: f.name || "Fichier",
-      quantity: Number(f.quantity) || 1,
-      price: Number(f.price) || 0
-    }));
-
-    const total = safeFiles.reduce(
-      (sum, f) => sum + f.price * f.quantity,
-      0
-    );
-
-    await Quote.create({
-      quoteId,
-      email,
-      name,
-      material: material || "Non précisée",
-      description: description || "",
-      files: safeFiles,
-      total
-    });
-
-    // ================= PDF DEVIS PREMIUM =================
-    const quotesDir = path.join(__dirname, "quotes");
-    if (!fs.existsSync(quotesDir)) fs.mkdirSync(quotesDir);
-
-    const quotePdfPath = path.join(quotesDir, `${quoteId}.pdf`);
-
-    await generateQuotePdf({
-      number: quoteId,
-      quoteId,
-      client: { name, email },
-      project: {
-        service: "Demande de devis impression 3D",
-        technology: "À définir",
-        material: material || "À définir",
-        finish: "À confirmer",
-        description: description || "Non précisée",
-      },
-      items: safeFiles.map((f) => ({
-        label: f.name,
-        details: `Fichier transmis — quantité ${f.quantity}`,
-        quantity: f.quantity,
-        unitPrice: f.price,
-      })),
-      files: safeFiles,
-      grossAmount: total,
-      discountAmount: 0,
-      finalAmount: total,
-      delay: "À confirmer après analyse technique",
-    }, quotePdfPath);
-
-    await sendEmail({
-      to: email,
-      subject: "Demande de devis reçue — MecaPrint3D",
-      text: `Bonjour ${name},
-
-Nous avons bien reçu votre demande de devis.
-
-Référence : ${quoteId}
-Matière : ${material || "Non précisée"}
-Description : ${description || "Non précisée"}
-
-Nous vous répondons sous 24h.
-
-MecaPrint3D`,
-      attachments: [
-        { filename: `devis-${quoteId}.pdf`, path: quotePdfPath }
-      ]
-    });
-
-    if (process.env.ADMIN_EMAIL) {
-      await sendEmail({
-        to: process.env.ADMIN_EMAIL,
-        subject: `Nouveau devis ${quoteId}`,
-        text: `Nouveau devis reçu
-
-Référence : ${quoteId}
-Client : ${name}
-Email : ${email}
-Matière : ${material || "Non précisée"}
-Description : ${description || "Non précisée"}
-
-Fichiers :
-${safeFiles.map(f => `- ${f.name} x${f.quantity}`).join("\n")}
-
-Total estimé : ${total} €`
-      });
-    }
-
-    console.log("✅ DEVIS OK:", quoteId);
-
-    res.json({ success: true, quoteId });
-
-  } catch (err) {
-    console.error("❌ ERREUR CREATE-QUOTE:", err);
-    res.status(500).json({ error: "Erreur envoi devis" });
-  }
-});
-
-// ================= TRAITEMENT COMMANDE =================
+// =====================================================
+// 📦 TRAITEMENT ANCIENNE COMMANDE
+// =====================================================
 async function handleOrder(order) {
   try {
-    console.log("📦 Traitement:", order.orderId);
+    console.log("📦 Traitement commande :", order.orderId);
 
-    const invoiceNumber = await generateInvoiceNumber();
-
-    const invoicesDir = path.join(__dirname, "invoices");
-    if (!fs.existsSync(invoicesDir)) fs.mkdirSync(invoicesDir);
-
-    const filePath = path.join(invoicesDir, `${invoiceNumber}.pdf`);
-
-    // 📄 génération facture
-    /*
-    await createInvoice({
-      customer: order.email,
-      email: order.email,
-      items: order.items,
-      total: order.total,
-      invoiceNumber
-    }, filePath);
-   
-    await saveInvoice({
-      invoiceNumber,
-      email: order.email,
-      total: order.total
-    });
- */
-    console.log("📄 Facture OK");
-
-    // ================= EMAIL CLIENT =================
     await sendEmail({
       to: order.email,
-      subject: "✅ Commande confirmée — Mecaprint3D",
+      subject: "Commande confirmée — MecaPrint3D",
       text: "Votre commande est confirmée et en cours de production.",
-      orderId: order.orderId,
-      attachments: [
-        { filename: "facture.pdf", path: filePath }
-      ]
     });
 
-    console.log("📧 Client OK");
-
-    // ================= EMAIL ADMIN =================
     if (process.env.ADMIN_EMAIL) {
       await sendEmail({
         to: process.env.ADMIN_EMAIL,
@@ -419,39 +422,41 @@ async function handleOrder(order) {
 Client: ${order.email}
 Total: ${order.total} €
 
-Fichiers:
-${(order.filePaths || []).map(f => "- " + f.name).join("\n")}
-
 Articles:
-${order.items.map(i => "- " + i.name + " x" + i.quantity).join("\n")}
-        `
+${order.items
+  .map((item) => "- " + item.name + " x" + item.quantity)
+  .join("\n")}
+        `,
       });
-
-      console.log("📧 Admin OK");
     }
 
     console.log("✅ Commande terminée");
-
   } catch (err) {
     console.error("❌ ERREUR COMMANDE:", err);
   }
 }
 
-// ================= ROOT =================
+// =====================================================
+// 🏠 ROOT
+// =====================================================
 app.get("/", (req, res) => {
   res.send("API MecaPrint3D OK 🚀");
 });
 
-// ================= ERROR HANDLER =================
+// =====================================================
+// 🔥 ERROR HANDLER
+// =====================================================
 app.use((err, req, res, next) => {
   console.error("🔥 ERREUR API:", err);
 
   res.status(500).json({
-    error: "Erreur serveur"
+    error: "Erreur serveur",
   });
 });
 
-// ================= START =================
+// =====================================================
+// 🚀 START SERVER
+// =====================================================
 app.listen(PORT, () => {
   console.log(`🚀 Serveur lancé sur http://localhost:${PORT}`);
 });
