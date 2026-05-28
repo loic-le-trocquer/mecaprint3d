@@ -437,6 +437,66 @@ ${order.items
 }
 
 // =====================================================
+// 💬 CHAT WEBSITE
+// =====================================================
+app.post("/api/chat", async (req, res) => {
+
+  try {
+
+    const { message } = req.body;
+
+    console.log("💬 CHAT:", message);
+
+    // =====================================================
+    // EMAIL ADMIN
+    // =====================================================
+    if (process.env.ADMIN_EMAIL) {
+
+      await sendEmail({
+
+        to: process.env.ADMIN_EMAIL,
+
+        subject: "💬 Nouveau message chat site",
+
+        html: `
+          <h1>Nouveau message chat</h1>
+
+          <p>
+            ${message}
+          </p>
+        `,
+      });
+
+    }
+
+    // =====================================================
+    // AUTO RESPONSE
+    // =====================================================
+    res.json({
+      success: true,
+
+      reply:
+        "Merci 👌 Votre message a bien été transmis à notre atelier. Nous vous répondrons rapidement.",
+    });
+
+  } catch (error) {
+
+    console.error(
+      "❌ Erreur chat :",
+      error
+    );
+
+    res.status(500).json({
+      success: false,
+      reply:
+        "Une erreur est survenue.",
+    });
+
+  }
+
+});
+
+// =====================================================
 // 🏠 ROOT
 // =====================================================
 app.get("/", (req, res) => {
