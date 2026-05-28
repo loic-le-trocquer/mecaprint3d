@@ -298,24 +298,6 @@ export default function AdminQuotes() {
         </select>
       </div>
 
-      {/* ================= KPI PRINCIPAUX ================= */}
-      <div className="mb-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label="Total devis" value={totalQuotes} color="orange" />
-        <KpiCard label="Nouveaux" value={newQuotes} color="cyan" />
-        <KpiCard label="En analyse" value={inProgressQuotes} color="amber" />
-        <KpiCard label="Devis envoyés" value={validatedQuotes} color="green" />
-      </div>
-
-      {/* ================= KPI SECONDAIRES ================= */}
-      <div className="mb-12 grid gap-5 md:grid-cols-3 xl:grid-cols-6">
-        <SmallKpi label="Manuels" value={manualQuotes} />
-        <SmallKpi label="Avec fichiers" value={withFilesQuotes} />
-        <SmallKpi label="Archivés" value={archivedQuotes} />
-        <SmallKpi label="Covering" value={coveringQuotes} />
-        <SmallKpi label="Impression 3D" value={printQuotes} />
-        <SmallKpi label="Vans" value={vanQuotes} />
-      </div>
-
       {/* ================= LOADING ================= */}
       {loading && (
         <div className="rounded-3xl border border-white/10 bg-zinc-900/80 p-10 text-center text-zinc-400">
