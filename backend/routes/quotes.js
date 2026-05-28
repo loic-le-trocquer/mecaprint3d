@@ -245,74 +245,86 @@ router.put("/:id", requireAdmin, async (req, res) => {
           `Mise à jour de votre projet - ${statusLabels[existingQuote.status]}`,
 
         html: `
-        <div style="font-family:Arial,sans-serif;background:#f4f4f5;padding:40px;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:30px 0;font-family:Arial,sans-serif;">
+  <tr>
+    <td align="center">
+      <table width="620" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #e5e7eb;">
+        <tr>
+          <td style="padding:28px;border-bottom:3px solid #f97316;">
+            <h1 style="margin:0;color:#111827;font-size:24px;">
+              MecaPrint3D
+            </h1>
+            <p style="margin:6px 0 0 0;color:#6b7280;font-size:14px;">
+              Suivi de votre projet
+            </p>
+          </td>
+        </tr>
 
-          <div style="max-width:620px;margin:auto;background:#18181b;border-radius:24px;overflow:hidden;border:1px solid #27272a;">
+        <tr>
+          <td style="padding:30px;">
+            <p style="margin:0 0 18px 0;color:#111827;font-size:16px;">
+              Bonjour ${existingQuote.name},
+            </p>
 
-            <div style="padding:40px;background:linear-gradient(135deg,#f97316,#ea580c);">
+            <p style="margin:0 0 22px 0;color:#374151;font-size:15px;line-height:1.6;">
+              ${statusMessages[existingQuote.status]}
+            </p>
 
-              <img
-                src="https://mecaprint3d.fr/logo-mail.jpg"
-                width="280"
-                alt="MecaPrint3D"
-              />
+            <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;">
+              <tr>
+                <td style="padding:12px;background:#f9fafb;color:#6b7280;font-size:13px;width:160px;">
+                  Projet
+                </td>
+                <td style="padding:12px;color:#111827;font-size:13px;">
+                  ${existingQuote.project || "-"}
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:12px;background:#f9fafb;color:#6b7280;font-size:13px;width:160px;border-top:1px solid #e5e7eb;">
+                  Statut
+                </td>
+                <td style="padding:12px;color:#111827;font-size:13px;border-top:1px solid #e5e7eb;">
+                  ${statusLabels[existingQuote.status] || existingQuote.status}
+                </td>
+              </tr>
+            </table>
 
-            </div>
-
-            <div style="padding:40px;color:#e4e4e7;">
-
-              <h1 style="margin-top:0;color:white;">
-                Bonjour ${existingQuote.name},
-              </h1>
-
-              <p style="font-size:16px;line-height:1.7;color:#d4d4d8;">
-                ${statusMessages[existingQuote.status]}
-              </p>
-
-              <div style="margin-top:30px;padding:24px;background:#09090b;border-radius:18px;border:1px solid #27272a;">
-
-                <p>
-                  <strong>Projet :</strong>
-                  ${existingQuote.project}
-                </p>
-
-                <p>
-                  <strong>Statut :</strong>
-                  ${statusLabels[existingQuote.status]}
-                </p>
-
-              </div>
-
-              ${
-                existingQuote.status === "Devis envoyé"
-                  ? `
-                    <div style="margin-top:35px;text-align:center;">
-
+            ${
+              existingQuote.status === "Devis envoyé"
+                ? `
+                <table cellpadding="0" cellspacing="0" align="center" style="margin-top:28px;">
+                  <tr>
+                    <td bgcolor="#f97316" style="padding:14px 24px;">
                       <a
                         href="https://mecaprint3d.fr/commande/${existingQuote._id}"
-                        style="
-                          display:inline-block;
-                          background:#f97316;
-                          color:white;
-                          text-decoration:none;
-                          padding:16px 28px;
-                          border-radius:14px;
-                          font-weight:800;
-                        "
+                        style="color:#ffffff;text-decoration:none;font-weight:bold;font-size:15px;display:inline-block;"
                       >
-                        Commander / Régler le devis
+                        Commander / régler le devis
                       </a>
+                    </td>
+                  </tr>
+                </table>
+                `
+                : ""
+            }
 
-                    </div>
-                  `
-                  : ""
-              }
+            <p style="margin:30px 0 0 0;color:#6b7280;font-size:13px;line-height:1.6;">
+              Merci pour votre confiance,<br/>
+              L’équipe MecaPrint3D
+            </p>
+          </td>
+        </tr>
 
-            </div>
+        <tr>
+          <td style="padding:18px;background:#f9fafb;color:#9ca3af;font-size:12px;text-align:center;border-top:1px solid #e5e7eb;">
+            MecaPrint3D — Fabrication additive • Pièces techniques • Covering • Sur-mesure
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
 
-          </div>
-
-        </div>
         `,
       });
 
