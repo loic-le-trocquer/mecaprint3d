@@ -72,6 +72,31 @@ const quoteSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+
+// ===============================
+// PAIEMENT / COMMANDE
+// ===============================
+paymentStatus: {
+  type: String,
+  enum: [
+    "En attente",
+    "Payé",
+    "Annulé",
+  ],
+  default: "En attente",
+},
+
+stripeSessionId: {
+  type: String,
+  default: "",
+},
+
+quoteNumber: {
+  type: String,
+  default: "",
+},
+
+
 quoteLines: [
   {
     label: String,
