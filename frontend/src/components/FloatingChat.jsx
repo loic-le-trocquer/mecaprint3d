@@ -2,7 +2,7 @@
 // 📦 IMPORTS
 // =====================================================
 import { useState } from "react";
-
+import { API_URL } from "../lib/api";
 import {
   MessageCircle,
   Send,
@@ -80,7 +80,7 @@ export default function FloatingChat() {
       // =====================================================
       const response =
         await fetch(
-          `${import.meta.env.VITE_API_URL}/api/chat`,
+          `${API_URL}/api/chat`,
           {
             method: "POST",
 
