@@ -7,6 +7,8 @@ const Quote = require("../models/Quote");
 const sendEmail = require("../utils/sendEmail");
 const generateQuotePdf = require("../utils/generateQuotePdf");
 const router = express.Router();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -719,6 +721,71 @@ await sendEmail({
     res.status(500).json({
       success: false,
       error: "Erreur serveur",
+    });
+  }
+});
+// =====================================================
+// 💳 CHECKOUT STRIPE POUR DEVIS CLIENT
+// POST /api/quotes/:id/checkout
+// =====================================================
+router.post("/:id/checkout", async (req, res) => {
+  try {
+    const quote = await Quote.findById(req.params.id);
+
+    if (!quote) {
+      return res.status(404).json({
+        success: false,
+        error: "Devis introuvable",
+      });
+    }
+
+    const lines = quote.quoteLines || [];
+
+    if (!lines.length) {
+      return res.status(400).json({
+        success: false,
+        error: "Aucune ligne de devis",
+      });
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      customer_email: quote.email,
+
+      line_items: lines.map((line) => ({
+        price_data: {
+          currency: "eur",
+          product_data: {
+            name: line.label || "Prestation MecaPrint3D",
+          },
+          unit_amount: Math.round(Number(line.unitPrice || 0) * 100),
+        },
+        quantity: Number(line.quantity || 1),
+      })),
+
+      success_url: "https://mecaprint3d.fr/success",
+      cancel_url: "https://mecaprint3d.fr/cancel",
+
+      metadata: {
+        quoteId: String(quote._id),
+      },
+    });
+
+    quote.stripeSessionId = session.id;
+    quote.paymentStatus = "En attente";
+    await quote.save();
+
+    res.json({
+      success: true,
+      url: session.url,
+    });
+  } catch (error) {
+    console.error("❌ Erreur checkout devis :", error);
+
+    res.status(500).json({
+      success: false,
+      error: "Erreur Stripe",
     });
   }
 });
