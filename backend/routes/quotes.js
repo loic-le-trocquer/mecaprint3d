@@ -344,6 +344,42 @@ await sendEmail({
       </tr>
     </table>
 
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:22px;">
+  <tr>
+    <td style="padding:14px;background:#f9fafb;border:1px solid #e5e7eb;">
+
+      <p style="margin:0 0 12px 0;color:#374151;font-size:12px;line-height:1.6;">
+        Certains pare-feu professionnels, antivirus ou logiciels de messagerie peuvent bloquer l’ouverture directe des boutons ou liens sécurisés.
+      </p>
+
+      <p style="margin:0 0 12px 0;color:#6b7280;font-size:12px;line-height:1.6;">
+        Si nécessaire, copiez simplement les liens ci-dessous dans votre navigateur internet :
+      </p>
+
+      <p style="margin:0 0 10px 0;color:#111827;font-size:12px;line-height:1.5;">
+        <strong>Visualisation du devis PDF :</strong><br/>
+        <a
+          href="${publicPdfUrl}"
+          style="color:#f97316;text-decoration:underline;"
+        >
+          ${publicPdfUrl}
+        </a>
+      </p>
+
+      <p style="margin:0;color:#111827;font-size:12px;line-height:1.5;">
+        <strong>Paiement sécurisé :</strong><br/>
+        <a
+          href="https://mecaprint3d.fr/commande/${existingQuote._id}"
+          style="color:#f97316;text-decoration:underline;"
+        >
+          https://mecaprint3d.fr/commande/${existingQuote._id}
+        </a>
+      </p>
+
+    </td>
+  </tr>
+</table>
+
     `
     : ""
 }
