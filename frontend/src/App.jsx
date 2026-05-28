@@ -10,7 +10,7 @@ import Transformations from "./components/showroom/Transformations";
 import WhyMecaPrint from "./components/WhyMecaPrint";
 import ProcessTimeline from "./components/ProcessTimeline";
 import CoverStylAI from "./components/CoverStylAI";
-
+import QuoteCheckout from "./pages/QuoteCheckout";
 
 
 import Admin from "./admin/Admin";
@@ -21,6 +21,10 @@ import { useSiteContent } from "./lib/useSiteContent";
 import "./index.css";
 
 export default function App() {
+
+  const isQuoteCheckout =
+  window.location.pathname.startsWith("/commande/");
+
   const { content, setContent } = useSiteContent();
 
   const isAdmin = window.location.pathname.startsWith("/admin");
@@ -28,6 +32,10 @@ export default function App() {
   if (window.location.pathname === "/admin/quotes") {
     return <AdminQuotes />;
   }
+
+  if (isQuoteCheckout) {
+  return <QuoteCheckout />;
+}
 
   if (isAdmin) {
     return <Admin content={content} setContent={setContent} />;
