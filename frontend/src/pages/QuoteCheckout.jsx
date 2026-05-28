@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { API_URL } from "../lib/api";
 
 export default function QuoteCheckout() {
-  const { id } = useParams();
   const [error, setError] = useState("");
+
+  const id = window.location.pathname
+    .replace("/commande/", "")
+    .trim();
 
   useEffect(() => {
     const startCheckout = async () => {
@@ -27,13 +29,15 @@ export default function QuoteCheckout() {
       }
     };
 
-    startCheckout();
+    if (id) startCheckout();
   }, [id]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
       <div className="max-w-lg rounded-3xl border border-white/10 bg-zinc-900 p-8 text-center">
-        <h1 className="text-3xl font-black">Redirection vers le paiement</h1>
+        <h1 className="text-3xl font-black">
+          Redirection vers le paiement
+        </h1>
 
         <p className="mt-4 text-zinc-400">
           Préparation du paiement sécurisé Stripe...
