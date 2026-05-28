@@ -74,6 +74,19 @@ const quoteSchema = new mongoose.Schema(
     },
 
 // ===============================
+// ACCÈS PUBLIC SÉCURISÉ AU DEVIS
+// ===============================
+publicAccessToken: {
+  type: String,
+  default: "",
+},
+
+publicAccessTokenExpiresAt: {
+  type: Date,
+  default: null,
+},
+
+// ===============================
 // PAIEMENT / COMMANDE
 // ===============================
 paymentStatus: {

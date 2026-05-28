@@ -3,7 +3,7 @@ const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-
+const crypto = require("crypto");
 const Quote = require("../models/Quote");
 
 const sendEmail = require("../utils/sendEmail");
@@ -170,12 +170,17 @@ router.put("/:id", requireAdmin, async (req, res) => {
     // 📅 DATE ENVOI DEVIS
     // =====================================================
     if (
-      req.body.status === "Devis envoyé" &&
-      oldStatus !== "Devis envoyé"
-    ) {
-      existingQuote.quoteSentAt =
-        new Date();
-    }
+  req.body.status === "Devis envoyé" &&
+  oldStatus !== "Devis envoyé"
+) {
+  existingQuote.quoteSentAt = new Date();
+
+  existingQuote.publicAccessToken =
+    crypto.randomBytes(32).toString("hex");
+
+  existingQuote.publicAccessTokenExpiresAt =
+    new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+}
 
     // =====================================================
     // SAVE
@@ -235,9 +240,15 @@ router.put("/:id", requireAdmin, async (req, res) => {
       };
 
       // =====================================================
-      // SEND EMAIL
+      // 🔗 LIEN PUBLIC PDF
       // =====================================================
-      await sendEmail({
+const publicPdfUrl =
+  `https://mecaprint3d-backend.onrender.com/api/quotes/${existingQuote._id}/public-pdf?token=${existingQuote.publicAccessToken}`;
+
+// =====================================================
+// SEND EMAIL
+// =====================================================
+await sendEmail({
 
         to: existingQuote.email,
 
@@ -290,24 +301,52 @@ router.put("/:id", requireAdmin, async (req, res) => {
             </table>
 
             ${
-              existingQuote.status === "Devis envoyé"
-                ? `
-                <table cellpadding="0" cellspacing="0" align="center" style="margin-top:28px;">
-                  <tr>
-                    <td bgcolor="#f97316" style="padding:14px 24px;">
-                      <a
-                        href="https://mecaprint3d.fr/commande/${existingQuote._id}"
-                        style="color:#ffffff;text-decoration:none;font-weight:bold;font-size:15px;display:inline-block;"
-                      >
-                        Commander / régler le devis
-                      </a>
-                    </td>
-                  </tr>
-                </table>
-                `
-                : ""
-            }
+  existingQuote.status === "Devis envoyé"
+    ? `
 
+    <!-- PDF -->
+    <table cellpadding="0" cellspacing="0" align="center" style="margin-top:28px;">
+      <tr>
+        <td bgcolor="#27272a" style="padding:14px 24px;">
+          <a
+            href="${publicPdfUrl}"
+            style="
+              color:#ffffff;
+              text-decoration:none;
+              font-weight:bold;
+              font-size:15px;
+              display:inline-block;
+            "
+          >
+            Visualiser le devis PDF
+          </a>
+        </td>
+      </tr>
+    </table>
+
+    <!-- STRIPE -->
+    <table cellpadding="0" cellspacing="0" align="center" style="margin-top:16px;">
+      <tr>
+        <td bgcolor="#f97316" style="padding:14px 24px;">
+          <a
+            href="https://mecaprint3d.fr/commande/${existingQuote._id}"
+            style="
+              color:#ffffff;
+              text-decoration:none;
+              font-weight:bold;
+              font-size:15px;
+              display:inline-block;
+            "
+          >
+            Commander / régler le devis
+          </a>
+        </td>
+      </tr>
+    </table>
+
+    `
+    : ""
+}
             <p style="margin:30px 0 0 0;color:#6b7280;font-size:13px;line-height:1.6;">
               Merci pour votre confiance,<br/>
               L’équipe MecaPrint3D
@@ -638,5 +677,52 @@ router.post("/:id/checkout", async (req, res) => {
   }
 
 });
+// =====================================================
+// 📄 PDF PUBLIC SÉCURISÉ
+// GET /api/quotes/:id/public-pdf?token=...
+// =====================================================
+router.get("/:id/public-pdf", async (req, res) => {
+  try {
+    const quote = await Quote.findById(req.params.id).lean();
 
+    if (!quote) {
+      return res.status(404).json({
+        success: false,
+        error: "Devis introuvable",
+      });
+    }
+
+    const token = req.query.token;
+
+    if (
+      !token ||
+      !quote.publicAccessToken ||
+      token !== quote.publicAccessToken
+    ) {
+      return res.status(403).json({
+        success: false,
+        error: "Accès refusé",
+      });
+    }
+
+    if (
+      quote.publicAccessTokenExpiresAt &&
+      new Date(quote.publicAccessTokenExpiresAt) < new Date()
+    ) {
+      return res.status(403).json({
+        success: false,
+        error: "Lien expiré",
+      });
+    }
+
+    generateQuotePdf(res, quote);
+  } catch (error) {
+    console.error("❌ Erreur PDF public :", error);
+
+    res.status(500).json({
+      success: false,
+      error: "Erreur génération PDF",
+    });
+  }
+});
 module.exports = router;
