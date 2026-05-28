@@ -11,7 +11,7 @@ import WhyMecaPrint from "./components/WhyMecaPrint";
 import ProcessTimeline from "./components/ProcessTimeline";
 import CoverStylAI from "./components/CoverStylAI";
 import QuoteCheckout from "./pages/QuoteCheckout";
-
+import FloatingChat from "./components/FloatingChat";
 
 import Admin from "./admin/Admin";
 import AdminQuotes from "./admin/AdminQuotes";
@@ -66,6 +66,8 @@ export default function App() {
         
         <QuoteForm content={content} />
       </main>
+
+        <FloatingChat />
 
       <Footer content={content} />
     </div>
