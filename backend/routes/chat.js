@@ -108,8 +108,18 @@ router.post("/", async (req, res) => {
 // =====================================================
 router.get("/admin", requireAdmin, async (req, res) => {
   try {
-    const conversations = await Conversation.find()
-      .sort({ lastMessageAt: -1 });
+    const showArchived =
+  req.query.archived === "true";
+
+const conversations =
+  await Conversation.find({
+    archived: showArchived
+      ? true
+      : { $ne: true },
+  }).sort({
+    lastMessageAt: -1,
+  });
+
 
     res.json({
       success: true,
@@ -201,6 +211,56 @@ router.get("/:id", async (req, res) => {
       success: false,
       error: "Erreur serveur",
     });
+  // =====================================================
+// 📦 ARCHIVE CONVERSATION
+// PUT /api/chat/admin/:id/archive
+// =====================================================
+router.put(
+  "/admin/:id/archive",
+  requireAdmin,
+  async (req, res) => {
+
+    try {
+
+      const conversation =
+        await Conversation.findById(
+          req.params.id
+        );
+
+      if (!conversation) {
+
+        return res.status(404).json({
+          success: false,
+          error:
+            "Conversation introuvable",
+        });
+
+      }
+
+      conversation.archived = true;
+
+      await conversation.save();
+
+      res.json({
+        success: true,
+      });
+
+    } catch (error) {
+
+      console.error(
+        "❌ Erreur archivage :",
+        error
+      );
+
+      res.status(500).json({
+        success: false,
+        error: "Erreur serveur",
+      });
+
+    }
+
+  }
+);
   }
 });
 

@@ -44,6 +44,11 @@ export default function AdminChat() {
     setSending,
   ] = useState(false);
 
+  const [
+    showArchived, 
+    setShowArchived
+  ] = useState(false);
+
   // =====================================================
   // AUTO SCROLL
   // =====================================================
@@ -71,7 +76,7 @@ export default function AdminChat() {
 
         const response =
           await fetch(
-            `${API_URL}/api/chat/admin`,
+            `${API_URL}/api/chat/admin?archived=${showArchived}`,
             {
               headers: {
                 Authorization:
@@ -135,7 +140,7 @@ export default function AdminChat() {
     return () =>
       clearInterval(interval);
 
-  }, [selected?._id]);
+  }, [selected?._id, showArchived]);
 
   // =====================================================
   // SEND REPLY
@@ -210,6 +215,57 @@ export default function AdminChat() {
       }
 
     };
+
+// =====================================================
+// ARCHIVE CONVERSATION
+// =====================================================
+const archiveConversation =
+  async () => {
+
+    if (!selected) return;
+
+    try {
+
+      const token =
+        localStorage.getItem(
+          "mecaprint3d_admin_token"
+        );
+
+      const response =
+        await fetch(
+          `${API_URL}/api/chat/admin/${selected._id}/archive`,
+          {
+            method: "PUT",
+
+            headers: {
+              Authorization:
+                `Bearer ${token}`,
+            },
+          }
+        );
+
+      const data =
+        await response.json();
+
+      if (!data.success) return;
+
+      // =====================================================
+      // RESET SELECTED
+      // =====================================================
+      setSelected(null);
+
+      // =====================================================
+      // RELOAD
+      // =====================================================
+      await loadConversations();
+
+    } catch (error) {
+
+      console.error(error);
+
+    }
+
+  };
 
   // =====================================================
   // UNREAD COUNT
@@ -343,16 +399,28 @@ export default function AdminChat() {
           <div className="rounded-[28px] border border-white/10 bg-zinc-900/70 p-4">
 
             <div className="mb-4 flex items-center justify-between">
+  <p className="text-xs font-black uppercase tracking-[0.25em] text-orange-400">
+    Discussions
+  </p>
 
-              <p className="text-xs font-black uppercase tracking-[0.25em] text-orange-400">
-                Discussions
-              </p>
+  <div className="flex items-center gap-2">
+    <span className="rounded-full bg-orange-500/10 px-3 py-1 text-xs font-black text-orange-300">
+      {conversations.length}
+    </span>
 
-              <span className="rounded-full bg-orange-500/10 px-3 py-1 text-xs font-black text-orange-300">
-                {conversations.length}
-              </span>
-
-            </div>
+    <button
+      type="button"
+      onClick={() => setShowArchived((value) => !value)}
+      className={`rounded-full px-3 py-1 text-xs font-black ${
+        showArchived
+          ? "bg-orange-500 text-white"
+          : "bg-white/10 text-zinc-300"
+      }`}
+    >
+      {showArchived ? "Archives" : "Actifs"}
+    </button>
+  </div>
+</div>
 
             {/* LIST */}
             <div className="grid max-h-[650px] gap-3 overflow-y-auto pr-1">
@@ -526,6 +594,17 @@ export default function AdminChat() {
                 </div>
 
                 {/* =====================================================
+                      ARCHIVE BUTTON
+                ===================================================== */}
+                <button
+                type="button"
+  onClick={archiveConversation}
+  className="mx-5 mb-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-xs font-black text-red-300 hover:bg-red-500/20"
+>
+  Archiver la conversation
+</button>
+
+                {/* =====================================================
                     REPLY INPUT
                 ===================================================== */}
                 <div className="border-t border-white/10 p-4">
@@ -570,6 +649,7 @@ export default function AdminChat() {
                       Envoyer
 
                     </button>
+
 
                   </div>
 
