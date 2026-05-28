@@ -12,6 +12,7 @@ import ProcessTimeline from "./components/ProcessTimeline";
 import CoverStylAI from "./components/CoverStylAI";
 import QuoteCheckout from "./pages/QuoteCheckout";
 import FloatingChat from "./components/FloatingChat";
+import AdminChat from "./admin/AdminChat";
 
 import Admin from "./admin/Admin";
 import AdminQuotes from "./admin/AdminQuotes";
@@ -28,6 +29,10 @@ export default function App() {
   const { content, setContent } = useSiteContent();
 
   const isAdmin = window.location.pathname.startsWith("/admin");
+
+  if (window.location.pathname === "/admin/quotes") {
+    return <AdminQuotes />;
+  }
 
   if (window.location.pathname === "/admin/quotes") {
     return <AdminQuotes />;

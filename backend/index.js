@@ -8,6 +8,9 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require("path");
 
+const chatRoutes = require("./routes/chat");
+
+
 const app = express();
 
 // ================= STRIPE =================
@@ -288,6 +291,7 @@ app.use(express.urlencoded({ extended: true }));
 // =====================================================
 app.use("/api/quotes", quotesRoutes);
 app.use("/api/site-content", siteContentRoutes);
+app.use("/api/chat", chatRoutes);
 
 // =====================================================
 // 📂 UPLOAD LOCAL
@@ -437,71 +441,12 @@ ${order.items
 }
 
 // =====================================================
-// 💬 CHAT WEBSITE
-// =====================================================
-app.post("/api/chat", async (req, res) => {
-
-  try {
-
-    const { message } = req.body;
-
-    console.log("💬 CHAT:", message);
-
-    // =====================================================
-    // EMAIL ADMIN
-    // =====================================================
-    if (process.env.ADMIN_EMAIL) {
-
-      await sendEmail({
-
-        to: process.env.ADMIN_EMAIL,
-
-        subject: "💬 Nouveau message chat site",
-
-        html: `
-          <h1>Nouveau message chat</h1>
-
-          <p>
-            ${message}
-          </p>
-        `,
-      });
-
-    }
-
-    // =====================================================
-    // AUTO RESPONSE
-    // =====================================================
-    res.json({
-      success: true,
-
-      reply:
-        "Merci 👌 Votre message a bien été transmis à notre atelier. Nous vous répondrons rapidement.",
-    });
-
-  } catch (error) {
-
-    console.error(
-      "❌ Erreur chat :",
-      error
-    );
-
-    res.status(500).json({
-      success: false,
-      reply:
-        "Une erreur est survenue.",
-    });
-
-  }
-
-});
-
-// =====================================================
 // 🏠 ROOT
 // =====================================================
 app.get("/", (req, res) => {
   res.send("API MecaPrint3D OK 🚀");
 });
+
 
 // =====================================================
 // 🔥 ERROR HANDLER
