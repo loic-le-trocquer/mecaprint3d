@@ -174,5 +174,34 @@ router.post("/admin/:id/reply", requireAdmin, async (req, res) => {
     });
   }
 });
+// =====================================================
+// 💬 GET CONVERSATION CLIENT
+// GET /api/chat/:id
+// =====================================================
+router.get("/:id", async (req, res) => {
+  try {
+    const conversation =
+      await Conversation.findById(req.params.id);
+
+    if (!conversation) {
+      return res.status(404).json({
+        success: false,
+        error: "Conversation introuvable",
+      });
+    }
+
+    res.json({
+      success: true,
+      conversation,
+    });
+  } catch (error) {
+    console.error("❌ Erreur lecture conversation :", error);
+
+    res.status(500).json({
+      success: false,
+      error: "Erreur serveur",
+    });
+  }
+});
 
 module.exports = router;
