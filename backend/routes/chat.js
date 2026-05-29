@@ -217,7 +217,44 @@ router.put("/admin/:id/archive", requireAdmin, async (req, res) => {
     });
   }
 });
+// =====================================================
+// 👁️ MARK AS READ BY ADMIN
+// PUT /api/chat/admin/:id/read
+// =====================================================
+router.put("/admin/:id/read", requireAdmin, async (req, res) => {
+  try {
+    const conversation = await Conversation.findById(req.params.id);
 
+    if (!conversation) {
+      return res.status(404).json({
+        success: false,
+        error: "Conversation introuvable",
+      });
+    }
+
+    conversation.messages = conversation.messages.map((message) => {
+      if (message.from === "client") {
+        message.readByAdmin = true;
+      }
+
+      return message;
+    });
+
+    await conversation.save();
+
+    res.json({
+      success: true,
+      conversation,
+    });
+  } catch (error) {
+    console.error("❌ Erreur lecture admin :", error);
+
+    res.status(500).json({
+      success: false,
+      error: "Erreur serveur",
+    });
+  }
+});
 
 // =====================================================
 // 💬 GET CONVERSATION CLIENT
