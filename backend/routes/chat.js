@@ -184,6 +184,41 @@ router.post("/admin/:id/reply", requireAdmin, async (req, res) => {
     });
   }
 });
+
+// =====================================================
+// 📦 ARCHIVE CONVERSATION
+// PUT /api/chat/admin/:id/archive
+// =====================================================
+router.put("/admin/:id/archive", requireAdmin, async (req, res) => {
+  try {
+    const conversation = await Conversation.findById(req.params.id);
+
+    if (!conversation) {
+      return res.status(404).json({
+        success: false,
+        error: "Conversation introuvable",
+      });
+    }
+
+    conversation.archived = true;
+
+    await conversation.save();
+
+    res.json({
+      success: true,
+      conversation,
+    });
+  } catch (error) {
+    console.error("❌ Erreur archivage conversation :", error);
+
+    res.status(500).json({
+      success: false,
+      error: "Erreur serveur",
+    });
+  }
+});
+
+
 // =====================================================
 // 💬 GET CONVERSATION CLIENT
 // GET /api/chat/:id
