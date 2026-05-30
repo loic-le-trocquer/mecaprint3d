@@ -1,420 +1,271 @@
 // =====================================================
 // IMPORTS
 // =====================================================
-import {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 
 import AdminLayout from "./AdminLayout";
-
 import { API_URL } from "../lib/api";
 
 // =====================================================
 // ADMIN CHAT
 // =====================================================
 export default function AdminChat() {
-
   // =====================================================
   // STATES
   // =====================================================
-  const [
-    conversations,
-    setConversations,
-  ] = useState([]);
-
-  const [
-    selected,
-    setSelected,
-  ] = useState(null);
-
-  const [
-    reply,
-    setReply,
-  ] = useState("");
-
-  const [
-    loading,
-    setLoading,
-  ] = useState(true);
-
-  const [
-    sending,
-    setSending,
-  ] = useState(false);
-
-  const [
-    showArchived,
-    setShowArchived,
-  ] = useState(false);
+  const [conversations, setConversations] = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [reply, setReply] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
 
   // =====================================================
-  // AUTO SCROLL
+  // REFS
   // =====================================================
-  const messagesEndRef =
-    useRef(null);
-
-  // =====================================================
-  // PREVIOUS UNREAD COUNT
-  // =====================================================
-  const previousUnreadRef =
-    useRef(0);
+  const messagesEndRef = useRef(null);
+  const previousUnreadRef = useRef(0);
 
   // =====================================================
   // LOAD CONVERSATIONS
   // =====================================================
-  const loadConversations =
-    async () => {
+  const loadConversations = async () => {
+    try {
+      const token = localStorage.getItem("mecaprint3d_admin_token");
 
-      try {
+      const response = await fetch(
+        `${API_URL}/api/chat/admin?archived=${showArchived}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-        const token =
-          localStorage.getItem(
-            "mecaprint3d_admin_token"
-          );
+      const data = await response.json();
 
-        const response =
-          await fetch(
-            `${API_URL}/api/chat/admin?archived=${showArchived}`,
-            {
-              headers: {
-                Authorization:
-                  `Bearer ${token}`,
-              },
-            }
-          );
+      if (!data.success) return;
 
-        const data =
-          await response.json();
+      const list = data.conversations || [];
 
-        if (!data.success) return;
+      setConversations(list);
 
-        setConversations(
-          data.conversations || []
+      // Évite le bug de superposition entre deux conversations
+      setSelected((currentSelected) => {
+        if (!currentSelected) return null;
+
+        const updated = list.find(
+          (item) => item._id === currentSelected._id
         );
 
-        // =====================================================
-        // UPDATE SELECTED
-        // =====================================================
-        if (selected) {
-
-          const updated =
-            data.conversations.find(
-              (item) =>
-                item._id === selected._id
-            );
-
-          if (updated) {
-            setSelected(updated);
-          }
-
-        }
-
-      } catch (error) {
-
-        console.error(error);
-
-      } finally {
-
-        setLoading(false);
-
-      }
-
-    };
+        return updated || currentSelected;
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // =====================================================
   // POLLING
   // =====================================================
   useEffect(() => {
-
     loadConversations();
 
-    const interval =
-      setInterval(() => {
+    const interval = setInterval(() => {
+      loadConversations();
+    }, 5000);
 
-        loadConversations();
-
-      }, 5000);
-
-    return () =>
-      clearInterval(interval);
-
+    return () => clearInterval(interval);
   }, [selected?._id, showArchived]);
 
   // =====================================================
   // SEND REPLY
   // =====================================================
-  const sendReply =
-    async () => {
+  const sendReply = async () => {
+    if (!reply.trim() || !selected) return;
 
-      if (
-        !reply.trim() ||
-        !selected
-      ) {
-        return;
-      }
+    try {
+      setSending(true);
 
-      try {
+      const token = localStorage.getItem("mecaprint3d_admin_token");
 
-        setSending(true);
+      const response = await fetch(
+        `${API_URL}/api/chat/admin/${selected._id}/reply`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            message: reply.trim(),
+          }),
+        }
+      );
 
-        const token =
-          localStorage.getItem(
-            "mecaprint3d_admin_token"
-          );
+      const data = await response.json();
 
-        const response =
-          await fetch(
-            `${API_URL}/api/chat/admin/${selected._id}/reply`,
-            {
-              method: "POST",
+      if (!data.success) return;
 
-              headers: {
-                "Content-Type":
-                  "application/json",
+      setReply("");
+      setSelected(data.conversation);
 
-                Authorization:
-                  `Bearer ${token}`,
-              },
-
-              body: JSON.stringify({
-                message:
-                  reply.trim(),
-              }),
-            }
-          );
-
-        const data =
-          await response.json();
-
-        if (!data.success) return;
-
-        // =====================================================
-        // RESET INPUT
-        // =====================================================
-        setReply("");
-
-        // =====================================================
-        // UPDATE SELECTED
-        // =====================================================
-        setSelected(
-          data.conversation
-        );
-
-        // =====================================================
-        // RELOAD
-        // =====================================================
-        await loadConversations();
-
-      } catch (error) {
-
-        console.error(error);
-
-      } finally {
-
-        setSending(false);
-
-      }
-
-    };
+      await loadConversations();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setSending(false);
+    }
+  };
 
   // =====================================================
   // ARCHIVE CONVERSATION
   // =====================================================
-  const archiveConversation =
-    async () => {
+  const archiveConversation = async () => {
+    if (!selected) return;
 
-      if (!selected) return;
+    try {
+      const token = localStorage.getItem("mecaprint3d_admin_token");
 
-      try {
+      const response = await fetch(
+        `${API_URL}/api/chat/admin/${selected._id}/archive`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-        const token =
-          localStorage.getItem(
-            "mecaprint3d_admin_token"
-          );
+      const data = await response.json();
 
-        const response =
-          await fetch(
-            `${API_URL}/api/chat/admin/${selected._id}/archive`,
-            {
-              method: "PUT",
+      if (!data.success) return;
 
-              headers: {
-                Authorization:
-                  `Bearer ${token}`,
-              },
-            }
-          );
-
-        const data =
-          await response.json();
-
-        if (!data.success) return;
-
-        // =====================================================
-        // RESET SELECTED
-        // =====================================================
-        setSelected(null);
-
-        // =====================================================
-        // RELOAD
-        // =====================================================
-        await loadConversations();
-
-      } catch (error) {
-
-        console.error(error);
-
-      }
-
-    };
+      setSelected(null);
+      await loadConversations();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // =====================================================
-  // MARK CONVERSATION AS READ
+  // MARK AS READ
   // =====================================================
-  const markAsRead =
-    async (conversation) => {
+  const markAsRead = async (conversation) => {
+    try {
+      const token = localStorage.getItem("mecaprint3d_admin_token");
 
-      try {
+      const response = await fetch(
+        `${API_URL}/api/chat/admin/${conversation._id}/read`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-        const token =
-          localStorage.getItem(
-            "mecaprint3d_admin_token"
-          );
+      const data = await response.json();
 
-        const response =
-          await fetch(
-            `${API_URL}/api/chat/admin/${conversation._id}/read`,
-            {
-              method: "PUT",
+      if (!data.success) return;
 
-              headers: {
-                Authorization:
-                  `Bearer ${token}`,
-              },
-            }
-          );
+      setSelected(data.conversation);
+      await loadConversations();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-        const data =
-          await response.json();
-
-        if (!data.success) return;
-
-        // =====================================================
-        // UPDATE SELECTED
-        // =====================================================
-        setSelected(
-          data.conversation
-        );
-
-        // =====================================================
-        // RELOAD
-        // =====================================================
-        await loadConversations();
-
-      } catch (error) {
-
-        console.error(error);
-
-      }
-
-    };
+  // =====================================================
+  // SELECT CONVERSATION CLEANLY
+  // =====================================================
+  const selectConversation = async (conversation) => {
+    setSelected(null);
+    setReply("");
+    await markAsRead(conversation);
+  };
 
   // =====================================================
   // UNREAD COUNT
   // =====================================================
-  const getUnreadCount =
-    (conversation) => {
-
-      return (
-        conversation.messages || []
-      ).filter(
-        (message) =>
-          message.from === "client" &&
-          message.readByAdmin !== true
-      ).length;
-
-    };
+  const getUnreadCount = (conversation) => {
+    return (conversation.messages || []).filter(
+      (message) =>
+        message.from === "client" &&
+        message.readByAdmin !== true
+    ).length;
+  };
 
   // =====================================================
-  // AUTO SCROLL TO BOTTOM
+  // AUTO SCROLL
   // =====================================================
   useEffect(() => {
-
-    if (!messagesEndRef.current) {
-      return;
-    }
+    if (!messagesEndRef.current) return;
 
     messagesEndRef.current.scrollIntoView({
       behavior: "smooth",
     });
-
   }, [selected]);
 
   // =====================================================
   // SOUND NOTIFICATION
   // =====================================================
   useEffect(() => {
-
-    const unreadCount =
-      conversations.reduce(
-        (
-          total,
-          conversation
-        ) => {
-
-          return (
-            total +
-            (
-              conversation.messages || []
-            ).filter(
-              (message) =>
-                message.from === "client" &&
-                message.readByAdmin !== true
-            ).length
-          );
-
-        },
-        0
+    const unreadCount = conversations.reduce((total, conversation) => {
+      return (
+        total +
+        (conversation.messages || []).filter(
+          (message) =>
+            message.from === "client" &&
+            message.readByAdmin !== true
+        ).length
       );
+    }, 0);
 
-    // =====================================================
-    // NEW MESSAGE SOUND
-    // =====================================================
-    if (
-      unreadCount >
-      previousUnreadRef.current
-    ) {
-
-      const audio =
-        new Audio(
-          "/notification.mp3"
-        );
-
+    if (unreadCount > previousUnreadRef.current) {
+      const audio = new Audio("/notification.mp3");
       audio.volume = 0.4;
-
       audio.play().catch(() => {});
-
     }
 
-    previousUnreadRef.current =
-      unreadCount;
-
+    previousUnreadRef.current = unreadCount;
   }, [conversations]);
+
+  // =====================================================
+  // RENDER FILES
+  // =====================================================
+  const renderFiles = (message) => {
+    if (!message.files?.length) return null;
+
+    return (
+      <div className="mt-3 space-y-2">
+        {message.files.map((file, fileIndex) => {
+          const fileUrl = `${API_URL}/${file.path.replaceAll("\\", "/")}`;
+
+          return (
+            <a
+              key={fileIndex}
+              href={fileUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="block rounded-xl border border-black/10 bg-black/10 px-3 py-2 text-xs font-bold underline"
+            >
+              📎 {file.originalName || "Fichier joint"}
+            </a>
+          );
+        })}
+      </div>
+    );
+  };
 
   // =====================================================
   // RENDER
   // =====================================================
   return (
-
     <AdminLayout title="Conversations">
-
-      {/* =====================================================
-          HEADER
-      ===================================================== */}
       <div className="mb-8 rounded-[32px] border border-white/10 bg-gradient-to-br from-zinc-900 via-black to-zinc-950 p-6 shadow-2xl shadow-black/30">
-
         <p className="text-xs font-black uppercase tracking-[0.3em] text-orange-400">
           Chat client
         </p>
@@ -426,267 +277,144 @@ export default function AdminChat() {
         <p className="mt-3 max-w-3xl text-sm text-zinc-400">
           Répondez aux visiteurs du site directement depuis le back-office.
         </p>
-
       </div>
 
-      {/* =====================================================
-          LOADING
-      ===================================================== */}
       {loading && (
-
         <div className="rounded-3xl border border-white/10 bg-zinc-900/80 p-10 text-center text-zinc-400">
           Chargement des conversations...
         </div>
-
       )}
 
-      {/* =====================================================
-          CONTENT
-      ===================================================== */}
       {!loading && (
-
         <div className="grid gap-6 xl:grid-cols-[380px_1fr]">
-
-          {/* =====================================================
-              LEFT PANEL
-          ===================================================== */}
+          {/* LISTE CONVERSATIONS */}
           <div className="rounded-[28px] border border-white/10 bg-zinc-900/70 p-4">
-
-            {/* HEADER */}
             <div className="mb-4 flex items-center justify-between">
-
               <p className="text-xs font-black uppercase tracking-[0.25em] text-orange-400">
                 Discussions
               </p>
 
               <div className="flex items-center gap-2">
-
                 <span className="rounded-full bg-orange-500/10 px-3 py-1 text-xs font-black text-orange-300">
                   {conversations.length}
                 </span>
 
                 <button
                   type="button"
-                  onClick={() =>
-                    setShowArchived(
-                      (value) => !value
-                    )
-                  }
+                  onClick={() => {
+                    setSelected(null);
+                    setShowArchived((value) => !value);
+                  }}
                   className={`rounded-full px-3 py-1 text-xs font-black ${
                     showArchived
                       ? "bg-orange-500 text-white"
                       : "bg-white/10 text-zinc-300"
                   }`}
                 >
-                  {showArchived
-                    ? "Archives"
-                    : "Actifs"}
+                  {showArchived ? "Archives" : "Actifs"}
                 </button>
-
               </div>
-
             </div>
 
-            {/* =====================================================
-                CONVERSATIONS LIST
-            ===================================================== */}
             <div className="grid max-h-[650px] gap-3 overflow-y-auto pr-1">
-
               {conversations.length === 0 && (
-
                 <div className="rounded-2xl border border-dashed border-white/10 p-6 text-center text-sm text-zinc-500">
                   Aucune conversation.
                 </div>
-
               )}
 
-              {conversations.map(
-                (conversation) => {
+              {conversations.map((conversation) => {
+                const active = selected?._id === conversation._id;
+                const unread = getUnreadCount(conversation);
+                const lastMessage =
+                  conversation.messages?.[conversation.messages.length - 1];
 
-                  const active =
-                    selected?._id ===
-                    conversation._id;
+                return (
+                  <button
+                    key={conversation._id}
+                    type="button"
+                    onClick={() => selectConversation(conversation)}
+                    className={`rounded-2xl border p-4 text-left transition hover:border-orange-500/50 ${
+                      active
+                        ? "border-orange-500 bg-orange-500/10"
+                        : "border-white/10 bg-black/30"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-black text-white">
+                          {conversation.visitorName || "Visiteur"}
+                        </p>
 
-                  const unread =
-                    getUnreadCount(
-                      conversation
-                    );
-
-                  const lastMessage =
-                    conversation.messages?.[
-                      conversation.messages.length - 1
-                    ];
-
-                  return (
-
-                    <button
-                      key={
-                        conversation._id
-                      }
-
-                      type="button"
-
-                      onClick={() =>
-                        markAsRead(
-                          conversation
-                        )
-                      }
-
-                      className={`rounded-2xl border p-4 text-left transition hover:border-orange-500/50 ${
-                        active
-                          ? "border-orange-500 bg-orange-500/10"
-                          : "border-white/10 bg-black/30"
-                      }`}
-                    >
-
-                      <div className="flex items-start justify-between gap-3">
-
-                        <div>
-
-                          <p className="font-black text-white">
-                            {conversation.visitorName ||
-                              "Visiteur"}
-                          </p>
-
-                          <p className="mt-1 text-xs text-zinc-400">
-                            {conversation.visitorEmail ||
-                              "Email non renseigné"}
-                          </p>
-
-                        </div>
-
-                        {unread > 0 && (
-
-                          <span className="rounded-full bg-orange-500 px-2 py-1 text-xs font-black text-white">
-                            {unread}
-                          </span>
-
-                        )}
-
+                        <p className="mt-1 text-xs text-zinc-400">
+                          {conversation.visitorEmail || "Email non renseigné"}
+                        </p>
                       </div>
 
-                      <p className="mt-3 line-clamp-2 text-sm text-zinc-400">
-                        {lastMessage?.text ||
-                          "Aucun message"}
-                      </p>
+                      {unread > 0 && (
+                        <span className="rounded-full bg-orange-500 px-2 py-1 text-xs font-black text-white">
+                          {unread}
+                        </span>
+                      )}
+                    </div>
 
-                    </button>
-
-                  );
-
-                }
-              )}
-
+                    <p className="mt-3 line-clamp-2 text-sm text-zinc-400">
+                      {lastMessage?.text || "Aucun message"}
+                    </p>
+                  </button>
+                );
+              })}
             </div>
-
           </div>
 
-          {/* =====================================================
-              CHAT PANEL
-          ===================================================== */}
+          {/* FIL DE DISCUSSION */}
           <div className="rounded-[28px] border border-white/10 bg-zinc-900/70">
-
             {!selected ? (
-
               <div className="flex min-h-[650px] items-center justify-center p-10 text-center text-zinc-500">
                 Sélectionnez une conversation.
               </div>
-
             ) : (
-
               <div className="flex min-h-[650px] flex-col">
-
-                {/* HEADER */}
                 <div className="border-b border-white/10 p-5">
-
                   <p className="text-xl font-black text-white">
-                    {selected.visitorName ||
-                      "Visiteur"}
+                    {selected.visitorName || "Visiteur"}
                   </p>
 
                   <p className="mt-1 text-sm text-zinc-400">
-
-                    {selected.visitorEmail ||
-                      "Email non renseigné"}
-
+                    {selected.visitorEmail || "Email non renseigné"}
                     {selected.visitorPhone
                       ? ` • ${selected.visitorPhone}`
                       : ""}
-
                   </p>
-
                 </div>
 
-                {/* =====================================================
-                    MESSAGES
-                ===================================================== */}
                 <div className="flex-1 space-y-3 overflow-y-auto p-5">
-
-                  {(selected.messages || []).map(
-                    (
-                      message,
-                      index
-                    ) => (
-
+                  {(selected.messages || []).map((message, index) => (
+                    <div
+                      key={index}
+                      className={`flex ${
+                        message.from === "admin"
+                          ? "justify-end"
+                          : "justify-start"
+                      }`}
+                    >
                       <div
-                        key={index}
-
-                        className={`flex ${
+                        className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                           message.from === "admin"
-                            ? "justify-end"
-                            : "justify-start"
+                            ? "bg-orange-500 text-white"
+                            : "bg-white text-zinc-900"
                         }`}
                       >
+                        {message.text && <p>{message.text}</p>}
 
-                        <div
-                          className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                            message.from === "admin"
-                              ? "bg-orange-500 text-white"
-                              : "bg-white text-zinc-900"
-                          }`}
-                        >
-
-                          {/* TEXT */}
-{message.text && (
-  <p>{message.text}</p>
-)}
-
-{/* FILES */}
-{message.files?.length > 0 && (
-  <div className="mt-3 space-y-2">
-    {message.files.map((file, fileIndex) => {
-      const fileUrl = `${API_URL}/${file.path.replaceAll("\\", "/")}`;
-
-      return (
-        <a
-          key={fileIndex}
-          href={fileUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="block rounded-xl border border-black/10 bg-black/10 px-3 py-2 text-xs font-bold underline"
-        >
-          📎 {file.originalName || "Fichier joint"}
-        </a>
-      );
-    })}
-  </div>
-)}
-
-                        </div>
-
+                        {renderFiles(message)}
                       </div>
+                    </div>
+                  ))}
 
-                    )
-                  )}
-
-                  {/* AUTO SCROLL TARGET */}
                   <div ref={messagesEndRef} />
-
                 </div>
 
-                {/* =====================================================
-                    ARCHIVE BUTTON
-                ===================================================== */}
                 <button
                   type="button"
                   onClick={archiveConversation}
@@ -695,72 +423,33 @@ export default function AdminChat() {
                   Archiver la conversation
                 </button>
 
-                {/* =====================================================
-                    REPLY INPUT
-                ===================================================== */}
                 <div className="border-t border-white/10 p-4">
-
                   <div className="flex gap-3">
-
                     <input
                       value={reply}
-
-                      onChange={(e) =>
-                        setReply(
-                          e.target.value
-                        )
-                      }
-
+                      onChange={(e) => setReply(e.target.value)}
                       onKeyDown={(e) => {
-
-                        if (
-                          e.key ===
-                          "Enter"
-                        ) {
-
-                          sendReply();
-
-                        }
-
+                        if (e.key === "Enter") sendReply();
                       }}
-
                       placeholder="Répondre au client..."
-
                       className="min-w-0 flex-1 rounded-2xl border border-white/10 bg-black/40 px-5 py-4 text-white outline-none placeholder:text-zinc-500 focus:border-orange-500"
                     />
 
                     <button
                       type="button"
-
-                      onClick={
-                        sendReply
-                      }
-
+                      onClick={sendReply}
                       disabled={sending}
-
                       className="rounded-2xl bg-orange-500 px-6 py-4 font-black text-white hover:bg-orange-400 disabled:opacity-50"
                     >
-
                       Envoyer
-
                     </button>
-
                   </div>
-
                 </div>
-
               </div>
-
             )}
-
           </div>
-
         </div>
-
       )}
-
     </AdminLayout>
-
   );
-
 }
