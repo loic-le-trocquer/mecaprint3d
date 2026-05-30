@@ -1,9 +1,54 @@
 const express = require("express");
+const multer = require("multer");
+const path = require("path");
 
 const Conversation = require("../models/Conversation");
 const sendEmail = require("../utils/sendEmail");
 
 const router = express.Router();
+
+// =====================================================
+// 📂 CHAT FILE STORAGE
+// =====================================================
+const storage = multer.diskStorage({
+
+  // =====================================================
+  // DESTINATION
+  // =====================================================
+  destination: "uploads/chat/",
+
+  // =====================================================
+  // FILENAME
+  // =====================================================
+  filename: (req, file, cb) => {
+
+    cb(
+      null,
+      Date.now() +
+        "-" +
+        file.originalname
+    );
+
+  },
+
+});
+
+// =====================================================
+// 📂 CHAT FILE UPLOAD
+// =====================================================
+const upload = multer({
+
+  storage,
+
+  limits: {
+
+    // 50 MB
+    fileSize:
+      50 * 1024 * 1024,
+
+  },
+
+});
 
 // =====================================================
 // 🔐 ADMIN MIDDLEWARE
@@ -42,7 +87,10 @@ function requireAdmin(req, res, next) {
 // 💬 CREATE / SEND CLIENT MESSAGE
 // POST /api/chat
 // =====================================================
-router.post("/", async (req, res) => {
+router.post(
+  "/",
+  upload.array("files"),
+  async (req, res) => {
 
   try {
 
@@ -53,6 +101,31 @@ router.post("/", async (req, res) => {
       phone,
       message,
     } = req.body;
+
+// =====================================================
+// UPLOADED FILES
+// =====================================================
+const uploadedFiles =
+  (req.files || []).map(
+    (file) => ({
+
+      originalName:
+        file.originalname,
+
+      filename:
+        file.filename,
+
+      path:
+        file.path,
+
+      mimetype:
+        file.mimetype,
+
+      size:
+        file.size,
+
+    })
+  );
 
     // =====================================================
     // VALIDATION
@@ -109,17 +182,19 @@ router.post("/", async (req, res) => {
     // =====================================================
     // ADD CLIENT MESSAGE
     // =====================================================
-    conversation.messages.push({
+  conversation.messages.push({
 
-      from: "client",
+  from: "client",
 
-      text: message.trim(),
+  text: message.trim(),
 
-      readByClient: true,
+  files: uploadedFiles,
 
-      readByAdmin: false,
+  readByClient: true,
 
-    });
+  readByAdmin: false,
+
+});
 
     // =====================================================
     // UPDATE STATUS

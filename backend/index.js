@@ -287,6 +287,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // =====================================================
+// 📂 STATIC FILES ACCESS
+// =====================================================
+// Permet d'accéder aux fichiers uploadés :
+// /uploads/chat/monfichier.stl
+// /uploads/image.png
+// =====================================================
+app.use(
+  "/uploads",
+  express.static("uploads")
+);
+
+// =====================================================
 // 🧭 ROUTES API
 // =====================================================
 app.use("/api/quotes", quotesRoutes);
