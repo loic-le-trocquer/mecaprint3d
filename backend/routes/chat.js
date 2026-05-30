@@ -16,14 +16,20 @@ function requireAdmin(req, res, next) {
   const token =
     auth.replace("Bearer ", "");
 
+  // =====================================================
+  // TOKEN VALIDATION
+  // =====================================================
   if (
     !token ||
     token !== process.env.ADMIN_TOKEN
   ) {
 
     return res.status(401).json({
+
       success: false,
+
       error: "Accès non autorisé",
+
     });
 
   }
@@ -54,8 +60,11 @@ router.post("/", async (req, res) => {
     if (!message?.trim()) {
 
       return res.status(400).json({
+
         success: false,
+
         error: "Message requis",
+
       });
 
     }
@@ -112,12 +121,24 @@ router.post("/", async (req, res) => {
 
     });
 
+    // =====================================================
+    // UPDATE STATUS
+    // =====================================================
     conversation.status =
       "Ouverte";
 
     conversation.lastMessageAt =
       new Date();
 
+    // =====================================================
+    // AUTO RETURN TO ACTIVE
+    // IF CLIENT WRITES AGAIN
+    // =====================================================
+    conversation.archived = false;
+
+    // =====================================================
+    // SAVE
+    // =====================================================
     await conversation.save();
 
     // =====================================================
@@ -325,6 +346,9 @@ router.post(
 
       });
 
+      // =====================================================
+      // UPDATE STATUS
+      // =====================================================
       conversation.status =
         "En cours";
 
