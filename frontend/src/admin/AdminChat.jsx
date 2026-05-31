@@ -2,9 +2,9 @@
 // IMPORTS
 // =====================================================
 import { useEffect, useRef, useState } from "react";
-
 import AdminLayout from "./AdminLayout";
 import { API_URL } from "../lib/api";
+import { Paperclip, File, X } from "lucide-react";
 
 // =====================================================
 // ADMIN CHAT
@@ -19,7 +19,7 @@ export default function AdminChat() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
-
+  const [adminFiles, setAdminFiles] = useState([]);
   // =====================================================
   // REFS
   // =====================================================
@@ -84,42 +84,78 @@ export default function AdminChat() {
   // SEND REPLY
   // =====================================================
   const sendReply = async () => {
-    if (!reply.trim() || !selected) return;
+  if ((!reply.trim() && adminFiles.length === 0) || !selected) return;
 
-    try {
-      setSending(true);
+  try {
+    setSending(true);
 
-      const token = localStorage.getItem("mecaprint3d_admin_token");
+    const token = localStorage.getItem("mecaprint3d_admin_token");
 
-      const response = await fetch(
-        `${API_URL}/api/chat/admin/${selected._id}/reply`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            message: reply.trim(),
-          }),
-        }
-      );
+    const formData = new FormData();
+    formData.append("message", reply.trim());
 
-      const data = await response.json();
+    adminFiles.forEach((file) => {
+      formData.append("files", file);
+    });
 
-      if (!data.success) return;
+    const response = await fetch(
+      `${API_URL}/api/chat/admin/${selected._id}/reply`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      }
+    );
 
-      setReply("");
-      setSelected(data.conversation);
+    const data = await response.json();
 
-      await loadConversations();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setSending(false);
-    }
-  };
+    if (!data.success) return;
 
+    setReply("");
+    setAdminFiles([]);
+    setSelected(data.conversation);
+
+    await loadConversations();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setSending(false);
+  }
+};
+// =====================================================
+// HANDLE ADMIN FILES
+// =====================================================
+const handleAdminFiles = (
+  event
+) => {
+
+  setAdminFiles(
+    Array.from(
+      event.target.files || []
+    )
+  );
+
+};
+
+// =====================================================
+// REMOVE ADMIN FILE
+// =====================================================
+const removeAdminFile = (
+  index
+) => {
+
+  setAdminFiles(
+    (current) =>
+
+      current.filter(
+        (_, i) =>
+          i !== index
+      )
+  );
+
+};
   // =====================================================
   // ARCHIVE CONVERSATION
   // =====================================================
@@ -424,26 +460,121 @@ export default function AdminChat() {
                 </button>
 
                 <div className="border-t border-white/10 p-4">
-                  <div className="flex gap-3">
-                    <input
-                      value={reply}
-                      onChange={(e) => setReply(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") sendReply();
-                      }}
-                      placeholder="Répondre au client..."
-                      className="min-w-0 flex-1 rounded-2xl border border-white/10 bg-black/40 px-5 py-4 text-white outline-none placeholder:text-zinc-500 focus:border-orange-500"
-                    />
 
-                    <button
-                      type="button"
-                      onClick={sendReply}
-                      disabled={sending}
-                      className="rounded-2xl bg-orange-500 px-6 py-4 font-black text-white hover:bg-orange-400 disabled:opacity-50"
-                    >
-                      Envoyer
-                    </button>
-                  </div>
+  {/* =====================================================
+      ADMIN FILES PREVIEW
+  ===================================================== */}
+  {adminFiles.length > 0 && (
+
+    <div className="mb-3 flex flex-wrap gap-2">
+
+      {adminFiles.map(
+        (file, index) => (
+
+          <div
+            key={index}
+
+            className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-xs text-zinc-300"
+          >
+
+            <File size={14} />
+
+            <span className="max-w-[160px] truncate">
+
+              {file.name}
+
+            </span>
+
+            <button
+              type="button"
+
+              onClick={() =>
+                removeAdminFile(index)
+              }
+
+              className="text-red-400 hover:text-red-300"
+            >
+
+              <X size={14} />
+
+            </button>
+
+          </div>
+
+        )
+      )}
+
+    </div>
+
+  )}
+
+  {/* =====================================================
+      INPUT ROW
+  ===================================================== */}
+  <div className="flex gap-3">
+
+    {/* =====================================================
+        FILE BUTTON
+    ===================================================== */}
+    <label className="flex h-[56px] w-[56px] cursor-pointer items-center justify-center rounded-2xl border border-white/10 bg-black/40 text-zinc-300 transition hover:border-orange-500 hover:text-white">
+
+      <Paperclip size={18} />
+
+      <input
+        type="file"
+
+        multiple
+
+        onChange={handleAdminFiles}
+
+        className="hidden"
+      />
+
+    </label>
+
+    {/* =====================================================
+        TEXT INPUT
+    ===================================================== */}
+    <input
+      value={reply}
+
+      onChange={(e) =>
+        setReply(e.target.value)
+      }
+
+      onKeyDown={(e) => {
+
+        if (e.key === "Enter") {
+
+          sendReply();
+
+        }
+
+      }}
+
+      placeholder="Répondre au client..."
+
+      className="min-w-0 flex-1 rounded-2xl border border-white/10 bg-black/40 px-5 py-4 text-white outline-none placeholder:text-zinc-500 focus:border-orange-500"
+    />
+
+    {/* =====================================================
+        SEND BUTTON
+    ===================================================== */}
+    <button
+      type="button"
+
+      onClick={sendReply}
+
+      disabled={sending}
+
+      className="rounded-2xl bg-orange-500 px-6 py-4 font-black text-white hover:bg-orange-400 disabled:opacity-50"
+    >
+
+      Envoyer
+
+    </button>
+
+</div>
                 </div>
               </div>
             )}

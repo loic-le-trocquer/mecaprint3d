@@ -363,17 +363,27 @@ router.get(
 router.post(
   "/admin/:id/reply",
   requireAdmin,
+  upload.array("files"),
   async (req, res) => {
 
     try {
 
       const { message } = req.body;
-
+const uploadedFiles =
+  (req.files || []).map((file) => ({
+    originalName: file.originalname,
+    filename: file.filename,
+    path: file.path,
+    mimetype: file.mimetype,
+    size: file.size,
+  }));
       // =====================================================
       // VALIDATION
       // =====================================================
-      if (!message?.trim()) {
-
+      if (
+  !message?.trim() &&
+  uploadedFiles.length === 0
+) {
         return res.status(400).json({
 
           success: false,
@@ -409,16 +419,12 @@ router.post(
       // ADD ADMIN MESSAGE
       // =====================================================
       conversation.messages.push({
-
-        from: "admin",
-
-        text: message.trim(),
-
-        readByAdmin: true,
-
-        readByClient: false,
-
-      });
+  from: "admin",
+  text: message?.trim() || "Fichier joint",
+  files: uploadedFiles,
+  readByAdmin: true,
+  readByClient: false,
+});
 
       // =====================================================
       // UPDATE STATUS
