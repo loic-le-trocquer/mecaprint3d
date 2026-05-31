@@ -10,22 +10,26 @@ const router = express.Router();
 // =====================================================
 // 📂 CHAT FILE STORAGE
 // =====================================================
+const storage = multer.diskStorage({
+  destination: "uploads/chat/",
+
+  filename: (req, file, cb) => {
+    cb(
+      null,
+      Date.now() + "-" + file.originalname
+    );
+  },
+});
 
 // =====================================================
 // 📂 CHAT FILE UPLOAD
 // =====================================================
 const upload = multer({
-
   storage,
 
   limits: {
-
-    // 50 MB
-    fileSize:
-      50 * 1024 * 1024,
-
+    fileSize: 50 * 1024 * 1024,
   },
-
 });
 
 // =====================================================
