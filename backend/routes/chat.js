@@ -1,6 +1,10 @@
 const express = require("express");
 const multer = require("multer");
-const path = require("path");
+const cloudinary = require("../utils/cloudinary");
+
+const {
+  CloudinaryStorage,
+} = require("multer-storage-cloudinary");
 
 const Conversation = require("../models/Conversation");
 const sendEmail = require("../utils/sendEmail");
@@ -10,28 +14,33 @@ const router = express.Router();
 // =====================================================
 // 📂 CHAT FILE STORAGE
 // =====================================================
-const storage = multer.diskStorage({
+// =====================================================
+// ☁️ CLOUDINARY STORAGE
+// =====================================================
+const storage =
+  new CloudinaryStorage({
 
-  // =====================================================
-  // DESTINATION
-  // =====================================================
-  destination: "uploads/chat/",
+    cloudinary,
 
-  // =====================================================
-  // FILENAME
-  // =====================================================
-  filename: (req, file, cb) => {
+    params: async (
+      req,
+      file
+    ) => ({
 
-    cb(
-      null,
-      Date.now() +
+      folder:
+        "mecaprint3d/chat",
+
+      resource_type:
+        "auto",
+
+      public_id:
+        Date.now() +
         "-" +
-        file.originalname
-    );
+        file.originalname,
 
-  },
+    }),
 
-});
+  });
 
 // =====================================================
 // 📂 CHAT FILE UPLOAD
@@ -115,8 +124,11 @@ const uploadedFiles =
       filename:
         file.filename,
 
-      path:
+      url:
         file.path,
+
+      publicId:
+        file.filename,  
 
       mimetype:
         file.mimetype,

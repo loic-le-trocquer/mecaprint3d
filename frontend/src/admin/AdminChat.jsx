@@ -277,21 +277,23 @@ const removeAdminFile = (
 
     return (
       <div className="mt-3 space-y-2">
-        {message.files.map((file, fileIndex) => {
-          const fileUrl = `${API_URL}/${file.path.replaceAll("\\", "/")}`;
+       {message.files.map((file, fileIndex) => {
+  const fileUrl =
+    file.url ||
+    `${API_URL}/${file.path?.replaceAll("\\", "/")}`;
 
-          return (
-            <a
-              key={fileIndex}
-              href={fileUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="block rounded-xl border border-black/10 bg-black/10 px-3 py-2 text-xs font-bold underline"
-            >
-              📎 {file.originalName || "Fichier joint"}
-            </a>
-          );
-        })}
+  return (
+    <a
+      key={fileIndex}
+      href={fileUrl}
+      target="_blank"
+      rel="noreferrer"
+      className="block rounded-xl border border-black/10 bg-black/10 px-3 py-2 text-xs font-bold underline"
+    >
+      📎 {file.originalName || "Fichier joint"}
+    </a>
+  );
+})}
       </div>
     );
   };

@@ -387,10 +387,13 @@ export default function FloatingChat() {
                             <a
                               key={fileIndex}
 
-                              href={`${API_URL}/${file.path.replaceAll(
-                                "\\",
-                                "/"
-                              )}`}
+                              href={
+                             file.url ||
+                            `${API_URL}/${file.path?.replaceAll(
+                            "\\",
+                            "/"
+                     )}`
+}
 
                               target="_blank"
 
