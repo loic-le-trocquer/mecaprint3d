@@ -130,17 +130,16 @@ const uploadedFiles =
     // =====================================================
     // VALIDATION
     // =====================================================
-    if (!message?.trim()) {
+    if (
+  !message?.trim() &&
+  uploadedFiles.length === 0
+) {
+  return res.status(400).json({
+    success: false,
+    error: "Message ou fichier requis",
+  });
+}
 
-      return res.status(400).json({
-
-        success: false,
-
-        error: "Message requis",
-
-      });
-
-    }
 
     let conversation = null;
 
@@ -186,7 +185,7 @@ const uploadedFiles =
 
   from: "client",
 
-  text: message.trim(),
+  text: message?.trim() || "Fichier joint",
 
   files: uploadedFiles,
 
