@@ -252,7 +252,6 @@ app.post(
     }
   }
 );
-
 // =====================================================
 // 🌍 MIDDLEWARES
 // =====================================================
@@ -283,15 +282,28 @@ app.use(
   })
 );
 
+// =====================================================
+// JSON PARSER
+// =====================================================
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+// =====================================================
+// URL ENCODED PARSER
+// =====================================================
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 
 // =====================================================
 // 📂 STATIC FILES ACCESS
 // =====================================================
-// Permet d'accéder aux fichiers uploadés :
-// /uploads/chat/monfichier.stl
-// /uploads/image.png
+// Permet d'accéder publiquement
+// aux fichiers uploadés.
+//
+// Exemple :
+// https://mecaprint3d-backend.onrender.com/uploads/chat/fichier.stl
 // =====================================================
 app.use(
   "/uploads",
@@ -302,9 +314,16 @@ app.use(
 // 🧭 ROUTES API
 // =====================================================
 app.use("/api/quotes", quotesRoutes);
-app.use("/api/site-content", siteContentRoutes);
-app.use("/api/chat", chatRoutes);
 
+app.use(
+  "/api/site-content",
+  siteContentRoutes
+);
+
+app.use(
+  "/api/chat",
+  chatRoutes
+);
 // =====================================================
 // 📂 UPLOAD LOCAL
 // =====================================================
