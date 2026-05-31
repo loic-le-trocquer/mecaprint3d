@@ -2,9 +2,13 @@ const express = require("express");
 const multer = require("multer");
 const cloudinary = require("../utils/cloudinary");
 
-const {
-  CloudinaryStorage,
-} = require("multer-storage-cloudinary");
+const storage = multer.diskStorage({
+  destination: "uploads/chat/",
+
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
 
 const Conversation = require("../models/Conversation");
 const sendEmail = require("../utils/sendEmail");
