@@ -430,58 +430,17 @@ export default function Admin({ content, setContent }) {
     );
   }
 
-  // ================= PAGE ADMIN =================
-  return (
-    <div className="min-h-screen bg-zinc-950 px-6 py-10 text-white">
-      <div className="mx-auto max-w-6xl">
+ // ================= PAGE ADMIN =================
+return (
+  <AdminLayout title="Contenu du site">
 
-        {/* ================= HEADER ADMIN ================= */}
-        <div className="mb-8 flex flex-col gap-4 rounded-3xl border border-white/10 bg-black/40 p-6 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-sm font-bold uppercase tracking-[0.3em] text-orange-500">
-              Admin
-            </p>
-            <h1 className="text-4xl font-black">Contenu du site</h1>
-            <p className="mt-2 text-zinc-400">
-              Modifie les textes, le logo, les photos, les vidéos et les réalisations.
-            </p>
-          </div>
+    {message && (
+      <div className="mb-6 rounded-2xl border border-orange-500/30 bg-orange-500/10 p-4 text-orange-200">
+        {message}
+      </div>
+    )}
 
-          <div className="flex flex-wrap gap-3">
-            <a
-              href="/"
-              className="rounded-xl border border-white/10 px-5 py-3 font-bold text-zinc-200 hover:border-orange-500"
-            >
-              Voir le site
-            </a>
-
-            <button
-              onClick={() => {
-                localStorage.removeItem("mecaprint3d_admin_token");
-                setToken("");
-              }}
-              className="rounded-xl border border-white/10 px-5 py-3 font-bold text-zinc-200 hover:border-red-500"
-            >
-              Déconnexion
-            </button>
-
-            <button
-              onClick={save}
-              disabled={saving}
-              className="rounded-xl bg-orange-500 px-5 py-3 font-black text-white hover:bg-orange-400 disabled:opacity-60"
-            >
-              {saving ? "Enregistrement..." : "Enregistrer les modifications"}
-            </button>
-          </div>
-        </div>
-
-        {message && (
-          <div className="mb-6 rounded-2xl border border-orange-500/30 bg-orange-500/10 p-4 text-orange-200">
-            {message}
-          </div>
-        )}
-
-        <div className="grid gap-6">
+    <div className="grid gap-6">
 
           {/* ================= IDENTITE ================= */}
           <Card title="Identité / logo">
@@ -1463,7 +1422,6 @@ export default function Admin({ content, setContent }) {
             {saving ? "Enregistrement..." : "Enregistrer toutes les modifications"}
           </button>
         </div>
-      </div>
-    </div>
-  );
+    </AdminLayout>
+);
 }
