@@ -7,7 +7,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require("path");
-const simpleOrdersRoutes = require("./routes/simpleOrders");
+const simpleordersRoutes = require("./routes/simpleorders");
 const chatRoutes = require("./routes/chat");
 
 
@@ -391,7 +391,7 @@ app.use(
 );
 app.use(
   "/api/simple-orders",
-  simpleOrdersRoutes
+  simpleordersRoutes
 );
 // =====================================================
 // 📂 UPLOAD LOCAL
