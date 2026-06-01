@@ -9,7 +9,7 @@ export default function QuickOrder() {
     email: "",
     phone: "",
     material: "PLA",
-    size: "Petit",
+    size: "S",
     quantity: 1,
     color: "Noir",
   });
@@ -73,7 +73,7 @@ export default function QuickOrder() {
 
       window.location.href =
         data.url;
-        
+
     } catch (error) {
 
       console.error(error);
@@ -154,21 +154,21 @@ export default function QuickOrder() {
           >
             <option>PLA</option>
             <option>PETG</option>
-            <option>ABS</option>
             <option>ASA</option>
             <option>TPU</option>
           </select>
 
           <select
-            name="size"
-            value={form.size}
-            onChange={handleChange}
-            className="w-full rounded-2xl bg-black px-5 py-4"
-          >
-            <option>Petit</option>
-            <option>Moyen</option>
-            <option>Grand</option>
-          </select>
+  name="size"
+  value={form.size}
+  onChange={handleChange}
+  className="w-full rounded-2xl bg-black px-5 py-4"
+>
+  <option value="S">Petit</option>
+  <option value="M">Moyen</option>
+  <option value="L">Grand</option>
+  <option value="XL">Très grand</option>
+</select>
 
           <input
             type="number"
