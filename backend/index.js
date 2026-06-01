@@ -406,8 +406,6 @@ app.post(
   }
 );
 
-const simpleOrdersRoutes = require("./routes/simpleOrders");
-
 // =====================================================
 // 💳 ANCIEN CHECKOUT COMMANDE CLASSIQUE
 // =====================================================
