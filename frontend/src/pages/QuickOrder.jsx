@@ -5,14 +5,14 @@ import { API_URL } from "../lib/api";
 export default function QuickOrder() {
 
   const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    material: "PLA",
-    size: "S",
-    quantity: 1,
-    color: "Noir",
-  });
+  name: "",
+  email: "",
+  phone: "",
+  material: "PLA",
+  size: "S",
+  quantity: 1,
+  color: "Noir",
+});
 
   const [file, setFile] =
     useState(null);
