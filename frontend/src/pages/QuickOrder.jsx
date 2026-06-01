@@ -1,7 +1,6 @@
 import { useState } from "react";
 
-const API_URL =
-  import.meta.env.VITE_API_URL;
+import { API_URL } from "../lib/api";
 
 export default function QuickOrder() {
 
@@ -73,8 +72,8 @@ export default function QuickOrder() {
       }
 
       window.location.href =
-        data.checkoutUrl;
-
+        data.url;
+        
     } catch (error) {
 
       console.error(error);
