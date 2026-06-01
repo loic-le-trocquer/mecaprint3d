@@ -7,7 +7,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require("path");
-
+const simpleOrdersRoutes = require("./routes/simpleOrders");
 const chatRoutes = require("./routes/chat");
 
 
@@ -23,6 +23,7 @@ const siteContentRoutes = require("./routes/siteContent");
 // ================= MODELS =================
 const Order = require("./models/Order");
 const Quote = require("./models/Quote");
+const SimpleOrder = require("./models/SimpleOrder");
 
 // ================= UTILS =================
 const sendEmail = require("./utils/sendEmail");
@@ -215,6 +216,69 @@ app.post(
 
           return res.sendStatus(200);
         }
+          // =====================================================
+// 🧩 CAS 2 : COMMANDE RAPIDE SIMPLE
+// =====================================================
+if (simpleOrderId) {
+  const simpleOrder = await SimpleOrder.findById(simpleOrderId);
+
+  if (!simpleOrder) {
+    console.error("❌ Commande rapide introuvable :", simpleOrderId);
+    return res.sendStatus(404);
+  }
+
+  if (simpleOrder.paymentStatus === "Payé") {
+    console.log("⚠️ Commande rapide déjà payée");
+    return res.sendStatus(200);
+  }
+
+  simpleOrder.paymentStatus = "Payé";
+  simpleOrder.status = "Payée";
+  simpleOrder.stripeSessionId = session.id;
+  simpleOrder.stripePaymentIntentId = session.payment_intent || "";
+
+  await simpleOrder.save();
+
+  console.log("✅ Commande rapide payée :", simpleOrder._id);
+
+  // ================= EMAIL CLIENT =================
+  await sendEmail({
+    to: simpleOrder.email,
+    subject: "Commande rapide confirmée — MecaPrint3D",
+    html: `
+      <h1>Commande confirmée</h1>
+      <p>Bonjour ${simpleOrder.name || ""},</p>
+      <p>Nous avons bien reçu votre paiement.</p>
+      <p>Votre pièce passe en préparation atelier.</p>
+      <p><strong>Matière :</strong> ${simpleOrder.material}</p>
+      <p><strong>Taille :</strong> ${simpleOrder.size}</p>
+      <p><strong>Quantité :</strong> ${simpleOrder.quantity}</p>
+      <p><strong>Total :</strong> ${simpleOrder.totalPrice} €</p>
+      <p>Merci pour votre confiance,<br/>MecaPrint3D</p>
+    `,
+  });
+
+  // ================= EMAIL ADMIN =================
+  if (process.env.ADMIN_EMAIL) {
+    await sendEmail({
+      to: process.env.ADMIN_EMAIL,
+      subject: "Nouvelle commande rapide payée",
+      html: `
+        <h1>Commande rapide payée</h1>
+        <p><strong>Client :</strong> ${simpleOrder.name || "-"}</p>
+        <p><strong>Email :</strong> ${simpleOrder.email}</p>
+        <p><strong>Téléphone :</strong> ${simpleOrder.phone || "-"}</p>
+        <p><strong>Matière :</strong> ${simpleOrder.material}</p>
+        <p><strong>Taille :</strong> ${simpleOrder.size}</p>
+        <p><strong>Quantité :</strong> ${simpleOrder.quantity}</p>
+        <p><strong>Couleur :</strong> ${simpleOrder.color || "-"}</p>
+        <p><strong>Total :</strong> ${simpleOrder.totalPrice} €</p>
+      `,
+    });
+  }
+
+  return res.sendStatus(200);
+}
 
         // =====================================================
         // 📦 CAS 2 : ANCIENNE COMMANDE CLASSIQUE
@@ -341,6 +405,8 @@ app.post(
     res.json({ files });
   }
 );
+
+const simpleOrdersRoutes = require("./routes/simpleOrders");
 
 // =====================================================
 // 💳 ANCIEN CHECKOUT COMMANDE CLASSIQUE
