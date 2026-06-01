@@ -383,7 +383,7 @@ app.use("/api/quotes", quotesRoutes);
 app.use(
   "/api/site-content",
   siteContentRoutes
-);S
+);
 
 app.use(
   "/api/chat",
