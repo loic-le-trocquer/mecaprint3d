@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { API_URL } from "../lib/api";
+
 // =====================================================
 // ADMIN LAYOUT
 // =====================================================
@@ -6,6 +9,121 @@ export default function AdminLayout({
   title,
   children,
 }) {
+// =====================================================
+// STATES
+// =====================================================
+const [quotesCount, setQuotesCount] =
+  useState(0);
+
+const [chatCount, setChatCount] =
+  useState(0);
+  // =====================================================
+// LOAD COUNTS
+// =====================================================
+useEffect(() => {
+
+  const loadCounts = async () => {
+
+    try {
+
+      const token =
+        localStorage.getItem(
+          "mecaprint3d_admin_token"
+        );
+
+      // ================= QUOTES =================
+      const quotesResponse =
+        await fetch(
+          `${API_URL}/api/quotes/admin`,
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`,
+            },
+          }
+        );
+
+      const quotesData =
+        await quotesResponse.json();
+
+      if (quotesData.success) {
+
+        const activeQuotes =
+          (quotesData.quotes || []).filter(
+            (quote) =>
+              quote.status !==
+              "archive"
+          );
+
+        setQuotesCount(
+          activeQuotes.length
+        );
+
+      }
+
+      // ================= CHAT =================
+      const chatResponse =
+        await fetch(
+          `${API_URL}/api/chat/admin`,
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`,
+            },
+          }
+        );
+
+      const chatData =
+        await chatResponse.json();
+
+      if (chatData.success) {
+
+        const unread =
+          (chatData.conversations || []).reduce(
+            (
+              total,
+              conversation
+            ) => {
+
+              return (
+                total +
+                (
+                  conversation.messages || []
+                ).filter(
+                  (message) =>
+                    message.from === "client" &&
+                    message.readByAdmin !== true
+                ).length
+              );
+
+            },
+            0
+          );
+
+        setChatCount(unread);
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+    }
+
+  };
+
+  loadCounts();
+
+  const interval =
+    setInterval(
+      loadCounts,
+      10000
+    );
+
+  return () =>
+    clearInterval(interval);
+
+}, []);
 
   // =====================================================
   // LOGOUT
@@ -84,38 +202,56 @@ export default function AdminLayout({
             {/* =====================================================
                 QUOTES
             ===================================================== */}
-            <a
-              href="/admin/quotes"
-              className="
-                block rounded-2xl
-                border border-white/10
-                px-5 py-4
-                font-bold text-zinc-300
-                transition
-                hover:border-orange-500
-                hover:text-white
-              "
-            >
-              Demandes de devis
-            </a>
+           <a
+  href="/admin/quotes"
+  className="
+    flex items-center justify-between
+    rounded-2xl
+    border border-white/10
+    px-5 py-4
+    font-bold text-zinc-300
+    transition
+    hover:border-orange-500
+    hover:text-white
+  "
+>
+  <span>
+    Demandes de devis
+  </span>
+
+  {quotesCount > 0 && (
+    <span className="rounded-full bg-orange-500 px-2 py-1 text-xs font-black text-white">
+      {quotesCount}
+    </span>
+  )}
+</a>
 
             {/* =====================================================
                 CHAT
             ===================================================== */}
             <a
-              href="/admin/chat"
-              className="
-                block rounded-2xl
-                border border-white/10
-                px-5 py-4
-                font-bold text-zinc-300
-                transition
-                hover:border-orange-500
-                hover:text-white
-              "
-            >
-              Conversations clients
-            </a>
+  href="/admin/chat"
+  className="
+    flex items-center justify-between
+    rounded-2xl
+    border border-white/10
+    px-5 py-4
+    font-bold text-zinc-300
+    transition
+    hover:border-orange-500
+    hover:text-white
+  "
+>
+  <span>
+    Conversations clients
+  </span>
+
+  {chatCount > 0 && (
+    <span className="rounded-full bg-orange-500 px-2 py-1 text-xs font-black text-white">
+      {chatCount}
+    </span>
+  )}
+</a>
 
             {/* =====================================================
                 WEBSITE
