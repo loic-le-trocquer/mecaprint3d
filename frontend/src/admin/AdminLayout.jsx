@@ -1,22 +1,38 @@
+// =====================================================
+// ADMIN LAYOUT
+// =====================================================
+
 export default function AdminLayout({
   title,
   children,
 }) {
 
+  // =====================================================
+  // LOGOUT
+  // =====================================================
   const logout = () => {
+
     localStorage.removeItem(
       "mecaprint3d_admin_token"
     );
 
-    window.location.href = "/admin";
+    window.location.href =
+      "/admin";
+
   };
 
+  // =====================================================
+  // RENDER
+  // =====================================================
   return (
+
     <div className="min-h-screen bg-zinc-950 text-white">
 
       <div className="flex min-h-screen">
 
-        {/* SIDEBAR */}
+        {/* =====================================================
+            SIDEBAR
+        ===================================================== */}
         <aside
           className="
             w-72
@@ -27,7 +43,9 @@ export default function AdminLayout({
           "
         >
 
-          {/* LOGO */}
+          {/* =====================================================
+              LOGO
+          ===================================================== */}
           <div className="mb-10">
 
             <p className="text-sm font-bold uppercase tracking-[0.3em] text-orange-500">
@@ -40,41 +58,79 @@ export default function AdminLayout({
 
           </div>
 
-          {/* NAV */}
+          {/* =====================================================
+              NAVIGATION
+          ===================================================== */}
           <nav className="space-y-3">
 
+            {/* =====================================================
+                SITE CONTENT
+            ===================================================== */}
             <a
               href="/admin"
               className="
-                block rounded-2xl border border-white/10
-                px-5 py-4 font-bold text-zinc-300
-                transition hover:border-orange-500
+                block rounded-2xl
+                border border-white/10
+                px-5 py-4
+                font-bold text-zinc-300
+                transition
+                hover:border-orange-500
                 hover:text-white
               "
             >
               Contenu du site
             </a>
 
+            {/* =====================================================
+                QUOTES
+            ===================================================== */}
             <a
               href="/admin/quotes"
               className="
-                block rounded-2xl border border-white/10
-                px-5 py-4 font-bold text-zinc-300
-                transition hover:border-orange-500
+                block rounded-2xl
+                border border-white/10
+                px-5 py-4
+                font-bold text-zinc-300
+                transition
+                hover:border-orange-500
                 hover:text-white
               "
             >
               Demandes de devis
             </a>
 
+            {/* =====================================================
+                CHAT
+            ===================================================== */}
+            <a
+              href="/admin/chat"
+              className="
+                block rounded-2xl
+                border border-white/10
+                px-5 py-4
+                font-bold text-zinc-300
+                transition
+                hover:border-orange-500
+                hover:text-white
+              "
+            >
+              Conversations clients
+            </a>
+
+            {/* =====================================================
+                WEBSITE
+            ===================================================== */}
             <a
               href="/"
               target="_blank"
               rel="noreferrer"
               className="
-                block rounded-2xl border border-white/10
-                px-5 py-4 font-bold text-zinc-300
-                transition hover:border-orange-500
+                block rounded-2xl
+                border border-white/10
+                px-5 py-4
+                font-bold text-zinc-300
+                transition
+                hover:border-orange-500
                 hover:text-white
               "
             >
@@ -83,14 +139,20 @@ export default function AdminLayout({
 
           </nav>
 
-          {/* LOGOUT */}
+          {/* =====================================================
+              LOGOUT
+          ===================================================== */}
           <button
             onClick={logout}
             className="
-              mt-10 w-full rounded-2xl
+              mt-10
+              w-full
+              rounded-2xl
               border border-red-500/20
-              px-5 py-4 font-bold text-red-300
-              transition hover:bg-red-500/10
+              px-5 py-4
+              font-bold text-red-300
+              transition
+              hover:bg-red-500/10
             "
           >
             Déconnexion
@@ -98,12 +160,16 @@ export default function AdminLayout({
 
         </aside>
 
-        {/* CONTENT */}
+        {/* =====================================================
+            CONTENT
+        ===================================================== */}
         <main className="flex-1 p-8">
 
           <div className="mx-auto max-w-7xl">
 
-            {/* PAGE TITLE */}
+            {/* =====================================================
+                PAGE TITLE
+            ===================================================== */}
             <div className="mb-10">
 
               <p className="text-sm font-bold uppercase tracking-[0.3em] text-orange-500">
@@ -116,6 +182,9 @@ export default function AdminLayout({
 
             </div>
 
+            {/* =====================================================
+                PAGE CONTENT
+            ===================================================== */}
             {children}
 
           </div>
@@ -125,5 +194,7 @@ export default function AdminLayout({
       </div>
 
     </div>
+
   );
+
 }
