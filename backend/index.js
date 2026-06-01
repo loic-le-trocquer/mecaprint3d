@@ -122,7 +122,8 @@ app.post(
 
         const quoteId = session.metadata?.quoteId;
         const orderId = session.metadata?.orderId;
-
+        const simpleOrderId = session.metadata?.simpleOrderId;
+        
         // =====================================================
         // 💳 CAS 1 : PAIEMENT D'UN DEVIS
         // =====================================================
