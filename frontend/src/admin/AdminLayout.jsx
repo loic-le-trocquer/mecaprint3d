@@ -34,7 +34,7 @@ useEffect(() => {
       // ================= QUOTES =================
       const quotesResponse =
         await fetch(
-          `${API_URL}/api/quotes`
+          `${API_URL}/api/quotes`,
           {
             headers: {
               Authorization:
