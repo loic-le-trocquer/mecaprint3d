@@ -1,4 +1,4 @@
-const materialsData = [
+export const materialsData = [
   {
     id: "pla-pro",
     category: "Standard",
