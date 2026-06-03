@@ -238,4 +238,5 @@ export const materialsData = [
   },
 ];
 
-export default materialsData;
+const data = materialsData;
+export default data;
