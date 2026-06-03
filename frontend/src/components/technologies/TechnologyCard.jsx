@@ -1,5 +1,5 @@
 import MaterialBadge from "../materials/MaterialBadge";
-import { materialsData } from "../materials/materialsData";
+import materialsData from "../materials/materialsData";
 
 import Media from "./Media";
 import normalizeList from "./normalizeList";
