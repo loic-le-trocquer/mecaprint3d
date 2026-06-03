@@ -4,9 +4,9 @@ function ScoreDots({ value }) {
       {[1, 2, 3, 4, 5].map((level) => (
         <div
           key={level}
-          className={`h-2.5 w-2.5 rounded-full ${
+          className={`h-2.5 w-2.5 rounded-full transition-all ${
             level <= value
-              ? "bg-orange-500"
+              ? "bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.6)]"
               : "bg-white/10"
           }`}
         />
@@ -19,12 +19,13 @@ export default function MaterialsCompare({
   materials = [],
   onClose,
 }) {
+  // ================= EMPTY =================
   if (!materials.length) return null;
 
   return (
     <div className="fixed inset-0 z-[220] overflow-auto bg-black/90 p-6 backdrop-blur">
 
-      {/* CLOSE */}
+      {/* ================= CLOSE BUTTON ================= */}
       <button
         type="button"
         onClick={onClose}
@@ -33,9 +34,10 @@ export default function MaterialsCompare({
         Fermer
       </button>
 
+      {/* ================= CONTAINER ================= */}
       <div className="mx-auto max-w-7xl">
 
-        {/* TITLE */}
+        {/* ================= TITLE ================= */}
         <div className="mb-10 text-center">
 
           <p className="mb-3 text-sm font-bold uppercase tracking-widest text-orange-400">
@@ -48,11 +50,12 @@ export default function MaterialsCompare({
 
         </div>
 
-        {/* TABLE */}
+        {/* ================= TABLE ================= */}
         <div className="overflow-x-auto rounded-3xl border border-white/10 bg-zinc-950">
 
           <table className="min-w-full border-collapse">
 
+            {/* ================= HEADER ================= */}
             <thead className="bg-white/5">
 
               <tr>
@@ -74,9 +77,12 @@ export default function MaterialsCompare({
 
             </thead>
 
+            {/* ================= BODY ================= */}
             <tbody>
 
+              {/* ================= FAMILY ================= */}
               <tr className="border-b border-white/10">
+
                 <td className="p-5 font-semibold text-zinc-300">
                   Famille
                 </td>
@@ -86,72 +92,125 @@ export default function MaterialsCompare({
                     key={material.id}
                     className="p-5 text-center text-zinc-200"
                   >
-                    {material.family}
+                    {material.category}
                   </td>
                 ))}
+
               </tr>
 
+              {/* ================= MECHANICAL ================= */}
               <tr className="border-b border-white/10">
+
                 <td className="p-5 font-semibold text-zinc-300">
                   Résistance mécanique
                 </td>
 
                 {materials.map((material) => (
-                  <td key={material.id} className="p-5">
-                    <ScoreDots value={material.resistance} />
+                  <td
+                    key={material.id}
+                    className="p-5"
+                  >
+                    <ScoreDots
+                      value={
+                        material.resistance?.mechanical
+                      }
+                    />
                   </td>
                 ))}
+
               </tr>
 
+              {/* ================= TEMPERATURE ================= */}
               <tr className="border-b border-white/10">
+
                 <td className="p-5 font-semibold text-zinc-300">
                   Tenue température
                 </td>
 
                 {materials.map((material) => (
-                  <td key={material.id} className="p-5">
-                    <ScoreDots value={material.temperature} />
+                  <td
+                    key={material.id}
+                    className="p-5"
+                  >
+                    <ScoreDots
+                      value={
+                        material.resistance?.temperature
+                      }
+                    />
                   </td>
                 ))}
+
               </tr>
 
+              {/* ================= UV ================= */}
               <tr className="border-b border-white/10">
+
                 <td className="p-5 font-semibold text-zinc-300">
                   Résistance UV
                 </td>
 
                 {materials.map((material) => (
-                  <td key={material.id} className="p-5">
-                    <ScoreDots value={material.uv} />
+                  <td
+                    key={material.id}
+                    className="p-5"
+                  >
+                    <ScoreDots
+                      value={
+                        material.resistance?.uv
+                      }
+                    />
                   </td>
                 ))}
+
               </tr>
 
+              {/* ================= FLEXIBILITY ================= */}
               <tr className="border-b border-white/10">
+
                 <td className="p-5 font-semibold text-zinc-300">
                   Flexibilité
                 </td>
 
                 {materials.map((material) => (
-                  <td key={material.id} className="p-5">
-                    <ScoreDots value={material.flexibility} />
+                  <td
+                    key={material.id}
+                    className="p-5"
+                  >
+                    <ScoreDots
+                      value={
+                        material.resistance?.flexibility
+                      }
+                    />
                   </td>
                 ))}
+
               </tr>
 
+              {/* ================= FINISH ================= */}
               <tr className="border-b border-white/10">
+
                 <td className="p-5 font-semibold text-zinc-300">
                   Qualité finition
                 </td>
 
                 {materials.map((material) => (
-                  <td key={material.id} className="p-5">
-                    <ScoreDots value={material.finish} />
+                  <td
+                    key={material.id}
+                    className="p-5"
+                  >
+                    <ScoreDots
+                      value={
+                        material.resistance?.finish
+                      }
+                    />
                   </td>
                 ))}
+
               </tr>
 
+              {/* ================= APPLICATIONS ================= */}
               <tr>
+
                 <td className="p-5 font-semibold text-zinc-300">
                   Usage recommandé
                 </td>
@@ -159,11 +218,12 @@ export default function MaterialsCompare({
                 {materials.map((material) => (
                   <td
                     key={material.id}
-                    className="p-5 text-center text-zinc-200"
+                    className="p-5 text-center text-sm leading-relaxed text-zinc-200"
                   >
-                    {material.bestFor}
+                    {material.applications?.join(", ")}
                   </td>
                 ))}
+
               </tr>
 
             </tbody>
