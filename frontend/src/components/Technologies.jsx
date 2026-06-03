@@ -9,7 +9,7 @@ import TechnologyCard from "./technologies/TechnologyCard";
 import TechnologiesIntro from "./technologies/TechnologiesIntro";
 
 // ================= MATERIAUX =================
-import { materialsData } from "./materials/materialsData";
+import materialsData from "./materials/materialsData";
 import MaterialModal from "./materials/MaterialModal";
 import MaterialsCompare from "./materials/MaterialsCompare";
 
