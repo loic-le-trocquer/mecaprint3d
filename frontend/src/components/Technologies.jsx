@@ -8,24 +8,25 @@ export default function TechnologyCard({
   onSelectMaterial,
 }) {
   // ================= MATERIALS =================
+ export default function TechnologyCard({
+  item,
+  index,
+  onSelectMaterial,
+}) {
+  const itemMaterials = Array.isArray(item?.materials)
+    ? item.materials
+    : [];
+
   const compatibleMaterials =
-    item.materials
-      ?.map((materialName) =>
+    itemMaterials
+      .map((materialName) =>
         materialsData.find(
           (m) =>
-            m.name
-              ?.toLowerCase()
-              .includes(
-                materialName.toLowerCase()
-              ) ||
-            m.category
-              ?.toLowerCase()
-              .includes(
-                materialName.toLowerCase()
-              )
+            m.name?.toLowerCase().includes(materialName.toLowerCase()) ||
+            m.category?.toLowerCase().includes(materialName.toLowerCase())
         )
       )
-      .filter(Boolean) || [];
+      .filter(Boolean);
 
   return (
     <div
