@@ -30,10 +30,11 @@ export const materialsData = [
       "PLA professionnel polyvalent offrant une excellente qualité d’impression et un rendu premium.",
 
     resistance: {
-      rigidity: 4,
-      heat: 2,
-      uv: 2,
-      flexibility: 1,
+    mechanical: 3,
+    temperature: 2,
+    uv: 2,
+    flexibility: 1,
+    finish: 5,
     },
   },
 
@@ -60,12 +61,13 @@ export const materialsData = [
     description:
       "PLA renforcé conçu pour les pièces fonctionnelles nécessitant une excellente résistance mécanique.",
 
-    resistance: {
-      rigidity: 4,
-      heat: 2,
-      uv: 2,
-      flexibility: 2,
-    },
+   resistance: {   
+   mechanical: 4,
+   temperature: 2,
+   uv: 2,
+   flexibility: 2,
+   finish: 4,
+  },
   },
 
   {
@@ -97,10 +99,11 @@ export const materialsData = [
       "Excellent compromis entre facilité d’impression et résistance mécanique.",
 
     resistance: {
-      rigidity: 4,
-      heat: 3,
-      uv: 3,
-      flexibility: 2,
+    mechanical: 4,
+    temperature: 3,
+    uv: 3,
+    flexibility: 2,
+    finish: 4,
     },
   },
 
@@ -133,10 +136,11 @@ export const materialsData = [
       "Matériau idéal pour les pièces exposées aux UV et aux conditions extérieures.",
 
     resistance: {
-      rigidity: 4,
-      heat: 4,
-      uv: 5,
-      flexibility: 2,
+    mechanical: 4,
+    temperature: 4,
+    uv: 5,
+    flexibility: 2,
+    finish: 4,
     },
   },
 
@@ -168,10 +172,11 @@ export const materialsData = [
       "TPU professionnel flexible pour les pièces nécessitant amortissement et souplesse.",
 
     resistance: {
-      rigidity: 1,
-      heat: 3,
-      uv: 3,
-      flexibility: 5,
+    mechanical: 3,
+    temperature: 3,
+    uv: 3,
+    flexibility: 5,
+    finish: 3,
     },
   },
 
@@ -199,10 +204,11 @@ export const materialsData = [
       "Nylon renforcé carbone destiné aux applications mécaniques et industrielles avancées.",
 
     resistance: {
-      rigidity: 5,
-      heat: 5,
-      uv: 4,
-      flexibility: 2,
+    mechanical: 5,
+    temperature: 5,
+    uv: 4,
+    flexibility: 2,
+    finish: 5,
     },
   },
 
@@ -230,13 +236,14 @@ export const materialsData = [
       "PETG renforcé fibre carbone offrant un excellent compromis technique et esthétique.",
 
     resistance: {
-      rigidity: 5,
-      heat: 4,
-      uv: 4,
-      flexibility: 1,
+    mechanical: 5,
+    temperature: 4,
+    uv: 4,
+    flexibility: 1,
+    finish: 5,
     },
   },
 ];
 
-const data = materialsData;
-export default data;
+export { materialsData };
+export default materialsData;
