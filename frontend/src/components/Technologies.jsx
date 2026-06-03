@@ -1,5 +1,5 @@
 // ================= IMPORTS =================
-import materialsData from "../materials/materialsData";
+import materialsData from "./materials/materialsData";
 
 // ================= COMPONENT =================
 export default function TechnologyCard({
