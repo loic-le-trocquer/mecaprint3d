@@ -1,326 +1,241 @@
-export const materialsData = [
+const materialsData = [
   {
-    id: "pla",
-    name: "PLA",
-    family: "FDM",
-    shortDescription:
-      "Matière simple, économique et adaptée aux prototypes, maquettes et pièces décoratives.",
-    resistance: 2,
-    temperature: 1,
-    uv: 1,
-    flexibility: 1,
-    finish: 4,
-    bestFor: "Prototype / décoration",
-    advantages: [
-      "Facile à imprimer",
-      "Bon rendu visuel",
-      "Économique",
+    id: "pla-pro",
+    category: "Standard",
+    name: "PolyLite PLA Pro",
+    brand: "Polymaker",
+
+    colors: [
+      "Noir",
+      "Blanc",
+      "Gris",
+      "Orange",
     ],
-    limits: [
-      "Faible tenue en température",
-      "Usage extérieur limité",
-    ],
+
     applications: [
       "Prototype",
-      "Maquette",
-      "Objet décoratif",
+      "Pièce visuelle",
+      "Validation client",
+      "Goodies",
     ],
-    finishing: [
-      "Ponçage",
-      "Peinture",
+
+    properties: [
+      "Facile à imprimer",
+      "Excellent rendu",
+      "Bonne rigidité",
+      "Faible retrait",
     ],
+
+    description:
+      "PLA professionnel polyvalent offrant une excellente qualité d’impression et un rendu premium.",
+
+    resistance: {
+      rigidity: 4,
+      heat: 2,
+      uv: 2,
+      flexibility: 1,
+    },
+  },
+
+  {
+    id: "polymax-pla",
+    category: "Renforcé",
+    name: "PolyMax PLA",
+    brand: "Polymaker",
+
+    colors: ["Noir", "Gris"],
+
+    applications: [
+      "Support technique",
+      "Pièce fonctionnelle",
+      "Réparation",
+    ],
+
+    properties: [
+      "Très résistant",
+      "Haute résistance impact",
+      "Très polyvalent",
+    ],
+
+    description:
+      "PLA renforcé conçu pour les pièces fonctionnelles nécessitant une excellente résistance mécanique.",
+
+    resistance: {
+      rigidity: 4,
+      heat: 2,
+      uv: 2,
+      flexibility: 2,
+    },
   },
 
   {
     id: "petg",
-    name: "PETG",
-    family: "FDM",
-    shortDescription:
-      "Bon compromis entre résistance mécanique et facilité d’impression.",
-    resistance: 4,
-    temperature: 3,
-    uv: 3,
-    flexibility: 2,
-    finish: 3,
-    bestFor: "Pièce fonctionnelle",
-    advantages: [
-      "Bonne résistance",
-      "Bonne tenue à l’humidité",
-      "Polyvalent",
+    category: "Technique",
+    name: "PolyLite PETG",
+    brand: "Polymaker",
+
+    colors: [
+      "Noir",
+      "Gris",
+      "Transparent",
     ],
-    limits: [
-      "Moins rigide que le PLA",
-    ],
+
     applications: [
-      "Réparation",
-      "Support technique",
-      "Pièce utile",
+      "Atelier",
+      "Humidité",
+      "Technique",
+      "Usage quotidien",
     ],
-    finishing: [
-      "Ébavurage",
-      "Peinture",
+
+    properties: [
+      "Résistant",
+      "Résiste à l’humidité",
+      "Bonne tenue chimique",
     ],
+
+    description:
+      "Excellent compromis entre facilité d’impression et résistance mécanique.",
+
+    resistance: {
+      rigidity: 4,
+      heat: 3,
+      uv: 3,
+      flexibility: 2,
+    },
   },
 
   {
     id: "asa",
-    name: "ASA",
-    family: "FDM",
-    shortDescription:
-      "Matière technique adaptée aux pièces extérieures et automobile.",
-    resistance: 4,
-    temperature: 4,
-    uv: 5,
-    flexibility: 2,
-    finish: 3,
-    bestFor: "Extérieur / automobile",
-    advantages: [
-      "Très bonne tenue UV",
-      "Bonne tenue température",
+    category: "Extérieur",
+    name: "PolyLite ASA",
+    brand: "Polymaker",
+
+    colors: [
+      "Noir",
+      "Blanc",
+      "Anthracite",
     ],
-    limits: [
-      "Impression plus technique",
-    ],
+
     applications: [
-      "Automobile",
       "Extérieur",
-      "Restauration",
+      "Camping-car",
+      "Automobile",
+      "UV",
     ],
-    finishing: [
-      "Ponçage",
-      "Peinture",
+
+    properties: [
+      "Résistant UV",
+      "Résistant chaleur",
+      "Très durable",
     ],
+
+    description:
+      "Matériau idéal pour les pièces exposées aux UV et aux conditions extérieures.",
+
+    resistance: {
+      rigidity: 4,
+      heat: 4,
+      uv: 5,
+      flexibility: 2,
+    },
   },
 
   {
-    id: "tpu",
-    name: "TPU",
-    family: "FDM",
-    shortDescription:
-      "Matière flexible pour protections, joints et amortissement.",
-    resistance: 3,
-    temperature: 3,
-    uv: 3,
-    flexibility: 5,
-    finish: 2,
-    bestFor: "Pièce flexible",
-    advantages: [
-      "Très souple",
-      "Résistant aux chocs",
+    id: "tpu95a",
+    category: "Flexible",
+    name: "PolyFlex TPU95A",
+    brand: "Polymaker",
+
+    colors: [
+      "Noir",
+      "Orange",
     ],
-    limits: [
-      "Impression plus lente",
-    ],
+
     applications: [
-      "Joint",
-      "Protection",
       "Silentbloc",
+      "Protection",
+      "Anti-vibration",
+      "Souple",
     ],
-    finishing: [
-      "Ébavurage",
-    ],
-  },
-{
-  id: "carbone",
-  name: "carbone",
-  family: "FDM",
-  shortDescription:
-    "PETG renforcé fibre carbone pour pièces plus rigides et aspect technique.",
-  resistance: 4,
-  temperature: 3,
-  uv: 3,
-  flexibility: 1,
-  finish: 4,
-  bestFor: "Pièce rigide renforcée",
-  advantages: ["Plus rigide", "Aspect carbone", "Bonne stabilité"],
-  limits: ["Plus abrasif", "Moins souple"],
-  applications: ["Support", "Renfort", "Pièce technique"],
-  finishing: ["Ébavurage", "Inserts", "Peinture"],
-},
 
-{
-  id: "abs",
-  name: "ABS",
-  family: "FDM",
-  shortDescription:
-    "Matière résistante adaptée aux pièces techniques et post-traitements.",
-  resistance: 4,
-  temperature: 4,
-  uv: 2,
-  flexibility: 2,
-  finish: 4,
-  bestFor: "Pièce technique",
-  advantages: ["Bonne résistance", "Lissage possible", "Tenue température"],
-  limits: ["Retrait important", "Odeur à l’impression"],
-  applications: ["Carter", "Prototype fonctionnel", "Pièce technique"],
-  finishing: ["Ponçage", "Lissage acétone", "Peinture"],
-},
-{
-  id: "nylon",
-  name: "Nylon",
-  family: "SLS / FDM",
-  shortDescription:
-    "Matière technique résistante, adaptée aux pièces mécaniques et fonctionnelles.",
-  resistance: 5,
-  temperature: 4,
-  uv: 3,
-  flexibility: 3,
-  finish: 3,
-  bestFor: "Pièce mécanique",
-  advantages: ["Très résistant", "Bonne tenue à l’usure", "Technique"],
-  limits: ["Sensible à l’humidité", "Impression plus exigeante"],
-  applications: ["Engrenage", "Support mécanique", "Pièce fonctionnelle"],
-  finishing: ["Ébavurage", "Microbillage", "Teinture"],
-},
-{
-  id: "Polycarbonate",
-  name: "Polycarbonate",
-  family: "FDM",
-  shortDescription:
-    "Matière technique résistante, adaptée aux pièces mécaniques et fonctionnelles.",
-  resistance: 5,
-  temperature: 4,
-  uv: 3,
-  flexibility: 3,
-  finish: 3,
-  bestFor: "Pièce mécanique",
-  advantages: ["Forte", "Durable", "resistante au impact"],
-  limits: ["Sensible à l’humidité", "Impression plus exigeante"],
-  applications: ["Engrenage", "Support mécanique", "Pièce fonctionnelle"],
-  finishing: ["Ébavurage", "Microbillage", "Transluside"],
-},
+    properties: [
+      "Flexible",
+      "Résistant abrasion",
+      "Très durable",
+    ],
+
+    description:
+      "TPU professionnel flexible pour les pièces nécessitant amortissement et souplesse.",
+
+    resistance: {
+      rigidity: 1,
+      heat: 3,
+      uv: 3,
+      flexibility: 5,
+    },
+  },
+
   {
-    id: "pa12",
-    name: "PA12",
-    family: "SLS",
-    shortDescription:
-      "Nylon technique utilisé en frittage poudre pour pièces complexes.",
-    resistance: 5,
-    temperature: 4,
-    uv: 4,
-    flexibility: 3,
-    finish: 4,
-    bestFor: "Pièce technique",
-    advantages: [
-      "Très bonne résistance",
-      "Géométries complexes",
-    ],
-    limits: [
-      "Fabrication partenaire",
-    ],
+    id: "pa612-cf",
+    category: "Industrie",
+    name: "PA612-CF",
+    brand: "Polymaker",
+
+    colors: ["Noir Carbone"],
+
     applications: [
       "Mécanique",
-      "Petite série",
+      "Industriel",
+      "Pièce haute performance",
     ],
-    finishing: [
-      "Microbillage",
-      "Teinture",
+
+    properties: [
+      "Fibre carbone",
+      "Très rigide",
+      "Très haute résistance",
     ],
+
+    description:
+      "Nylon renforcé carbone destiné aux applications mécaniques et industrielles avancées.",
+
+    resistance: {
+      rigidity: 5,
+      heat: 5,
+      uv: 4,
+      flexibility: 2,
+    },
   },
+
   {
-  id: "poudre-pa12",
-  name: "Poudre PA12",
-  family: "SLS",
-  shortDescription:
-    "Poudre nylon PA12 utilisée en frittage pour pièces complexes et résistantes.",
-  resistance: 5,
-  temperature: 4,
-  uv: 4,
-  flexibility: 3,
-  finish: 4,
-  bestFor: "Pièce technique complexe",
-  advantages: ["Sans support", "Solide", "Géométries complexes"],
-  limits: ["Fabrication partenaire", "Coût supérieur au FDM"],
-  applications: ["Mécanique", "Petite série", "Assemblage"],
-  finishing: ["Microbillage", "Teinture", "Peinture"],
-},
-{
-  id: "resine",
-  name: "Résine",
-  family: "SLA",
-  shortDescription:
-    "Matière haute précision pour pièces détaillées, prototypes visuels et finitions propres.",
-  resistance: 3,
-  temperature: 2,
-  uv: 2,
-  flexibility: 1,
-  finish: 5,
-  bestFor: "Détail / esthétique",
-  advantages: ["Haute précision", "Très bon état de surface", "Détails fins"],
-  limits: ["Plus cassant", "Post-traitement nécessaire"],
-  applications: ["Maquette", "Prototype visuel", "Objet détaillé"],
-  finishing: ["Nettoyage UV", "Ponçage fin", "Peinture"],
-},
+    id: "petg-cf",
+    category: "Composite",
+    name: "PETG-CF",
+    brand: "Polymaker",
 
-{
-  id: "resine-technique",
-  name: "Résine technique",
-  family: "SLA",
-  shortDescription:
-    "Résine renforcée pour prototypes fonctionnels et pièces plus résistantes.",
-  resistance: 4,
-  temperature: 3,
-  uv: 2,
-  flexibility: 1,
-  finish: 5,
-  bestFor: "Prototype fonctionnel précis",
-  advantages: ["Précision", "Meilleure résistance", "Très belle finition"],
-  limits: ["Coût supérieur", "Volume limité"],
-  applications: ["Prototype technique", "Pièce détaillée", "Validation forme"],
-  finishing: ["Ponçage fin", "Apprêt", "Peinture"],
-},
+    colors: ["Noir Carbone"],
 
-{
-  id: "pmma",
-  name: "PMMA",
-  family: "Découpe laser",
-  shortDescription:
-    "Plastique transparent ou coloré utilisé en découpe et gravure laser.",
-  resistance: 2,
-  temperature: 2,
-  uv: 4,
-  flexibility: 1,
-  finish: 5,
-  bestFor: "Signalétique / déco",
-  advantages: ["Très belle finition", "Transparent", "Gravable"],
-  limits: ["Cassant", "Rayures possibles"],
-  applications: ["Signalétique", "Plaque", "Décoration", "Gabarit"],
-  finishing: ["Gravure", "Polissage", "Nettoyage"],
-},
+    applications: [
+      "Technique",
+      "Rigidité",
+      "Pièce premium",
+    ],
 
-{
-  id: "bois",
-  name: "Bois",
-  family: "Découpe laser",
-  shortDescription:
-    "Matériau naturel adapté à la découpe, gravure, maquette et décoration.",
-  resistance: 2,
-  temperature: 2,
-  uv: 2,
-  flexibility: 1,
-  finish: 4,
-  bestFor: "Gravure / décoration",
-  advantages: ["Naturel", "Facile à graver", "Rendu chaleureux"],
-  limits: ["Sensible à l’humidité", "Épaisseur limitée"],
-  applications: ["Maquette", "Décoration", "Signalétique", "Gabarit"],
-  finishing: ["Ponçage", "Vernis", "Peinture"],
-},
+    properties: [
+      "Aspect carbone",
+      "Rigidité renforcée",
+      "Très bon rendu",
+    ],
 
-{
-  id: "mdf",
-  name: "MDF",
-  family: "Découpe laser",
-  shortDescription:
-    "Panneau bois homogène utilisé pour gabarits, maquettes et découpes propres.",
-  resistance: 2,
-  temperature: 2,
-  uv: 1,
-  flexibility: 1,
-  finish: 3,
-  bestFor: "Gabarit / maquette",
-  advantages: ["Économique", "Découpe propre", "Stable"],
-  limits: ["Sensible à l’humidité", "Aspect moins noble"],
-  applications: ["Gabarit", "Maquette", "Support", "Décoration"],
-  finishing: ["Ponçage", "Peinture", "Vernis"],
-},
+    description:
+      "PETG renforcé fibre carbone offrant un excellent compromis technique et esthétique.",
+
+    resistance: {
+      rigidity: 5,
+      heat: 4,
+      uv: 4,
+      flexibility: 1,
+    },
+  },
 ];
+
+export default materialsData;
