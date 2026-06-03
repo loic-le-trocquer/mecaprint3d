@@ -2,7 +2,7 @@ export default function MaterialProductSheet({ material, onClose }) {
   if (!material) return null;
 
   const sheet = material.productSheet || {};
-
+  const hasImage = Boolean(material.image);
   return (
     <div className="fixed inset-0 z-[230] overflow-auto bg-black/90 p-6 backdrop-blur">
       {/* ================= CLOSE ================= */}
@@ -17,6 +17,18 @@ export default function MaterialProductSheet({ material, onClose }) {
       {/* ================= CONTAINER ================= */}
       <div className="mx-auto max-w-5xl">
         <div className="rounded-3xl border border-white/10 bg-zinc-950 p-8 shadow-2xl shadow-orange-500/5">
+          
+          {/* ================= IMAGE ================= */}
+      {hasImage && (
+      <div className="mb-8 overflow-hidden rounded-3xl border border-white/10">
+       <img
+      src={material.image}
+      alt={material.name}
+      className="h-72 w-full object-cover"
+    />
+  </div>
+)}
+          
           {/* ================= HEADER ================= */}
           <p className="mb-3 text-sm font-bold uppercase tracking-widest text-orange-400">
             Fiche matériau

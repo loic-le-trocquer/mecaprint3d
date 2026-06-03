@@ -5,12 +5,11 @@ const materialsData = [
     name: "PolyLite PLA Pro",
     brand: "Polymaker",
 
-    colors: [
-      "Noir",
-      "Blanc",
-      "Gris",
-      "Orange",
-    ],
+    image: "",
+    themeColor: "orange",
+    texture: "smooth",
+
+    colors: ["Noir", "Blanc", "Gris", "Orange"],
 
     applications: [
       "Prototype",
@@ -41,35 +40,18 @@ const materialsData = [
       title: "PolyLite PLA Pro",
       shortName: "PLA Pro",
       type: "PLA professionnel",
-
-      stockStatus:
-        "Stock de départ conseillé",
-
-      idealFor:
-        "Prototypes, pièces propres, validation client",
-
+      stockStatus: "Stock de départ conseillé",
+      idealFor: "Prototypes, pièces propres, validation client",
       sellingPoint:
         "Matériau fiable, propre et polyvalent pour les pièces du quotidien.",
-
       limits:
         "Moins adapté aux fortes chaleurs et aux pièces exposées longtemps en extérieur.",
-
       printDifficulty: "Facile",
-
-      nozzle:
-        "Buse laiton standard",
-
-      recommendedNozzle:
-        "0.4 mm",
-
-      bed:
-        "Plateau chauffant recommandé",
-
-      drying:
-        "Séchage rarement nécessaire",
-
+      nozzle: "Buse laiton standard",
+      recommendedNozzle: "0.4 mm",
+      bed: "Plateau chauffant recommandé",
+      drying: "Séchage rarement nécessaire",
       priceLevel: "€",
-
       quoteText:
         "Recommandé pour une pièce esthétique, un prototype ou une validation de forme.",
     },
@@ -80,6 +62,10 @@ const materialsData = [
     category: "Renforcé",
     name: "PolyMax PLA",
     brand: "Polymaker",
+
+    image: "",
+    themeColor: "orange",
+    texture: "smooth",
 
     colors: ["Noir", "Gris"],
 
@@ -110,35 +96,17 @@ const materialsData = [
       title: "PolyMax PLA",
       shortName: "PolyMax",
       type: "PLA renforcé",
-
-      stockStatus:
-        "Très recommandé",
-
-      idealFor:
-        "Supports, réparations, pièces fonctionnelles",
-
+      stockStatus: "Très recommandé",
+      idealFor: "Supports, réparations, pièces fonctionnelles",
       sellingPoint:
         "Excellente résistance mécanique avec une impression simple.",
-
-      limits:
-        "Toujours sensible aux fortes températures.",
-
+      limits: "Toujours sensible aux fortes températures.",
       printDifficulty: "Facile",
-
-      nozzle:
-        "Buse standard",
-
-      recommendedNozzle:
-        "0.4 mm",
-
-      bed:
-        "Plateau chauffant conseillé",
-
-      drying:
-        "Séchage rarement nécessaire",
-
+      nozzle: "Buse standard",
+      recommendedNozzle: "0.4 mm",
+      bed: "Plateau chauffant conseillé",
+      drying: "Séchage rarement nécessaire",
       priceLevel: "€€",
-
       quoteText:
         "Excellent choix pour les pièces techniques du quotidien.",
     },
@@ -150,11 +118,11 @@ const materialsData = [
     name: "PolyLite PETG",
     brand: "Polymaker",
 
-    colors: [
-      "Noir",
-      "Gris",
-      "Transparent",
-    ],
+    image: "",
+    themeColor: "blue",
+    texture: "glossy",
+
+    colors: ["Noir", "Gris", "Transparent"],
 
     applications: [
       "Atelier",
@@ -184,35 +152,17 @@ const materialsData = [
       title: "PolyLite PETG",
       shortName: "PETG",
       type: "PETG technique",
-
-      stockStatus:
-        "Très important",
-
-      idealFor:
-        "Pièces atelier, humidité, pièces techniques",
-
+      stockStatus: "Très important",
+      idealFor: "Pièces atelier, humidité, pièces techniques",
       sellingPoint:
         "Très bon équilibre entre résistance, facilité et durabilité.",
-
-      limits:
-        "Moins rigide qu’un composite carbone.",
-
+      limits: "Moins rigide qu’un composite carbone.",
       printDifficulty: "Facile",
-
-      nozzle:
-        "Buse standard",
-
-      recommendedNozzle:
-        "0.4 mm",
-
-      bed:
-        "Plateau chauffant recommandé",
-
-      drying:
-        "Séchage conseillé",
-
+      nozzle: "Buse standard",
+      recommendedNozzle: "0.4 mm",
+      bed: "Plateau chauffant recommandé",
+      drying: "Séchage conseillé",
       priceLevel: "€€",
-
       quoteText:
         "Très bon choix pour les pièces techniques et fonctionnelles.",
     },
@@ -224,11 +174,11 @@ const materialsData = [
     name: "PolyLite ASA",
     brand: "Polymaker",
 
-    colors: [
-      "Noir",
-      "Blanc",
-      "Anthracite",
-    ],
+    image: "",
+    themeColor: "yellow",
+    texture: "smooth",
+
+    colors: ["Noir", "Blanc", "Anthracite"],
 
     applications: [
       "Extérieur",
@@ -258,35 +208,17 @@ const materialsData = [
       title: "PolyLite ASA",
       shortName: "ASA",
       type: "ASA extérieur",
-
-      stockStatus:
-        "Très recommandé",
-
-      idealFor:
-        "Pièces extérieures, automobile, camping-car",
-
+      stockStatus: "Très recommandé",
+      idealFor: "Pièces extérieures, automobile, camping-car",
       sellingPoint:
         "Excellente tenue UV et chaleur pour usage extérieur.",
-
-      limits:
-        "Impression plus technique qu’un PLA.",
-
+      limits: "Impression plus technique qu’un PLA.",
       printDifficulty: "Intermédiaire",
-
-      nozzle:
-        "Buse standard",
-
-      recommendedNozzle:
-        "0.4 mm",
-
-      bed:
-        "Plateau chauffant obligatoire",
-
-      drying:
-        "Séchage conseillé",
-
+      nozzle: "Buse standard",
+      recommendedNozzle: "0.4 mm",
+      bed: "Plateau chauffant obligatoire",
+      drying: "Séchage conseillé",
       priceLevel: "€€",
-
       quoteText:
         "Parfait pour les pièces exposées au soleil et aux intempéries.",
     },
@@ -298,10 +230,11 @@ const materialsData = [
     name: "PolyFlex TPU95A",
     brand: "Polymaker",
 
-    colors: [
-      "Noir",
-      "Orange",
-    ],
+    image: "",
+    themeColor: "orange",
+    texture: "flexible",
+
+    colors: ["Noir", "Orange"],
 
     applications: [
       "Silentbloc",
@@ -331,106 +264,74 @@ const materialsData = [
       title: "PolyFlex TPU95A",
       shortName: "TPU95A",
       type: "TPU flexible",
-
-      stockStatus:
-        "Très intéressant",
-
-      idealFor:
-        "Silentblocs, protections, amortisseurs",
-
+      stockStatus: "Très intéressant",
+      idealFor: "Silentblocs, protections, amortisseurs",
       sellingPoint:
         "Très flexible et durable avec une excellente résistance à l’abrasion.",
-
-      limits:
-        "Impression plus lente et plus technique.",
-
+      limits: "Impression plus lente et plus technique.",
       printDifficulty: "Intermédiaire",
-
-      nozzle:
-        "Buse standard",
-
-      recommendedNozzle:
-        "0.4 mm",
-
-      bed:
-        "Plateau chauffant recommandé",
-
-      drying:
-        "Séchage recommandé",
-
+      nozzle: "Buse standard",
+      recommendedNozzle: "0.4 mm",
+      bed: "Plateau chauffant recommandé",
+      drying: "Séchage recommandé",
       priceLevel: "€€",
-
       quoteText:
         "Idéal pour les pièces souples et anti-vibration.",
     },
   },
 
   {
-    id: "pa612-cf",
-    category: "Industrie",
-    name: "PA612-CF",
+    id: "abs",
+    category: "Technique",
+    name: "PolyLite ABS",
     brand: "Polymaker",
 
-    colors: ["Noir Carbone"],
+    image: "",
+    themeColor: "gray",
+    texture: "smooth",
+
+    colors: ["Noir", "Blanc", "Gris"],
 
     applications: [
-      "Mécanique",
-      "Industriel",
-      "Pièce haute performance",
+      "Technique",
+      "Automobile",
+      "Boîtier",
+      "Pièce atelier",
     ],
 
     properties: [
-      "Fibre carbone",
-      "Très rigide",
-      "Très haute résistance",
+      "Bonne résistance thermique",
+      "Résistant impact",
+      "Usinable",
     ],
 
     description:
-      "Nylon renforcé carbone destiné aux applications mécaniques et industrielles avancées.",
+      "Matériau technique robuste adapté aux pièces mécaniques et aux environnements plus exigeants.",
 
     resistance: {
-      mechanical: 5,
-      temperature: 5,
-      uv: 4,
+      mechanical: 4,
+      temperature: 4,
+      uv: 2,
       flexibility: 2,
-      finish: 5,
+      finish: 3,
     },
 
     productSheet: {
-      title: "PA612-CF",
-      shortName: "PA612-CF",
-      type: "Nylon carbone",
-
-      stockStatus:
-        "Premium technique",
-
-      idealFor:
-        "Pièces mécaniques haute performance",
-
-      sellingPoint:
-        "Rigidité et performances mécaniques très élevées.",
-
-      limits:
-        "Nécessite une impression technique et un séchage rigoureux.",
-
-      printDifficulty: "Avancé",
-
-      nozzle:
-        "Buse acier trempé obligatoire",
-
-      recommendedNozzle:
-        "0.4 mm ou 0.6 mm",
-
-      bed:
-        "Plateau chauffant obligatoire",
-
-      drying:
-        "Séchage obligatoire",
-
-      priceLevel: "€€€€",
-
+      title: "PolyLite ABS",
+      shortName: "ABS",
+      type: "ABS technique",
+      stockStatus: "Très utile atelier",
+      idealFor: "Boîtiers, automobile, pièces techniques",
+      sellingPoint: "Très bon matériau industriel polyvalent.",
+      limits: "Plus sensible au warping et aux odeurs qu’un PLA.",
+      printDifficulty: "Intermédiaire",
+      nozzle: "Buse standard",
+      recommendedNozzle: "0.4 mm",
+      bed: "Plateau chauffant obligatoire",
+      drying: "Séchage conseillé",
+      priceLevel: "€€",
       quoteText:
-        "Solution hautes performances pour applications industrielles.",
+        "Bon compromis pour les pièces techniques nécessitant une meilleure tenue thermique.",
     },
   },
 
@@ -439,6 +340,10 @@ const materialsData = [
     category: "Composite",
     name: "PETG-CF",
     brand: "Polymaker",
+
+    image: "",
+    themeColor: "dark",
+    texture: "carbon",
 
     colors: ["Noir Carbone"],
 
@@ -469,37 +374,132 @@ const materialsData = [
       title: "PETG-CF",
       shortName: "PETG-CF",
       type: "PETG carbone",
-
-      stockStatus:
-        "Très recommandé",
-
-      idealFor:
-        "Pièces rigides premium et techniques",
-
+      stockStatus: "Très recommandé",
+      idealFor: "Pièces rigides premium et techniques",
       sellingPoint:
         "Très beau rendu carbone avec excellente rigidité.",
-
-      limits:
-        "Abrasif pour les buses standard.",
-
+      limits: "Abrasif pour les buses standard.",
       printDifficulty: "Intermédiaire",
-
-      nozzle:
-        "Buse acier trempé recommandée",
-
-      recommendedNozzle:
-        "0.4 mm",
-
-      bed:
-        "Plateau chauffant recommandé",
-
-      drying:
-        "Séchage conseillé",
-
+      nozzle: "Buse acier trempé recommandée",
+      recommendedNozzle: "0.4 mm",
+      bed: "Plateau chauffant recommandé",
+      drying: "Séchage conseillé",
       priceLevel: "€€€",
-
       quoteText:
         "Excellent compromis entre esthétique carbone et performance.",
+    },
+  },
+
+  {
+    id: "pa612-cf",
+    category: "Industrie",
+    name: "PA612-CF",
+    brand: "Polymaker",
+
+    image: "",
+    themeColor: "dark",
+    texture: "carbon",
+
+    colors: ["Noir Carbone"],
+
+    applications: [
+      "Mécanique",
+      "Industriel",
+      "Pièce haute performance",
+    ],
+
+    properties: [
+      "Fibre carbone",
+      "Très rigide",
+      "Très haute résistance",
+    ],
+
+    description:
+      "Nylon renforcé carbone destiné aux applications mécaniques et industrielles avancées.",
+
+    resistance: {
+      mechanical: 5,
+      temperature: 5,
+      uv: 4,
+      flexibility: 2,
+      finish: 5,
+    },
+
+    productSheet: {
+      title: "PA612-CF",
+      shortName: "PA612-CF",
+      type: "Nylon carbone",
+      stockStatus: "Premium technique",
+      idealFor: "Pièces mécaniques haute performance",
+      sellingPoint:
+        "Rigidité et performances mécaniques très élevées.",
+      limits:
+        "Nécessite une impression technique et un séchage rigoureux.",
+      printDifficulty: "Avancé",
+      nozzle: "Buse acier trempé obligatoire",
+      recommendedNozzle: "0.4 mm ou 0.6 mm",
+      bed: "Plateau chauffant obligatoire",
+      drying: "Séchage obligatoire",
+      priceLevel: "€€€€",
+      quoteText:
+        "Solution hautes performances pour applications industrielles.",
+    },
+  },
+
+  {
+    id: "polycarbonate",
+    category: "Industrie",
+    name: "PolyLite PC",
+    brand: "Polymaker",
+
+    image: "",
+    themeColor: "clear",
+    texture: "glossy",
+
+    colors: ["Transparent", "Noir"],
+
+    applications: [
+      "Industrie",
+      "Haute température",
+      "Mécanique",
+      "Structure",
+    ],
+
+    properties: [
+      "Très haute résistance",
+      "Très haute température",
+      "Très robuste",
+    ],
+
+    description:
+      "Polymère technique haute performance destiné aux applications mécaniques et industrielles exigeantes.",
+
+    resistance: {
+      mechanical: 5,
+      temperature: 5,
+      uv: 3,
+      flexibility: 2,
+      finish: 4,
+    },
+
+    productSheet: {
+      title: "PolyLite PC",
+      shortName: "PC",
+      type: "Polycarbonate",
+      stockStatus: "Premium industriel",
+      idealFor: "Pièces mécaniques haute température",
+      sellingPoint:
+        "Très haute résistance mécanique et thermique.",
+      limits:
+        "Impression avancée nécessitant une machine bien fermée.",
+      printDifficulty: "Avancé",
+      nozzle: "Buse acier recommandée",
+      recommendedNozzle: "0.4 mm ou 0.6 mm",
+      bed: "Plateau chauffant obligatoire",
+      drying: "Séchage obligatoire",
+      priceLevel: "€€€€",
+      quoteText:
+        "Solution industrielle pour les pièces fortement sollicitées.",
     },
   },
 ];
