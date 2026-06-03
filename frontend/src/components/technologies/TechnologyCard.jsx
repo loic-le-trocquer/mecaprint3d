@@ -9,11 +9,46 @@ export default function TechnologyCard({ item, index, onSelectMaterial }) {
   const applications = normalizeList(item.applications);
   const benefits = normalizeList(item.benefits);
 
-  const getMaterial = (name) =>
-    materialsData.find(
-      (material) => material.name.toLowerCase() === name.toLowerCase()
-    );
+ const getMaterial = (name) => {
+  const cleanName = String(name || "")
+    .toLowerCase()
+    .trim();
 
+  const aliases = {
+    pla: "pla-pro",
+    petg: "petg",
+    asa: "asa",
+    tpu: "tpu95a",
+    nylon: "pa612-cf",
+    carbone: "petg-cf",
+    carbon: "petg-cf",
+  };
+
+  const targetId = aliases[cleanName];
+
+  if (targetId) {
+    return materialsData.find(
+      (material) => material.id === targetId
+    );
+  }
+
+  return materialsData.find((material) => {
+    const materialName =
+      material.name?.toLowerCase() || "";
+
+    const shortName =
+      material.productSheet?.shortName?.toLowerCase() || "";
+
+    const category =
+      material.category?.toLowerCase() || "";
+
+    return (
+      materialName.includes(cleanName) ||
+      shortName.includes(cleanName) ||
+      category.includes(cleanName)
+    );
+  });
+};
   return (
     <article className="group relative overflow-hidden rounded-3xl border border-white/10 bg-zinc-900/70 p-5 shadow-2xl shadow-black/40 backdrop-blur-xl transition duration-500 hover:-translate-y-1 hover:border-orange-500/50 hover:bg-zinc-900">
       <div className="absolute inset-0 bg-gradient-to-br from-orange-500/0 via-orange-500/0 to-orange-500/5 opacity-0 transition duration-500 group-hover:opacity-100" />
