@@ -245,5 +245,4 @@ export const materialsData = [
   },
 ];
 
-export { materialsData };
 export default materialsData;
