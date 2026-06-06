@@ -1,25 +1,38 @@
+// ================= COMPONENT =================
 export default function QuoteFiles({ files = [] }) {
-  if (!files.length) return null;
+  // Sécurise le cas où files serait undefined ou mal formé
+  const safeFiles = Array.isArray(files) ? files : [];
+
+  // Si aucun fichier, on n'affiche rien
+  if (!safeFiles.length) return null;
 
   return (
-    <div className="mt-6">
-      <p className="mb-3 text-sm font-bold uppercase tracking-widest text-orange-400">
-        Fichiers
-      </p>
+    <div className="flex flex-wrap gap-3">
+      {safeFiles.map((file, index) => {
+        // Compatibilité avec les différents formats possibles
+        const fileUrl = file.url || file.path;
 
-      <div className="flex flex-wrap gap-3">
-        {files.map((file) => (
+        const fileName =
+          file.originalName ||
+          file.name ||
+          file.filename ||
+          `Fichier client ${index + 1}`;
+
+        // Si aucun lien exploitable, on ignore ce fichier
+        if (!fileUrl) return null;
+
+        return (
           <a
-            key={file.path}
-            href={file.path}
+            key={file._id || fileUrl || index}
+            href={fileUrl}
             target="_blank"
             rel="noreferrer"
-            className="rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-zinc-200 hover:border-orange-500"
+            className="rounded-xl border border-orange-500/30 bg-orange-500/10 px-4 py-3 text-sm font-bold text-orange-300 transition hover:bg-orange-500 hover:text-black"
           >
-            {file.originalName}
+            Télécharger {fileName}
           </a>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 }

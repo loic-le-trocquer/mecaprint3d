@@ -157,12 +157,12 @@ export default function QuoteCard({ quote, setQuotes, onUpdate }) {
         </div>
       </Section>
 
-      {/* FILES */}
-      {hasFiles && (
-        <Section title="Fichiers client">
-          <QuoteFiles quote={quote.files} />
-        </Section>
-      )}
+      {/* ================= FILES ================= */}
+{hasFiles && (
+  <Section title="Fichiers client">
+    <QuoteFiles files={quote.files} />
+  </Section>
+)}
 
       {/* COMMERCIAL */}
       <Section title="Chiffrage commercial">
