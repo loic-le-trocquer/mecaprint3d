@@ -160,7 +160,7 @@ export default function QuoteCard({ quote, setQuotes, onUpdate }) {
       {/* FILES */}
       {hasFiles && (
         <Section title="Fichiers client">
-          <QuoteFiles quote={quote} />
+          <QuoteFiles quote={quote.files} />
         </Section>
       )}
 
