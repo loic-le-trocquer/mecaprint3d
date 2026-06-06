@@ -46,6 +46,10 @@ console.log(
 // ================= DATABASE =================
 mongoose.connect(process.env.MONGO_URI);
 
+mongoose.connection.once("open", () => {
+  console.log("📌 Base Mongo utilisée :", mongoose.connection.name);
+});
+
 mongoose.connection.on("connected", () => {
   console.log("🟢 MongoDB connecté");
 });
