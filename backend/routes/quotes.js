@@ -516,18 +516,23 @@ router.post(
 
       }
 
-      // =====================================================
-      // 💾 SAVE QUOTE
-      // =====================================================
-      const quote = await Quote.create({
-        ...req.body,
-        files: uploadedFiles,
-      });
+     // =====================================================
+// 💾 SAVE QUOTE
+// =====================================================
+const quote = await Quote.create({
+  ...req.body,
+  files: uploadedFiles,
+});
 
-      console.log(
-        "📩 Nouveau devis :",
-        quote._id
-      );
+console.log("✅ SAUVEGARDE MONGO OK");
+console.log("📄 ID :", quote._id);
+console.log("📄 BASE :", quote.constructor.db.name);
+console.log("📄 COLLECTION :", quote.constructor.collection.name);
+
+console.log(
+  "📩 Nouveau devis :",
+  quote._id
+);
 
       // =====================================================
       // 📧 EMAIL CLIENT
