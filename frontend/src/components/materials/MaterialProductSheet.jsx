@@ -141,7 +141,41 @@ export default function MaterialProductSheet({
               </div>
             </div>
           )}
+{/* ================= RESISTANCES ================= */}
+{material.resistance && (
+  <div className="mt-10">
+    <h3 className="mb-4 text-xl font-black text-white">
+      Performances
+    </h3>
 
+    <div className="grid gap-4 md:grid-cols-5">
+      <ScoreCard
+        label="Mécanique"
+        value={material.resistance.mechanical}
+      />
+
+      <ScoreCard
+        label="Température"
+        value={material.resistance.temperature}
+      />
+
+      <ScoreCard
+        label="UV"
+        value={material.resistance.uv}
+      />
+
+      <ScoreCard
+        label="Flexibilité"
+        value={material.resistance.flexibility}
+      />
+
+      <ScoreCard
+        label="Finition"
+        value={material.resistance.finish}
+      />
+    </div>
+  </div>
+)}
           {/* ================= GRID INFOS ================= */}
           {(sheet.idealFor ||
             sheet.sellingPoint ||
