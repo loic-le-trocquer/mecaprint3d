@@ -1,3 +1,4 @@
+console.log("✅ MATERIAL UPLOADS ROUTE CHARGÉE");
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
@@ -65,5 +66,10 @@ router.post("/datasheet", upload.single("file"), async (req, res) => {
     });
   }
 });
-
+router.get("/test", (req, res) => {
+  res.json({
+    success: true,
+    route: "material uploads",
+  });
+});
 module.exports = router;
