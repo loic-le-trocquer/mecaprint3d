@@ -65,6 +65,34 @@ const materialSchema = new mongoose.Schema(
       default: {},
     },
 
+// ===============================
+// COMMERCE / STOCK
+// ===============================
+    price: {
+      type: Number,
+      default: 0,
+    },
+
+    stock: {
+      type: Number,
+      default: 0,
+    },
+
+    leadTime: {
+      type: String,
+      default: "",
+    },
+
+    datasheetUrl: {
+      type: String,
+      default: "",
+    },
+
+    manufacturerUrl: {
+      type: String,
+      default: "",
+    },
+
     active: {
       type: Boolean,
       default: true,

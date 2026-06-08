@@ -17,7 +17,12 @@ const emptyMaterial = {
   properties: "",
   active: true,
   sortOrder: 0,
-};
+  price: 0,
+  stock: 0,
+  leadTime: "",
+  datasheetUrl: "",
+  manufacturerUrl: "",
+  };
 
 export default function AdminMaterials() {
   const [materials, setMaterials] = useState([]);
@@ -103,8 +108,13 @@ export default function AdminMaterials() {
       properties: material.properties?.join(", ") || "",
       active: material.active ?? true,
       sortOrder: material.sortOrder || 0,
-    });
-  }
+      price: material.price || 0,
+      stock: material.stock || 0,
+      leadTime: material.leadTime || "",
+      datasheetUrl: material.datasheetUrl || "",
+      manufacturerUrl: material.manufacturerUrl || "",
+      });
+    }
 
   async function handleDelete(id) {
     if (!confirm("Supprimer ce matériau ?")) return;
@@ -207,6 +217,39 @@ export default function AdminMaterials() {
               type="number"
               value={form.sortOrder}
               onChange={(v) => updateField("sortOrder", v)}
+            />
+
+            <Input
+            label="Prix indicatif €"
+            type="number"
+            value={form.price}
+            onChange={(v) => updateField("price", v)}
+            />
+
+            <Input
+            label="Stock"
+            type="number"
+            value={form.stock}
+            onChange={(v) => updateField("stock", v)}
+            />
+
+            <Input
+            label="Délai"
+            placeholder="En stock, 24h, 72h, sur commande..."
+            value={form.leadTime}
+            onChange={(v) => updateField("leadTime", v)}
+            />
+
+            <Input
+            label="Fiche technique PDF"
+            value={form.datasheetUrl}
+            onChange={(v) => updateField("datasheetUrl", v)}
+            />
+
+            <Input
+            label="Lien fabricant"
+            value={form.manufacturerUrl}
+            onChange={(v) => updateField("manufacturerUrl", v)}
             />
           </div>
 
