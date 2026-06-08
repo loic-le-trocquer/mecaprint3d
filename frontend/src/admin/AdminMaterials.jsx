@@ -15,6 +15,13 @@ const emptyMaterial = {
   colors: "",
   applications: "",
   properties: "",
+  resistance: {
+  mechanical: 3,
+  temperature: 2,
+  uv: 2,
+  flexibility: 1,
+  finish: 4,
+},
   active: true,
   sortOrder: 0,
   price: 0,
@@ -106,6 +113,13 @@ export default function AdminMaterials() {
       colors: material.colors?.join(", ") || "",
       applications: material.applications?.join(", ") || "",
       properties: material.properties?.join(", ") || "",
+      resistance: {
+  mechanical: material.resistance?.mechanical || 0,
+  temperature: material.resistance?.temperature || 0,
+  uv: material.resistance?.uv || 0,
+  flexibility: material.resistance?.flexibility || 0,
+  finish: material.resistance?.finish || 0,
+},
       active: material.active ?? true,
       sortOrder: material.sortOrder || 0,
       price: material.price || 0,
@@ -246,12 +260,83 @@ export default function AdminMaterials() {
             onChange={(v) => updateField("datasheetUrl", v)}
             />
 
-            <Input
-            label="Lien fabricant"
-            value={form.manufacturerUrl}
-            onChange={(v) => updateField("manufacturerUrl", v)}
-            />
-          </div>
+          <Input
+  label="Lien fabricant"
+  value={form.manufacturerUrl}
+  onChange={(v) => updateField("manufacturerUrl", v)}
+/>
+
+<div className="md:col-span-2 rounded-2xl border border-white/10 bg-black/30 p-4">
+  <h3 className="mb-4 text-lg font-black text-white">
+    Résistances
+  </h3>
+
+  <div className="grid gap-4 md:grid-cols-5">
+
+    <Input
+      label="Mécanique"
+      type="number"
+      value={form.resistance?.mechanical || 0}
+      onChange={(v) =>
+        updateField("resistance", {
+          ...form.resistance,
+          mechanical: Number(v),
+        })
+      }
+    />
+
+    <Input
+      label="Température"
+      type="number"
+      value={form.resistance?.temperature || 0}
+      onChange={(v) =>
+        updateField("resistance", {
+          ...form.resistance,
+          temperature: Number(v),
+        })
+      }
+    />
+
+    <Input
+      label="UV"
+      type="number"
+      value={form.resistance?.uv || 0}
+      onChange={(v) =>
+        updateField("resistance", {
+          ...form.resistance,
+          uv: Number(v),
+        })
+      }
+    />
+
+    <Input
+      label="Flexibilité"
+      type="number"
+      value={form.resistance?.flexibility || 0}
+      onChange={(v) =>
+        updateField("resistance", {
+          ...form.resistance,
+          flexibility: Number(v),
+        })
+      }
+    />
+
+    <Input
+      label="Finition"
+      type="number"
+      value={form.resistance?.finish || 0}
+      onChange={(v) =>
+        updateField("resistance", {
+          ...form.resistance,
+          finish: Number(v),
+        })
+      }
+    />
+
+  </div>
+</div>
+
+</div>
 
           <div className="mt-4">
             <label className="mb-2 block text-sm font-black uppercase tracking-widest text-zinc-400">
