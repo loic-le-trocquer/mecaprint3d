@@ -68,7 +68,7 @@ export default function MaterialsCompare({
                 label="Famille"
                 materials={materials}
                 render={(material) =>
-                  material.family || material.category || "—"
+                  material.family || "—"
                 }
               />
 
