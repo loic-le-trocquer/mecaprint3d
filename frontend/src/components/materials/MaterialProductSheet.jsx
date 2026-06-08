@@ -141,41 +141,7 @@ export default function MaterialProductSheet({
               </div>
             </div>
           )}
-{/* ================= RESISTANCES ================= */}
-{material.resistance && (
-  <div className="mt-10">
-    <h3 className="mb-4 text-xl font-black text-white">
-      Performances
-    </h3>
 
-    <div className="grid gap-4 md:grid-cols-5">
-      <ScoreCard
-        label="Mécanique"
-        value={material.resistance.mechanical}
-      />
-
-      <ScoreCard
-        label="Température"
-        value={material.resistance.temperature}
-      />
-
-      <ScoreCard
-        label="UV"
-        value={material.resistance.uv}
-      />
-
-      <ScoreCard
-        label="Flexibilité"
-        value={material.resistance.flexibility}
-      />
-
-      <ScoreCard
-        label="Finition"
-        value={material.resistance.finish}
-      />
-    </div>
-  </div>
-)}
           {/* ================= GRID INFOS ================= */}
           {(sheet.idealFor ||
             sheet.sellingPoint ||
@@ -231,35 +197,65 @@ export default function MaterialProductSheet({
             </div>
           )}
 
-          {/* ================= CTA ================= */}
+           {/* ================= CTA ================= */}
           <div className="mt-10 flex flex-wrap gap-4">
+
+            {/* ================= DEMANDE DEVIS ================= */}
             <a
               href="#devis"
               onClick={onClose}
-              className="rounded-full bg-orange-500 px-6 py-3 font-black text-black transition hover:bg-orange-400"
+              className="
+                rounded-full
+                bg-orange-500
+                px-6 py-3
+                font-black
+                text-black
+                transition
+                hover:bg-orange-400
+              "
             >
               Demander un devis
             </a>
 
+            {/* ================= FICHE TECHNIQUE PDF ================= */}
+            {material.datasheetUrl && (
+              <a
+                href={material.datasheetUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="
+                  rounded-full
+                  border border-white/15
+                  px-6 py-3
+                  font-black
+                  text-white
+                  transition
+                  hover:border-orange-500
+                  hover:text-orange-400
+                "
+              >
+                Fiche technique
+              </a>
+            )}
+
+            {/* ================= RETOUR ================= */}
             <button
               type="button"
               onClick={onClose}
-              className="rounded-full border border-white/15 px-6 py-3 font-black text-white transition hover:border-orange-500 hover:text-orange-400"
+              className="
+                rounded-full
+                border border-white/15
+                px-6 py-3
+                font-black
+                text-white
+                transition
+                hover:border-orange-500
+                hover:text-orange-400
+              "
             >
-
-            {material.datasheetUrl && (
-  <a
-    href={material.datasheetUrl}
-    target="_blank"
-    rel="noreferrer"
-    className="rounded-full border border-white/15 px-6 py-3 font-black text-white transition hover:border-orange-500 hover:text-orange-400"
-  >
-    Fiche technique
-  </a>
-)}
-
               Retour
             </button>
+
           </div>
         </div>
       </div>
@@ -293,6 +289,42 @@ function Spec({ label, value }) {
       </div>
 
       <div className="mt-1 font-semibold text-white">{value}</div>
+    </div>
+  );
+}
+/* ================= SCORE CARD ================= */
+
+function ScoreCard({
+  label,
+  value = 0,
+}) {
+  const safeValue =
+    Number(value || 0);
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+
+      <p className="mb-3 text-xs font-black uppercase tracking-widest text-orange-400">
+        {label}
+      </p>
+
+      <div className="flex gap-1">
+
+        {[1, 2, 3, 4, 5].map(
+          (level) => (
+            <span
+              key={level}
+              className={`h-2.5 w-2.5 rounded-full ${
+                level <= safeValue
+                  ? "bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.6)]"
+                  : "bg-white/10"
+              }`}
+            />
+          )
+        )}
+
+      </div>
+
     </div>
   );
 }
