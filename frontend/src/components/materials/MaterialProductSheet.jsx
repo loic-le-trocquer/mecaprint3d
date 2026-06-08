@@ -142,6 +142,64 @@ export default function MaterialProductSheet({
             </div>
           )}
 
+{/* ================= PERFORMANCES ================= */}
+{material.resistance && (
+  <div className="mt-10">
+    <h3 className="mb-4 text-xl font-black text-white">
+      Performances
+    </h3>
+
+    <div className="grid gap-4 md:grid-cols-5">
+
+      {[
+        {
+          label: "Mécanique",
+          value: material.resistance.mechanical,
+        },
+        {
+          label: "Température",
+          value: material.resistance.temperature,
+        },
+        {
+          label: "UV",
+          value: material.resistance.uv,
+        },
+        {
+          label: "Flexibilité",
+          value: material.resistance.flexibility,
+        },
+        {
+          label: "Finition",
+          value: material.resistance.finish,
+        },
+      ].map((item) => (
+        <div
+          key={item.label}
+          className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+        >
+          <p className="mb-3 text-xs font-black uppercase tracking-widest text-orange-400">
+            {item.label}
+          </p>
+
+          <div className="flex gap-1">
+            {[1, 2, 3, 4, 5].map((level) => (
+              <span
+                key={level}
+                className={`h-2.5 w-2.5 rounded-full ${
+                  level <= Number(item.value || 0)
+                    ? "bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.6)]"
+                    : "bg-white/10"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
+
+    </div>
+  </div>
+)}
+
           {/* ================= GRID INFOS ================= */}
           {(sheet.idealFor ||
             sheet.sellingPoint ||
@@ -289,42 +347,6 @@ function Spec({ label, value }) {
       </div>
 
       <div className="mt-1 font-semibold text-white">{value}</div>
-    </div>
-  );
-}
-/* ================= SCORE CARD ================= */
-
-function ScoreCard({
-  label,
-  value = 0,
-}) {
-  const safeValue =
-    Number(value || 0);
-
-  return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-
-      <p className="mb-3 text-xs font-black uppercase tracking-widest text-orange-400">
-        {label}
-      </p>
-
-      <div className="flex gap-1">
-
-        {[1, 2, 3, 4, 5].map(
-          (level) => (
-            <span
-              key={level}
-              className={`h-2.5 w-2.5 rounded-full ${
-                level <= safeValue
-                  ? "bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.6)]"
-                  : "bg-white/10"
-              }`}
-            />
-          )
-        )}
-
-      </div>
-
     </div>
   );
 }
