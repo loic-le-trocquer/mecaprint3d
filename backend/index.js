@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const materialRoutes = require("./routes/materials");
 
 // ================= APP =================
 const app = express();
@@ -324,6 +325,9 @@ app.use("/api/quotes", quotesRoutes);
 app.use("/api/site-content", siteContentRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/simple-orders", simpleOrdersRoutes);
+
+// ================= MATERIALS =================
+app.use("/api/materials", materialRoutes);
 
 // =====================================================
 // 💳 ANCIEN CHECKOUT COMMANDE CLASSIQUE
