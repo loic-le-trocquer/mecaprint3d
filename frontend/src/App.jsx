@@ -16,10 +16,12 @@ import AdminChat from "./admin/AdminChat";
 import QuickOrder from "./pages/QuickOrder";
 import Admin from "./admin/Admin";
 import AdminQuotes from "./admin/AdminQuotes";
+import AdminMaterials from "./admin/AdminMaterials";
 
 import { useSiteContent } from "./lib/useSiteContent";
 
 import "./index.css";
+
 
 export default function App() {
 
