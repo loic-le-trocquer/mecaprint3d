@@ -34,10 +34,14 @@ router.post("/", async (req, res) => {
 
     res.status(201).json(material);
   } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
+  console.error("🔥 MATERIAL ERROR:", error);
+
+  res.status(500).json({
+    success: false,
+    message: error.message,
+    stack: error.stack,
+  });
+}
 });
 
 // =============================
