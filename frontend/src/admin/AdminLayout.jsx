@@ -253,6 +253,24 @@ useEffect(() => {
   )}
 </a>
 
+{/* =====================================================
+    MATERIALS
+===================================================== */}
+<a
+  href="/admin/materials"
+  className="
+    block rounded-2xl
+    border border-white/10
+    px-5 py-4
+    font-bold text-zinc-300
+    transition
+    hover:border-orange-500
+    hover:text-white
+  "
+>
+  Matériaux
+</a>
+
             {/* =====================================================
                 WEBSITE
             ===================================================== */}
