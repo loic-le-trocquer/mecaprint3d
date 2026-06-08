@@ -37,14 +37,19 @@ export default function AdminMaterials() {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  async function loadMaterials() {
-    const res = await fetch(`${API_URL}/api/materials`);
-    const data = await res.json();
+ async function loadMaterials() {
+  const res = await fetch(
+    `${API_URL}/api/materials`
+  );
 
-    if (data.success) {
-      setMaterials(data.materials);
-    }
-  }
+  const data = await res.json();
+
+  setMaterials(
+    Array.isArray(data)
+      ? data
+      : data.materials || []
+  );
+}
 
   useEffect(() => {
     loadMaterials();
