@@ -325,8 +325,6 @@ app.use("/api/quotes", quotesRoutes);
 app.use("/api/site-content", siteContentRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/simple-orders", simpleOrdersRoutes);
-
-// ================= MATERIALS =================
 app.use("/api/materials", materialRoutes);
 
 // =====================================================
