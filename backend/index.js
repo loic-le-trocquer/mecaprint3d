@@ -9,7 +9,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const materialRoutes = require("./routes/materials");
-
+const materialUploadsRoutes = require("./routes/materialUploads");
 // ================= APP =================
 const app = express();
 
@@ -329,7 +329,7 @@ app.use("/api/site-content", siteContentRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/simple-orders", simpleOrdersRoutes);
 app.use("/api/materials", materialRoutes);
-
+app.use("/api/material-uploads", materialUploadsRoutes);
 // =====================================================
 // 💳 ANCIEN CHECKOUT COMMANDE CLASSIQUE
 // =====================================================
