@@ -1,11 +1,13 @@
-function ScoreDots({ value }) {
+function ScoreDots({ value = 0 }) {
+  const safeValue = Number(value || 0);
+
   return (
     <div className="flex justify-center gap-1">
       {[1, 2, 3, 4, 5].map((level) => (
         <div
           key={level}
           className={`h-2.5 w-2.5 rounded-full transition-all ${
-            level <= value
+            level <= safeValue
               ? "bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.6)]"
               : "bg-white/10"
           }`}
@@ -19,13 +21,10 @@ export default function MaterialsCompare({
   materials = [],
   onClose,
 }) {
-  // ================= EMPTY =================
   if (!materials.length) return null;
 
   return (
     <div className="fixed inset-0 z-[220] overflow-auto bg-black/90 p-6 backdrop-blur">
-
-      {/* ================= CLOSE BUTTON ================= */}
       <button
         type="button"
         onClick={onClose}
@@ -34,12 +33,8 @@ export default function MaterialsCompare({
         Fermer
       </button>
 
-      {/* ================= CONTAINER ================= */}
       <div className="mx-auto max-w-7xl">
-
-        {/* ================= TITLE ================= */}
         <div className="mb-10 text-center">
-
           <p className="mb-3 text-sm font-bold uppercase tracking-widest text-orange-400">
             Comparateur
           </p>
@@ -47,193 +42,117 @@ export default function MaterialsCompare({
           <h2 className="text-5xl font-black text-white">
             Comparaison des matériaux
           </h2>
-
         </div>
 
-        {/* ================= TABLE ================= */}
         <div className="overflow-x-auto rounded-3xl border border-white/10 bg-zinc-950">
-
           <table className="min-w-full border-collapse">
-
-            {/* ================= HEADER ================= */}
             <thead className="bg-white/5">
-
               <tr>
-
                 <th className="border-b border-white/10 p-5 text-left text-zinc-400">
                   Critère
                 </th>
 
                 {materials.map((material) => (
                   <th
-                    key={material.id}
+                    key={material._id || material.name}
                     className="border-b border-white/10 p-5 text-center text-xl font-black text-white"
                   >
                     {material.name}
                   </th>
                 ))}
-
               </tr>
-
             </thead>
 
-            {/* ================= BODY ================= */}
             <tbody>
+              <CompareRow
+                label="Famille"
+                materials={materials}
+                render={(material) =>
+                  material.family || material.category || "—"
+                }
+              />
 
-              {/* ================= FAMILY ================= */}
-              <tr className="border-b border-white/10">
+              <ScoreRow
+                label="Résistance mécanique"
+                materials={materials}
+                field="mechanical"
+              />
 
-                <td className="p-5 font-semibold text-zinc-300">
-                  Famille
-                </td>
+              <ScoreRow
+                label="Tenue température"
+                materials={materials}
+                field="temperature"
+              />
 
-                {materials.map((material) => (
-                  <td
-                    key={material.id}
-                    className="p-5 text-center text-zinc-200"
-                  >
-                    {material.category}
-                  </td>
-                ))}
+              <ScoreRow
+                label="Résistance UV"
+                materials={materials}
+                field="uv"
+              />
 
-              </tr>
+              <ScoreRow
+                label="Flexibilité"
+                materials={materials}
+                field="flexibility"
+              />
 
-              {/* ================= MECHANICAL ================= */}
-              <tr className="border-b border-white/10">
+              <ScoreRow
+                label="Qualité finition"
+                materials={materials}
+                field="finish"
+              />
 
-                <td className="p-5 font-semibold text-zinc-300">
-                  Résistance mécanique
-                </td>
-
-                {materials.map((material) => (
-                  <td
-                    key={material.id}
-                    className="p-5"
-                  >
-                    <ScoreDots
-                      value={
-                        material.resistance?.mechanical
-                      }
-                    />
-                  </td>
-                ))}
-
-              </tr>
-
-              {/* ================= TEMPERATURE ================= */}
-              <tr className="border-b border-white/10">
-
-                <td className="p-5 font-semibold text-zinc-300">
-                  Tenue température
-                </td>
-
-                {materials.map((material) => (
-                  <td
-                    key={material.id}
-                    className="p-5"
-                  >
-                    <ScoreDots
-                      value={
-                        material.resistance?.temperature
-                      }
-                    />
-                  </td>
-                ))}
-
-              </tr>
-
-              {/* ================= UV ================= */}
-              <tr className="border-b border-white/10">
-
-                <td className="p-5 font-semibold text-zinc-300">
-                  Résistance UV
-                </td>
-
-                {materials.map((material) => (
-                  <td
-                    key={material.id}
-                    className="p-5"
-                  >
-                    <ScoreDots
-                      value={
-                        material.resistance?.uv
-                      }
-                    />
-                  </td>
-                ))}
-
-              </tr>
-
-              {/* ================= FLEXIBILITY ================= */}
-              <tr className="border-b border-white/10">
-
-                <td className="p-5 font-semibold text-zinc-300">
-                  Flexibilité
-                </td>
-
-                {materials.map((material) => (
-                  <td
-                    key={material.id}
-                    className="p-5"
-                  >
-                    <ScoreDots
-                      value={
-                        material.resistance?.flexibility
-                      }
-                    />
-                  </td>
-                ))}
-
-              </tr>
-
-              {/* ================= FINISH ================= */}
-              <tr className="border-b border-white/10">
-
-                <td className="p-5 font-semibold text-zinc-300">
-                  Qualité finition
-                </td>
-
-                {materials.map((material) => (
-                  <td
-                    key={material.id}
-                    className="p-5"
-                  >
-                    <ScoreDots
-                      value={
-                        material.resistance?.finish
-                      }
-                    />
-                  </td>
-                ))}
-
-              </tr>
-
-              {/* ================= APPLICATIONS ================= */}
-              <tr>
-
-                <td className="p-5 font-semibold text-zinc-300">
-                  Usage recommandé
-                </td>
-
-                {materials.map((material) => (
-                  <td
-                    key={material.id}
-                    className="p-5 text-center text-sm leading-relaxed text-zinc-200"
-                  >
-                    {material.applications?.join(", ")}
-                  </td>
-                ))}
-
-              </tr>
-
+              <CompareRow
+                label="Usage recommandé"
+                materials={materials}
+                render={(material) =>
+                  material.applications?.length
+                    ? material.applications.join(", ")
+                    : "—"
+                }
+              />
             </tbody>
-
           </table>
-
         </div>
-
       </div>
-
     </div>
+  );
+}
+
+function CompareRow({ label, materials, render }) {
+  return (
+    <tr className="border-b border-white/10">
+      <td className="p-5 font-semibold text-zinc-300">
+        {label}
+      </td>
+
+      {materials.map((material) => (
+        <td
+          key={material._id || material.name}
+          className="p-5 text-center text-sm leading-relaxed text-zinc-200"
+        >
+          {render(material)}
+        </td>
+      ))}
+    </tr>
+  );
+}
+
+function ScoreRow({ label, materials, field }) {
+  return (
+    <tr className="border-b border-white/10">
+      <td className="p-5 font-semibold text-zinc-300">
+        {label}
+      </td>
+
+      {materials.map((material) => (
+        <td
+          key={material._id || material.name}
+          className="p-5"
+        >
+          <ScoreDots value={material.resistance?.[field]} />
+        </td>
+      ))}
+    </tr>
   );
 }
