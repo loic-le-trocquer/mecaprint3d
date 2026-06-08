@@ -16,7 +16,7 @@ import AdminChat from "./admin/AdminChat";
 import QuickOrder from "./pages/QuickOrder";
 import Admin from "./admin/Admin";
 import AdminQuotes from "./admin/AdminQuotes";
-import AdminMaterials from "./admin/AdminMaterials";
+import AdminMaterials from "./admin/AdminMaterials.jsx";
 
 import { useSiteContent } from "./lib/useSiteContent";
 
@@ -39,6 +39,10 @@ export default function App() {
   if (window.location.pathname === "/admin/chat") {
     return <AdminChat />;
   }
+
+ if (window.location.pathname === "/admin/materials") {
+  return <AdminMaterials />;
+}
 
   if (isQuoteCheckout) {
   return <QuoteCheckout />;
