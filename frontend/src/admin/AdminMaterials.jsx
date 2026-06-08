@@ -99,6 +99,10 @@ export default function AdminMaterials() {
     loadMaterials();
   }
 
+  // =====================================================
+  // edition
+  // =====================================================
+
   function handleEdit(material) {
     setEditingId(material._id);
 
@@ -114,12 +118,12 @@ export default function AdminMaterials() {
       applications: material.applications?.join(", ") || "",
       properties: material.properties?.join(", ") || "",
       resistance: {
-  mechanical: material.resistance?.mechanical || 0,
-  temperature: material.resistance?.temperature || 0,
-  uv: material.resistance?.uv || 0,
-  flexibility: material.resistance?.flexibility || 0,
-  finish: material.resistance?.finish || 0,
-},
+      mechanical: material.resistance?.mechanical || 0,
+      temperature: material.resistance?.temperature || 0,
+      uv: material.resistance?.uv || 0,
+      flexibility: material.resistance?.flexibility || 0,
+      finish: material.resistance?.finish || 0,
+    },
       active: material.active ?? true,
       sortOrder: material.sortOrder || 0,
       price: material.price || 0,
@@ -129,6 +133,78 @@ export default function AdminMaterials() {
       manufacturerUrl: material.manufacturerUrl || "",
       });
     }
+// =====================================================
+// DUPLICATION
+// =====================================================
+
+function handleDuplicate(material) {
+  setEditingId(null);
+
+  setForm({
+    name: `${material.name} (copie)`,
+    brand: material.brand || "Polymaker",
+    family: material.family || "",
+    category: material.category || "",
+    imageUrl: material.imageUrl || "",
+    imagePublicId: material.imagePublicId || "",
+    description: material.description || "",
+
+    colors:
+      material.colors?.join(", ") || "",
+
+    applications:
+      material.applications?.join(", ") || "",
+
+    properties:
+      material.properties?.join(", ") || "",
+
+    resistance: {
+      mechanical:
+        material.resistance?.mechanical || 3,
+
+      temperature:
+        material.resistance?.temperature || 2,
+
+      uv:
+        material.resistance?.uv || 2,
+
+      flexibility:
+        material.resistance?.flexibility || 1,
+
+      finish:
+        material.resistance?.finish || 4,
+    },
+
+    active: true,
+
+    sortOrder:
+      material.sortOrder || 0,
+
+    price:
+      material.price || 0,
+
+    stock:
+      material.stock || 0,
+
+    leadTime:
+      material.leadTime || "",
+
+    datasheetUrl:
+      material.datasheetUrl || "",
+
+    manufacturerUrl:
+      material.manufacturerUrl || "",
+  });
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+}
+
+  // =====================================================
+  // SUPRESSION
+  // =====================================================
 
   async function handleDelete(id) {
     if (!confirm("Supprimer ce matériau ?")) return;
@@ -419,21 +495,57 @@ export default function AdminMaterials() {
                 </div>
               </div>
 
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleEdit(material)}
-                  className="rounded-full border border-orange-500/30 px-4 py-2 text-sm font-bold text-orange-300 hover:bg-orange-500 hover:text-black"
-                >
-                  Modifier
-                </button>
+             <div className="flex gap-2">
 
-                <button
-                  onClick={() => handleDelete(material._id)}
-                  className="rounded-full border border-red-500/30 px-4 py-2 text-sm font-bold text-red-300 hover:bg-red-500 hover:text-black"
-                >
-                  Supprimer
-                </button>
-              </div>
+  {/* ================= MODIFIER ================= */}
+  <button
+    onClick={() => handleEdit(material)}
+    className="
+      rounded-full
+      border border-orange-500/30
+      px-4 py-2
+      text-sm font-bold
+      text-orange-300
+      hover:bg-orange-500
+      hover:text-black
+    "
+  >
+    Modifier
+  </button>
+
+  {/* ================= DUPLIQUER ================= */}
+  <button
+    onClick={() => handleDuplicate(material)}
+    className="
+      rounded-full
+      border border-blue-500/30
+      px-4 py-2
+      text-sm font-bold
+      text-blue-300
+      hover:bg-blue-500
+      hover:text-black
+    "
+  >
+    Dupliquer
+  </button>
+
+  {/* ================= SUPPRIMER ================= */}
+  <button
+    onClick={() => handleDelete(material._id)}
+    className="
+      rounded-full
+      border border-red-500/30
+      px-4 py-2
+      text-sm font-bold
+      text-red-300
+      hover:bg-red-500
+      hover:text-black
+    "
+  >
+    Supprimer
+  </button>
+
+</div>
             </div>
           ))}
 
