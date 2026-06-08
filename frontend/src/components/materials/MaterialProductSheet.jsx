@@ -75,6 +75,33 @@ export default function MaterialProductSheet({
             </p>
           )}
 
+
+          {/* ================= COMMERCE ================= */}
+<div className="mt-8 grid gap-4 md:grid-cols-3">
+  <InfoCard
+    title="Prix indicatif"
+    text={
+      material.price
+        ? `${material.price} €`
+        : "Sur demande"
+    }
+  />
+
+  <InfoCard
+    title="Stock"
+    text={
+      material.stock
+        ? `${material.stock} bobine(s)`
+        : "Sur commande"
+    }
+  />
+
+  <InfoCard
+    title="Délai"
+    text={material.leadTime || "Sur demande"}
+  />
+</div>
+
           {/* ================= APPLICATIONS ================= */}
           {!!material.applications?.length && (
             <div className="mt-10">
@@ -185,6 +212,18 @@ export default function MaterialProductSheet({
               onClick={onClose}
               className="rounded-full border border-white/15 px-6 py-3 font-black text-white transition hover:border-orange-500 hover:text-orange-400"
             >
+
+            {material.datasheetUrl && (
+  <a
+    href={material.datasheetUrl}
+    target="_blank"
+    rel="noreferrer"
+    className="rounded-full border border-white/15 px-6 py-3 font-black text-white transition hover:border-orange-500 hover:text-orange-400"
+  >
+    Fiche technique
+  </a>
+)}
+
               Retour
             </button>
           </div>
