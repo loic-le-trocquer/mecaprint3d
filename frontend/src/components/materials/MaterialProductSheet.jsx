@@ -258,22 +258,43 @@ export default function MaterialProductSheet({
            {/* ================= CTA ================= */}
           <div className="mt-10 flex flex-wrap gap-4">
 
-            {/* ================= DEMANDE DEVIS ================= */}
-            <a
-              href="#devis"
-              onClick={onClose}
-              className="
-                rounded-full
-                bg-orange-500
-                px-6 py-3
-                font-black
-                text-black
-                transition
-                hover:bg-orange-400
-              "
-            >
-              Demander un devis
-            </a>
+  <a
+    href="#devis"
+    onClick={onClose}
+    className="rounded-full bg-orange-500 px-6 py-3 font-black text-black transition hover:bg-orange-400"
+  >
+    Demander un devis
+  </a>
+
+  {material.datasheetUrl && (
+    <a
+      href={material.datasheetUrl}
+      target="_blank"
+      rel="noreferrer"
+      className="
+        rounded-full
+        border border-orange-500
+        px-6 py-3
+        font-black
+        text-orange-400
+        transition
+        hover:bg-orange-500
+        hover:text-black
+      "
+    >
+      Fiche technique PDF
+    </a>
+  )}
+
+  <button
+    type="button"
+    onClick={onClose}
+    className="rounded-full border border-white/15 px-6 py-3 font-black text-white transition hover:border-orange-500 hover:text-orange-400"
+  >
+    Retour
+  </button>
+
+</div>
 
             {/* ================= FICHE TECHNIQUE PDF ================= */}
             {material.datasheetUrl && (
@@ -317,7 +338,6 @@ export default function MaterialProductSheet({
           </div>
         </div>
       </div>
-    </div>
   );
 }
 
