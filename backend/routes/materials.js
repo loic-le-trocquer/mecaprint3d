@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Material = require("../models/Material");
-
+console.log("✅ ROUTE MATERIALS CHARGÉE");
 // =============================
 // GET ALL MATERIALS
 // =============================

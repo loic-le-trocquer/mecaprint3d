@@ -34,6 +34,9 @@ const sendEmail = require("./utils/sendEmail");
 const PORT = process.env.PORT || 4242;
 const UPLOAD_DIR = path.join(__dirname, "uploads");
 
+console.log("✅ INDEX MECAPRINT3D VERSION MATERIALS OK");
+
+
 // Création automatique du dossier uploads si absent
 if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
