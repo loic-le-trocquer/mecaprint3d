@@ -30,7 +30,18 @@ router.get("/", async (req, res) => {
 // =============================
 router.post("/", async (req, res) => {
   try {
-    const material = await Material.create(req.body);
+    const payload = { ...req.body };
+
+if (!payload.slug && payload.name) {
+  payload.slug = payload.name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+const material = await Material.create(payload);
 
     res.status(201).json(material);
   } catch (error) {
