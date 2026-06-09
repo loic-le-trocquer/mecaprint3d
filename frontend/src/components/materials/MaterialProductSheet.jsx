@@ -265,16 +265,16 @@ export default function MaterialProductSheet({
     Demander un devis
   </a>
 
-  {material.datasheetUrl && (
-    <a
-      href={material.datasheetUrl}
-      target="_blank"
-      rel="noreferrer"
-      className="rounded-full border border-orange-500 px-6 py-3 font-black text-orange-400 transition hover:bg-orange-500 hover:text-black"
-    >
-      Fiche technique PDF
-    </a>
-  )}
+ {material.datasheetUrl && (
+  <a
+    href={material.datasheetUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="rounded-full border border-orange-500 px-6 py-3 font-black text-orange-400 transition hover:bg-orange-500 hover:text-black"
+  >
+    Ouvrir la fiche technique PDF
+  </a>
+)}
 
   <button
     type="button"
