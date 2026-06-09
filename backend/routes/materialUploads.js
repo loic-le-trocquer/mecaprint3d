@@ -46,16 +46,29 @@ router.post("/image", upload.single("file"), async (req, res) => {
 // =============================
 router.post("/datasheet", upload.single("file"), async (req, res) => {
   try {
-    const result = await cloudinary.uploader.upload(
-      bufferToDataUri(req.file),
-      {
-        folder: "materials/datasheets",
-        resource_type: "auto",
-        use_filename: true,
-        unique_filename: true,
-          format: "pdf",
-      }
-    );
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Aucun fichier reçu",
+      });
+    }
+
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: "materials/datasheets",
+          resource_type: "raw",
+          use_filename: true,
+          unique_filename: true,
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+
+      stream.end(req.file.buffer);
+    });
 
     res.json({
       success: true,
@@ -63,6 +76,8 @@ router.post("/datasheet", upload.single("file"), async (req, res) => {
       publicId: result.public_id,
     });
   } catch (error) {
+    console.error("🔥 DATASHEET UPLOAD ERROR:", error);
+
     res.status(500).json({
       success: false,
       message: error.message,
