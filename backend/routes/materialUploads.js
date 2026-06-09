@@ -52,7 +52,6 @@ router.post("/datasheet", upload.single("file"), async (req, res) => {
         message: "Aucun fichier reçu",
       });
     }
-
     const result = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         {
@@ -66,7 +65,6 @@ router.post("/datasheet", upload.single("file"), async (req, res) => {
           else resolve(result);
         }
       );
-
       stream.end(req.file.buffer);
     });
 
