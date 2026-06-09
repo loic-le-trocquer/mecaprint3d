@@ -50,7 +50,9 @@ router.post("/datasheet", upload.single("file"), async (req, res) => {
       bufferToDataUri(req.file),
       {
         folder: "materials/datasheets",
-        resource_type: "raw",
+        resource_type: "auto",
+       use_filename: true,
+    unique_filename: true,
       }
     );
 
