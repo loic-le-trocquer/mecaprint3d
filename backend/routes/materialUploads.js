@@ -53,6 +53,7 @@ router.post("/datasheet", upload.single("file"), async (req, res) => {
         resource_type: "auto",
         use_filename: true,
         unique_filename: true,
+          format: "pdf",
       }
     );
 
