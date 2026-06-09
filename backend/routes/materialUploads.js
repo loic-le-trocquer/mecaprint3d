@@ -68,6 +68,9 @@ router.post("/datasheet", upload.single("file"), async (req, res) => {
       stream.end(req.file.buffer);
     });
 
+      console.log("CLOUDINARY DATASHEET RESULT");
+      console.log(result);
+
     res.json({
       success: true,
       url: result.secure_url,
