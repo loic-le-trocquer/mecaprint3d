@@ -33,10 +33,19 @@ export default function Technologies({ content }) {
       try {
         const response = await fetch(`${API_URL}/api/materials`);
         const data = await response.json();
-
-        if (data.success && Array.isArray(data.materials)) {
-          setMaterials(data.materials);
-        }
+setMaterials(
+  Array.isArray(data)
+    ? data.filter(
+        (material) =>
+          material.isActive !== false &&
+          material.active !== false
+      )
+    : (data.materials || []).filter(
+        (material) =>
+          material.isActive !== false &&
+          material.active !== false
+      )
+);
       } catch (error) {
         console.error("Erreur chargement matériaux :", error);
       }
