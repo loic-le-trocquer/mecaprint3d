@@ -99,7 +99,10 @@ async function uploadDatasheet(file) {
 
   const formData = new FormData();
   formData.append("file", file);
-
+console.log("UPLOAD FILE");
+console.log(file);
+console.log(file.name);
+console.log(file.type);
   const res = await fetch(
     `${API_URL}/api/material-uploads/datasheet`,
     {
