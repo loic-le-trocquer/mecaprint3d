@@ -62,6 +62,61 @@ export default function AdminMaterials() {
     }));
   }
 
+  // =====================================================
+// UPLOAD IMAGE CLOUDINARY
+// =====================================================
+
+async function uploadImage(file) {
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(
+    `${API_URL}/api/material-uploads/image`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const data = await res.json();
+
+  if (data.success) {
+    updateField("imageUrl", data.url);
+    updateField("imagePublicId", data.publicId);
+  } else {
+    alert(data.message);
+  }
+}
+
+// =====================================================
+// UPLOAD PDF
+// =====================================================
+
+async function uploadDatasheet(file) {
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(
+    `${API_URL}/api/material-uploads/datasheet`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const data = await res.json();
+
+  if (data.success) {
+    updateField("datasheetUrl", data.url);
+  } else {
+    alert(data.message);
+  }
+}
+  
   function normalizePayload() {
     return {
       ...form,
@@ -274,17 +329,28 @@ function handleDuplicate(material) {
               onChange={(v) => updateField("category", v)}
             />
 
-            <Input
-              label="Image Cloudinary URL"
-              value={form.imageUrl}
-              onChange={(v) => updateField("imageUrl", v)}
-            />
+            <div>
+  <label className="mb-2 block text-sm font-black uppercase tracking-widest text-zinc-400">
+    Image matériau
+  </label>
 
-            <Input
-              label="Public ID Cloudinary"
-              value={form.imagePublicId}
-              onChange={(v) => updateField("imagePublicId", v)}
-            />
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) =>
+      uploadImage(e.target.files?.[0])
+    }
+    className="w-full rounded-2xl border border-white/10 bg-black p-4 text-white"
+  />
+
+  {form.imageUrl && (
+    <img
+      src={form.imageUrl}
+      alt="preview"
+      className="mt-3 h-28 rounded-xl border border-white/10"
+    />
+  )}
+</div>
 
             <Input
               label="Couleurs"
@@ -335,12 +401,33 @@ function handleDuplicate(material) {
             onChange={(v) => updateField("leadTime", v)}
             />
 
-            <Input
-            label="Fiche technique PDF"
-            value={form.datasheetUrl}
-            onChange={(v) => updateField("datasheetUrl", v)}
-            />
+            <div>
+  <label className="mb-2 block text-sm font-black uppercase tracking-widest text-zinc-400">
+    Fiche technique PDF
+  </label>
 
+  <input
+    type="file"
+    accept=".pdf"
+    onChange={(e) =>
+      uploadDatasheet(
+        e.target.files?.[0]
+      )
+    }
+    className="w-full rounded-2xl border border-white/10 bg-black p-4 text-white"
+  />
+
+  {form.datasheetUrl && (
+    <a
+      href={form.datasheetUrl}
+      target="_blank"
+      rel="noreferrer"
+      className="mt-2 block text-orange-400"
+    >
+      Voir la fiche PDF
+    </a>
+  )}
+</div>
           <Input
   label="Lien fabricant"
   value={form.manufacturerUrl}
