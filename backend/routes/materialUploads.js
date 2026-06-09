@@ -57,10 +57,11 @@ router.post("/datasheet", upload.single("file"), async (req, res) => {
       const stream = cloudinary.uploader.upload_stream(
         {
           folder: "materials/datasheets",
-          resource_type: "raw",
+          resource_type: "image",
           use_filename: true,
           unique_filename: true,
           format: "pdf",
+          access_mode: "public",
         },
         (error, result) => {
           if (error) reject(error);
@@ -85,6 +86,7 @@ router.post("/datasheet", upload.single("file"), async (req, res) => {
     });
   }
 });
+
 router.get("/test", (req, res) => {
   res.json({
     success: true,
