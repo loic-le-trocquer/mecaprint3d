@@ -728,7 +728,7 @@ function handleDuplicate(material) {
             <input
               type="checkbox"
               checked={form.isActive}
-onChange={(e) => updateField("isActive", e.target.checked)}
+              onChange={(e) => updateField("isActive", e.target.checked)}
             />
             Matériau actif sur le site
           </label>

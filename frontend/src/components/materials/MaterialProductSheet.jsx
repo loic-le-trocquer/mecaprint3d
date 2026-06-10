@@ -16,12 +16,29 @@ export default function MaterialProductSheet({ material, onClose }) {
   return (
     <div className="fixed inset-0 z-[230] overflow-auto bg-black/90 p-6 backdrop-blur">
       <button
-        type="button"
-        onClick={onClose}
-        className="fixed right-5 top-5 z-[240] rounded-full border border-white/20 bg-white/10 px-4 py-2 font-black text-white transition hover:bg-orange-500"
-      >
-        Fermer
-      </button>
+  type="button"
+  onClick={onClose}
+  className="
+    fixed
+    top-4
+    right-4
+    z-[9999]
+    rounded-full
+    bg-black/80
+    border border-orange-500/50
+    px-5
+    py-3
+    font-black
+    text-white
+    shadow-lg
+    backdrop-blur-md
+    transition
+    hover:bg-orange-500
+    hover:text-black
+  "
+>
+  ✕ Fermer
+</button>
 
       <div className="mx-auto max-w-6xl">
         <div className="rounded-3xl border border-white/10 bg-zinc-950 p-8 shadow-2xl shadow-orange-500/5">
