@@ -1,3 +1,38 @@
+import { useState } from "react";
+
+const SORT_OPTIONS = [
+  {
+    key: "strength",
+    label: "Solidité",
+    icon: "💪",
+  },
+  {
+    key: "heatResistance",
+    label: "Tenue température",
+    icon: "🔥",
+  },
+  {
+    key: "chemicalResistance",
+    label: "Résistance chimique",
+    icon: "🧪",
+  },
+  {
+    key: "flexibility",
+    label: "Flexibilité",
+    icon: "🧵",
+  },
+  {
+    key: "easeOfPrint",
+    label: "Facilité d'impression",
+    icon: "⚙️",
+  },
+  {
+    key: "surfaceQuality",
+    label: "Qualité finition",
+    icon: "✨",
+  },
+];
+
 function ScoreDots({ value = 0 }) {
   const safeValue = Number(value || 0);
 
@@ -24,9 +59,21 @@ function shortName(name = "") {
     .replace("™", "")
     .trim();
 }
-
 export default function MaterialsCompare({ materials = [], onClose }) {
+  const [sortKey, setSortKey] = useState("strength");
+
   if (!materials.length) return null;
+
+const selectedOption = SORT_OPTIONS.find(
+  (option) => option.key === sortKey
+);
+
+const sortedMaterials = [...materials].sort((a, b) => {
+  const scoreA = Number(a.performance?.[sortKey] || 0);
+  const scoreB = Number(b.performance?.[sortKey] || 0);
+
+  return scoreB - scoreA;
+});
 
   return (
     <div className="fixed inset-0 z-[220] overflow-auto bg-black/90 p-6 backdrop-blur">
@@ -47,17 +94,43 @@ export default function MaterialsCompare({ materials = [], onClose }) {
           <h2 className="text-5xl font-black text-white">
             Quel matériau choisir ?
           </h2>
+
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+  {SORT_OPTIONS.map((option) => (
+    <button
+      key={option.key}
+      type="button"
+      onClick={() => setSortKey(option.key)}
+      className={`rounded-full border px-5 py-3 font-black transition ${
+        sortKey === option.key
+          ? "border-orange-500 bg-orange-500 text-black"
+          : "border-white/10 bg-white/5 text-white hover:border-orange-500 hover:text-orange-400"
+      }`}
+    >
+      {option.icon} {option.label}
+    </button>
+  ))}
+</div>
+
+{selectedOption && (
+  <p className="mt-4 text-sm text-zinc-400">
+    Classement automatique du plus performant au moins performant selon :{" "}
+    <span className="font-bold text-orange-400">
+      {selectedOption.label}
+    </span>
+  </p>
+)}
         </div>
 
-        <div className="overflow-x-auto rounded-3xl border border-white/10 bg-zinc-950">
-          <table className="min-w-full border-collapse">
+<div className="overflow-x-auto rounded-3xl border border-white/10 bg-zinc-950 pb-3">    
+     <table className="min-w-[1400px] border-collapse">
             <thead className="bg-white/5">
               <tr>
                 <th className="border-b border-white/10 p-5 text-left text-zinc-400">
                   Critère
                 </th>
 
-                {materials.map((material) => (
+                {sortedMaterials.map((material) => (
                   <th
                     key={material._id || material.name}
                     className="border-b border-white/10 p-5 text-center text-xl font-black text-white"
@@ -71,49 +144,49 @@ export default function MaterialsCompare({ materials = [], onClose }) {
             <tbody>
               <CompareRow
                 label="Famille"
-                materials={materials}
+                materials={sortedMaterials}
                 render={(material) => material.family || "—"}
               />
 
               <ScoreRow
                 label="Solidité"
-                materials={materials}
+                materials={sortedMaterials}
                 field="strength"
               />
 
               <ScoreRow
                 label="Tenue température"
-                materials={materials}
+                materials={sortedMaterials}
                 field="heatResistance"
               />
 
               <ScoreRow
                 label="Résistance chimique"
-                materials={materials}
+                materials={sortedMaterials}
                 field="chemicalResistance"
               />
 
               <ScoreRow
                 label="Flexibilité"
-                materials={materials}
+                materials={sortedMaterials}
                 field="flexibility"
               />
 
               <ScoreRow
                 label="Facilité d'impression"
-                materials={materials}
+                materials={sortedMaterials}
                 field="easeOfPrint"
               />
 
               <ScoreRow
                 label="Qualité finition"
-                materials={materials}
+                materials={sortedMaterials}
                 field="surfaceQuality"
               />
 
               <CompareRow
                 label="Usages recommandés"
-                materials={materials}
+                materials={sortedMaterials}
                 render={(material) => (
                   <TagList items={material.applications || []} />
                 )}

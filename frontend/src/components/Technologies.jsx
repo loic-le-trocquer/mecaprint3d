@@ -82,7 +82,7 @@ setMaterials(
                 key={`${item?.title || "tech"}-${index}`}
                 item={item}
                 index={index}
-                materials={materials}
+                materials={sortedMaterials}
                 onSelectMaterial={setSelectedMaterial}
               />
             ))}
@@ -99,7 +99,7 @@ setMaterials(
       {/* ================= MATERIAL COMPARE ================= */}
       {showCompare && (
         <MaterialsCompare
-          materials={materials}
+          materials={sortedMaterials}
           onClose={() => setShowCompare(false)}
         />
       )}
