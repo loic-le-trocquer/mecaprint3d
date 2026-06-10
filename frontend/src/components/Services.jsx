@@ -2,19 +2,23 @@
 import {
   Wrench,
   ScanLine,
+  PencilRuler,
+  Rocket,
+  Factory,
   Palette,
-  Caravan,
+  Home,
   ArrowUpRight,
 } from "lucide-react";
-
 import FadeInSection from "./ui/FadeInSection";
 
 // ================= ICONS =================
 const icons = {
-  TECH: Wrench,
-  "SCAN & CAO": ScanLine,
-  DESIGN: Palette,
-  CAMPER: Caravan,
+  "RÉPARATION": Wrench,
+  "CONCEPTION": PencilRuler,
+  "PROTOTYPAGE": Rocket,
+  "PRODUCTION": Factory,
+  "DESIGN": Palette,
+  "SUR MESURE": Home,
 };
 
 // ================= SERVICES COMPONENT =================
