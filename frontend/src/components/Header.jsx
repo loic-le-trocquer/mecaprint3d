@@ -21,46 +21,34 @@ export default function Header({ content }) {
           )}
         </a>
 
-        {/* NAV */}
         <nav className="hidden items-center gap-7 text-sm font-semibold uppercase tracking-wider text-zinc-300 lg:flex">
-          
-<a href="#univers" className="transition hover:text-orange-400">
-  Univers
-</a>
 
-<a href="#services" className="transition hover:text-orange-400">
-  Services
-</a>
+  <a href="#methodologie" className="transition hover:text-orange-400">
+    Méthode
+  </a>
 
-<a href="#methodologie" className="transition hover:text-orange-400">
-  Méthodologie
-</a>
+  <a href="#technologies" className="transition hover:text-orange-400">
+    Matériaux
+  </a>
 
-<a href="#technologies" className="transition hover:text-orange-400">
-  Technologies
-</a>
+  <a href="#services" className="transition hover:text-orange-400">
+    Services
+  </a>
 
-<a href="#showroom" className="transition hover:text-orange-400">
-  Showroom
-</a>
+  <a href="#univers" className="transition hover:text-orange-400">
+    Domaines
+  </a>
 
-<a href="#realisations" className="transition hover:text-orange-400">
-  Réalisations
-</a>
+  <a href="#realisations" className="transition hover:text-orange-400">
+    Réalisations
+  </a>
 
-<a href="#contact" className="transition hover:text-orange-400">
-  Contact
-</a>
+  <a href="#contact" className="transition hover:text-orange-400">
+    Contact
+  </a>
 
-        </nav>
-
-        <a
-        href="#Simulation IA"
-        className="hidden rounded-full border border-orange-500/30 bg-orange-500/10 px-5 py-3 text-sm font-bold text-orange-300 backdrop-blur-xl transition hover:border-orange-500 hover:bg-orange-500/20"
-        >
-        Simulation IA
-        </a>
-
+</nav>
+      
         {/* CTA */}
         <a
           href="#devis"
