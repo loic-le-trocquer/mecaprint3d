@@ -89,6 +89,17 @@ export default function TechnologyCard({
           {item.title}
         </h3>
 
+<div
+  className={`mt-3 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-black uppercase tracking-widest ${
+    productionMode.color === "blue"
+      ? "border-blue-500/30 bg-blue-500/10 text-blue-300"
+      : "border-orange-500/30 bg-orange-500/10 text-orange-300"
+  }`}
+>
+  <span>{productionMode.icon}</span>
+  {productionMode.label}
+</div>
+
         <p className="mt-3 leading-relaxed text-zinc-300">
           {item.description}
         </p>
@@ -113,7 +124,40 @@ export default function TechnologyCard({
                     />
                   );
                 }
+const getProductionMode = () => {
+  const text = [
+    item.badge,
+    item.process,
+    item.title,
+    item.description,
+  ]
+    .join(" ")
+    .toLowerCase();
 
+  const isPartner =
+    text.includes("partenaire") ||
+    text.includes("sls") ||
+    text.includes("mjf") ||
+    text.includes("métal") ||
+    text.includes("metal") ||
+    text.includes("dmls");
+
+  if (isPartner) {
+    return {
+      label: "Réseau partenaires industriels",
+      color: "blue",
+      icon: "🤝",
+    };
+  }
+
+  return {
+    label: "Fabrication atelier MecaPrint3D",
+    color: "orange",
+    icon: "🟠",
+  };
+};
+
+const productionMode = getProductionMode();
                 return (
                   <span
                     key={materialName}
