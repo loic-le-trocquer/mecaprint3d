@@ -55,11 +55,15 @@ router.post("/datasheet", upload.single("file"), async (req, res) => {
     const result = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         {
-          folder: "materials/datasheets",
-          resource_type: "raw",
-          use_filename: true,
-          unique_filename: true,
-        },
+  folder: "materials/datasheets",
+  resource_type: "raw",
+  public_id:
+    Date.now() + "-" +
+    req.file.originalname
+      .replace(".pdf", "")
+      .replace(/[^a-zA-Z0-9-_]/g, "_"),
+  overwrite: true,
+},
         (error, result) => {
           if (error) reject(error);
           else resolve(result);
