@@ -4,7 +4,9 @@ export default function MaterialProductSheet({
 }) {
   if (!material) return null;
 
-  // ================= DATA =================
+  console.log("MATERIAL MODAL:", material);
+  console.log("PDF URL:", material.datasheetUrl);
+
   const sheet = material.productSheet || {};
   const hasImage = Boolean(material.imageUrl);
 
