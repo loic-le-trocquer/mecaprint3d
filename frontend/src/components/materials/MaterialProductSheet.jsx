@@ -77,6 +77,26 @@ export default function MaterialProductSheet({ material, onClose }) {
             </p>
           )}
 
+           {material.expertAdvice && (
+  <div className="mt-6 rounded-3xl border border-orange-500/40 bg-gradient-to-br from-orange-500/10 to-black p-6 shadow-lg">
+    
+    <div className="mb-3 flex items-center gap-3">
+      <span className="text-3xl">
+        💡
+      </span>
+
+      <h3 className="text-xl font-black text-orange-400">
+        Le conseil de l'atelier MecaPrint3D
+      </h3>
+    </div>
+
+    <p className="text-lg leading-relaxed text-zinc-200">
+      {material.expertAdvice}
+    </p>
+
+  </div>
+)} 
+
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             <InfoCard
               title="Prix indicatif"

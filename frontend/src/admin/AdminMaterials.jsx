@@ -14,6 +14,8 @@ const emptyMaterial = {
   imageUrl: "",
   imagePublicId: "",
 
+  expertAdvice: "",
+
   shortDescription: "",
   description: "",
 
@@ -245,6 +247,8 @@ console.log(file.type);
     imageUrl: material.imageUrl || "",
     imagePublicId: material.imagePublicId || "",
 
+    expertAdvice: material.expertAdvice || "",
+
     shortDescription: material.shortDescription || "",
     description: material.description || "",
 
@@ -323,6 +327,8 @@ function handleDuplicate(material) {
 
     imageUrl: material.imageUrl || "",
     imagePublicId: material.imagePublicId || "",
+
+    expertAdvice: material.expertAdvice || "",
 
     shortDescription: material.shortDescription || "",
     description: material.description || "",
@@ -722,6 +728,19 @@ function handleDuplicate(material) {
               onChange={(e) => updateField("description", e.target.value)}
               className="min-h-28 w-full rounded-2xl border border-white/10 bg-black p-4 text-white outline-none focus:border-orange-500"
             />
+          </div>
+
+          <div className="mt-4">
+          <label className="mb-2 block text-sm font-black uppercase tracking-widest text-orange-400">
+          Conseil de l'atelier MecaPrint3D
+         </label>
+
+         <textarea
+          value={form.expertAdvice}
+          onChange={(e) => updateField("expertAdvice", e.target.value)}
+          placeholder="Ex : Chez MecaPrint3D, nous recommandons ce matériau pour les pièces esthétiques, les prototypes rapides et les objets du quotidien..."
+          className="min-h-28 w-full rounded-2xl border border-orange-500/30 bg-black p-4 text-white outline-none focus:border-orange-500"
+          />
           </div>
 
           <label className="mt-4 flex items-center gap-3 text-sm text-zinc-300">

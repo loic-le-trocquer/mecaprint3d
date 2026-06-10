@@ -360,6 +360,14 @@ const materialSchema = new mongoose.Schema(
       default: "manual",
     },
 
+// =============================
+// CONSEIL MECAPRINT3D
+// =============================
+expertAdvice: {
+  type: String,
+  default: "",
+},
+
     notes: {
       type: String,
       default: "",
