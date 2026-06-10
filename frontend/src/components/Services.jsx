@@ -21,9 +21,58 @@ const icons = {
 export default function Services({ content }) {
 
   // ================= DATA =================
-  const intro = content?.servicesIntro || {};
-  const services = content?.services || [];
+ // ================= DATA =================
+const intro = content?.servicesIntro || {};
 
+const defaultServices = [
+  {
+    number: "01",
+    badge: "SCAN & CAO",
+    title: "Concevoir une pièce sur mesure",
+    description:
+      "Création CAO, optimisation ou amélioration d'une pièce selon son usage réel, ses contraintes mécaniques et son environnement.",
+  },
+  {
+    number: "02",
+    badge: "SCAN & CAO",
+    title: "Reproduire une pièce introuvable",
+    description:
+      "Scan 3D, prise de mesures, rétroconception et fabrication d'une nouvelle pièce lorsque l'original n'est plus disponible.",
+  },
+  {
+    number: "03",
+    badge: "TECH",
+    title: "Fabriquer un prototype fonctionnel",
+    description:
+      "Validation rapide d'une forme, d'un assemblage ou d'un concept grâce aux technologies de fabrication additive.",
+  },
+  {
+    number: "04",
+    badge: "TECH",
+    title: "Produire une petite série technique",
+    description:
+      "Production de pièces en matériaux adaptés : PETG, ASA, TPU, PC, composites carbone, matériaux haute performance ou solutions industrielles.",
+  },
+  {
+    number: "05",
+    badge: "DESIGN",
+    title: "Personnaliser et transformer",
+    description:
+      "Découpe laser, gravure, finitions, peinture, Cover Styl et solutions esthétiques pour des projets uniques.",
+  },
+  {
+    number: "06",
+    badge: "CAMPER",
+    title: "Aménager et réparer le quotidien",
+    description:
+      "Solutions sur mesure pour l'habitat, l'atelier, les véhicules de loisirs et tous les objets qui méritent une seconde vie.",
+  },
+];
+
+const services =
+  content?.services?.length > 0
+    ? content.services
+    : defaultServices;
   // ================= RENDER =================
   return (
 
@@ -47,21 +96,21 @@ export default function Services({ content }) {
             {/* EYEBROW */}
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-orange-500">
 
-              {intro.eyebrow}
-
+            {intro.eyebrow || "Solutions"}
             </p>
 
             {/* TITLE */}
             <h2 className="text-4xl font-black leading-tight text-white md:text-6xl">
 
-              {intro.title}
+              {intro.title || "De l'idée à la pièce finie"}
 
             </h2>
 
             {/* DESCRIPTION */}
             <p className="mt-6 text-lg leading-relaxed text-zinc-300">
 
-              {intro.description}
+              {intro.description ||
+"De la réparation d'une pièce introuvable au développement d'un nouveau produit, MecaPrint3D vous accompagne grâce à la conception CAO, au scan 3D et à la fabrication adaptée à votre besoin."}
 
             </p>
 
