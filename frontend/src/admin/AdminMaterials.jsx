@@ -563,73 +563,150 @@ function handleDuplicate(material) {
   onChange={(v) => updateField("manufacturerUrl", v)}
 />
 
+{/* ================= PERFORMANCES ================= */}
 <div className="md:col-span-2 rounded-2xl border border-white/10 bg-black/30 p-4">
   <h3 className="mb-4 text-lg font-black text-white">
-    Résistances
+    Performances MecaPrint3D
   </h3>
 
-  <div className="grid gap-4 md:grid-cols-5">
-
-    <Input
-      label="Mécanique"
-      type="number"
-      value={form.resistance?.mechanical || 0}
-      onChange={(v) =>
-        updateField("resistance", {
-          ...form.resistance,
-          mechanical: Number(v),
-        })
-      }
+  <div className="grid gap-4 md:grid-cols-3">
+    <Input label="Solidité" type="number" value={form.performance?.strength || 0}
+      onChange={(v) => updateField("performance", { ...form.performance, strength: Number(v) })}
     />
 
-    <Input
-      label="Température"
-      type="number"
-      value={form.resistance?.temperature || 0}
-      onChange={(v) =>
-        updateField("resistance", {
-          ...form.resistance,
-          temperature: Number(v),
-        })
-      }
+    <Input label="Température" type="number" value={form.performance?.heatResistance || 0}
+      onChange={(v) => updateField("performance", { ...form.performance, heatResistance: Number(v) })}
     />
 
-    <Input
-      label="UV"
-      type="number"
-      value={form.resistance?.uv || 0}
-      onChange={(v) =>
-        updateField("resistance", {
-          ...form.resistance,
-          uv: Number(v),
-        })
-      }
+    <Input label="Résistance chimique" type="number" value={form.performance?.chemicalResistance || 0}
+      onChange={(v) => updateField("performance", { ...form.performance, chemicalResistance: Number(v) })}
     />
 
-    <Input
-      label="Flexibilité"
-      type="number"
-      value={form.resistance?.flexibility || 0}
-      onChange={(v) =>
-        updateField("resistance", {
-          ...form.resistance,
-          flexibility: Number(v),
-        })
-      }
+    <Input label="Flexibilité" type="number" value={form.performance?.flexibility || 0}
+      onChange={(v) => updateField("performance", { ...form.performance, flexibility: Number(v) })}
     />
 
-    <Input
-      label="Finition"
-      type="number"
-      value={form.resistance?.finish || 0}
-      onChange={(v) =>
-        updateField("resistance", {
-          ...form.resistance,
-          finish: Number(v),
-        })
-      }
+    <Input label="Facilité d'impression" type="number" value={form.performance?.easeOfPrint || 0}
+      onChange={(v) => updateField("performance", { ...form.performance, easeOfPrint: Number(v) })}
     />
 
+    <Input label="Qualité de surface" type="number" value={form.performance?.surfaceQuality || 0}
+      onChange={(v) => updateField("performance", { ...form.performance, surfaceQuality: Number(v) })}
+    />
+  </div>
+</div>
+
+{/* ================= PRINT SETTINGS ================= */}
+<div className="md:col-span-2 rounded-2xl border border-white/10 bg-black/30 p-4">
+  <h3 className="mb-4 text-lg font-black text-white">
+    Préconisations d'impression
+  </h3>
+
+  <div className="grid gap-4 md:grid-cols-2">
+    <Input label="Température buse" placeholder="220 - 240°C" value={form.printSettings?.nozzleTemp || ""}
+      onChange={(v) => updateField("printSettings", { ...form.printSettings, nozzleTemp: v })}
+    />
+
+    <Input label="Température plateau" placeholder="60 - 80°C" value={form.printSettings?.bedTemp || ""}
+      onChange={(v) => updateField("printSettings", { ...form.printSettings, bedTemp: v })}
+    />
+
+    <Input label="Température chambre" placeholder="40 - 70°C" value={form.printSettings?.chamberTemp || ""}
+      onChange={(v) => updateField("printSettings", { ...form.printSettings, chamberTemp: v })}
+    />
+
+    <Input label="Vitesse d'impression" placeholder="50 - 200 mm/s" value={form.printSettings?.printSpeed || ""}
+      onChange={(v) => updateField("printSettings", { ...form.printSettings, printSpeed: v })}
+    />
+
+    <Input label="Ventilation" placeholder="0 à 100%" value={form.printSettings?.fan || ""}
+      onChange={(v) => updateField("printSettings", { ...form.printSettings, fan: v })}
+    />
+
+    <Input label="Séchage" placeholder="55°C pendant 6 heures" value={form.printSettings?.drying || ""}
+      onChange={(v) => updateField("printSettings", { ...form.printSettings, drying: v })}
+    />
+  </div>
+
+  <div className="mt-6 flex flex-wrap gap-6">
+    <Checkbox label="Caisson recommandé" checked={form.printSettings?.enclosureRecommended || false}
+      onChange={(checked) => updateField("printSettings", { ...form.printSettings, enclosureRecommended: checked })}
+    />
+
+    <Checkbox label="Filament abrasif" checked={form.printSettings?.abrasive || false}
+      onChange={(checked) => updateField("printSettings", { ...form.printSettings, abrasive: checked })}
+    />
+
+    <Checkbox label="Sensible à l'humidité" checked={form.printSettings?.hygroscopic || false}
+      onChange={(checked) => updateField("printSettings", { ...form.printSettings, hygroscopic: checked })}
+    />
+  </div>
+</div>
+
+{/* ================= PHYSICAL ================= */}
+<div className="md:col-span-2 rounded-2xl border border-white/10 bg-black/30 p-4">
+  <h3 className="mb-4 text-lg font-black text-white">
+    Propriétés physiques
+  </h3>
+
+  <div className="grid gap-4 md:grid-cols-2">
+    <Input label="Densité" placeholder="1.24 g/cm³" value={form.physical?.density || ""}
+      onChange={(v) => updateField("physical", { ...form.physical, density: v })}
+    />
+
+    <Input label="Retrait" placeholder="0.2 - 0.5%" value={form.physical?.shrinkage || ""}
+      onChange={(v) => updateField("physical", { ...form.physical, shrinkage: v })}
+    />
+  </div>
+</div>
+
+{/* ================= MECHANICAL ================= */}
+<div className="md:col-span-2 rounded-2xl border border-white/10 bg-black/30 p-4">
+  <h3 className="mb-4 text-lg font-black text-white">
+    Propriétés mécaniques
+  </h3>
+
+  <div className="grid gap-4 md:grid-cols-2">
+    <Input label="Résistance traction" placeholder="45 MPa" value={form.mechanical?.tensileStrength || ""}
+      onChange={(v) => updateField("mechanical", { ...form.mechanical, tensileStrength: v })}
+    />
+
+    <Input label="Module de Young" placeholder="2.6 GPa" value={form.mechanical?.youngModulus || ""}
+      onChange={(v) => updateField("mechanical", { ...form.mechanical, youngModulus: v })}
+    />
+
+    <Input label="Résistance flexion" placeholder="80 MPa" value={form.mechanical?.bendingStrength || ""}
+      onChange={(v) => updateField("mechanical", { ...form.mechanical, bendingStrength: v })}
+    />
+
+    <Input label="Résistance impact" placeholder="5 kJ/m²" value={form.mechanical?.impactStrength || ""}
+      onChange={(v) => updateField("mechanical", { ...form.mechanical, impactStrength: v })}
+    />
+
+    <Input label="Allongement rupture" placeholder="10%" value={form.mechanical?.elongationAtBreak || ""}
+      onChange={(v) => updateField("mechanical", { ...form.mechanical, elongationAtBreak: v })}
+    />
+  </div>
+</div>
+
+{/* ================= THERMAL ================= */}
+<div className="md:col-span-2 rounded-2xl border border-white/10 bg-black/30 p-4">
+  <h3 className="mb-4 text-lg font-black text-white">
+    Propriétés thermiques
+  </h3>
+
+  <div className="grid gap-4 md:grid-cols-3">
+    <Input label="HDT" placeholder="55°C" value={form.thermal?.hdt || ""}
+      onChange={(v) => updateField("thermal", { ...form.thermal, hdt: v })}
+    />
+
+    <Input label="Transition vitreuse" placeholder="60°C" value={form.thermal?.glassTransition || ""}
+      onChange={(v) => updateField("thermal", { ...form.thermal, glassTransition: v })}
+    />
+
+    <Input label="Température de fusion" placeholder="150 - 170°C" value={form.thermal?.meltingTemp || ""}
+      onChange={(v) => updateField("thermal", { ...form.thermal, meltingTemp: v })}
+    />
   </div>
 </div>
 
@@ -650,8 +727,8 @@ function handleDuplicate(material) {
           <label className="mt-4 flex items-center gap-3 text-sm text-zinc-300">
             <input
               type="checkbox"
-              checked={form.active}
-              onChange={(e) => updateField("active", e.target.checked)}
+              checked={form.isActive}
+onChange={(e) => updateField("isActive", e.target.checked)}
             />
             Matériau actif sur le site
           </label>
@@ -711,7 +788,7 @@ function handleDuplicate(material) {
                   </p>
 
                   <p className="mt-1 text-xs text-zinc-500">
-                    {material.active ? "Actif" : "Masqué"}
+                   {material.isActive ? "Actif" : "Masqué"}
                   </p>
                 </div>
               </div>
@@ -804,5 +881,18 @@ function Input({
         className="w-full rounded-2xl border border-white/10 bg-black p-4 text-white outline-none focus:border-orange-500"
       />
     </div>
+  );
+}
+
+function Checkbox({ label, checked, onChange }) {
+  return (
+    <label className="flex items-center gap-2 text-zinc-300">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+      />
+      {label}
+    </label>
   );
 }
