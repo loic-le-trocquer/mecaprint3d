@@ -71,26 +71,32 @@ export default function TechnologyCard({
       .join(" ")
       .toLowerCase();
 
-    const isPartner =
-      text.includes("partenaire") ||
-      text.includes("sls") ||
-      text.includes("mjf") ||
-      text.includes("métal") ||
-      text.includes("metal") ||
-      text.includes("dmls");
+    const process = [
+  item.process,
+  item.title,
+]
+.join(" ")
+.toLowerCase();
+
+const isPartner =
+  process.includes("sls") ||
+  process.includes("mjf") ||
+  process.includes("dmls") ||
+  process.includes("métal") ||
+  process.includes("metal");
 
     if (isPartner) {
       return {
-        label: "Réseau partenaires industriels",
+        label: "FABRIQUÉ PAR NOS PARTENAIRES INDUSTRIELS",
         color: "blue",
         icon: "🤝",
       };
     }
 
     return {
-      label: "Fabrication atelier MecaPrint3D",
+      label: "FABRIQUÉ DANS NOTRE ATELIER",
       color: "orange",
-      icon: "🟠",
+      icon: "🏭",
     };
   };
 
@@ -111,9 +117,7 @@ export default function TechnologyCard({
           </div>
         )}
 
-        <div className="absolute left-4 top-4 rounded-full border border-orange-500/20 bg-black/70 px-4 py-2 text-xs font-black uppercase tracking-widest text-orange-300 backdrop-blur-xl">
-          {item.badge || "Technologie"}
-        </div>
+        
       </div>
 
       <div className="relative z-10 pt-6">
