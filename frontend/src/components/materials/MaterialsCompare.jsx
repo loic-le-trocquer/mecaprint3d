@@ -17,10 +17,15 @@ function ScoreDots({ value = 0 }) {
   );
 }
 
-export default function MaterialsCompare({
-  materials = [],
-  onClose,
-}) {
+function shortName(name = "") {
+  return name
+    .replace("– Polymaker", "")
+    .replace("- Polymaker", "")
+    .replace("™", "")
+    .trim();
+}
+
+export default function MaterialsCompare({ materials = [], onClose }) {
   if (!materials.length) return null;
 
   return (
@@ -28,19 +33,19 @@ export default function MaterialsCompare({
       <button
         type="button"
         onClick={onClose}
-        className="fixed right-5 top-5 rounded-full border border-white/20 bg-white/10 px-4 py-2 font-black text-white transition hover:bg-orange-500"
+        className="fixed right-5 top-5 z-[9999] rounded-full border border-orange-500/50 bg-black/80 px-5 py-3 font-black text-white shadow-lg backdrop-blur-md transition hover:bg-orange-500 hover:text-black"
       >
-        Fermer
+        ✕ Fermer
       </button>
 
       <div className="mx-auto max-w-7xl">
         <div className="mb-10 text-center">
           <p className="mb-3 text-sm font-bold uppercase tracking-widest text-orange-400">
-            Comparateur
+            Guide de choix
           </p>
 
           <h2 className="text-5xl font-black text-white">
-            Comparaison des matériaux
+            Quel matériau choisir ?
           </h2>
         </div>
 
@@ -57,7 +62,7 @@ export default function MaterialsCompare({
                     key={material._id || material.name}
                     className="border-b border-white/10 p-5 text-center text-xl font-black text-white"
                   >
-                    {material.name}
+                    {shortName(material.name)}
                   </th>
                 ))}
               </tr>
@@ -67,27 +72,25 @@ export default function MaterialsCompare({
               <CompareRow
                 label="Famille"
                 materials={materials}
-                render={(material) =>
-                  material.family || "—"
-                }
+                render={(material) => material.family || "—"}
               />
 
               <ScoreRow
-                label="Résistance mécanique"
+                label="Solidité"
                 materials={materials}
-                field="mechanical"
+                field="strength"
               />
 
               <ScoreRow
                 label="Tenue température"
                 materials={materials}
-                field="temperature"
+                field="heatResistance"
               />
 
               <ScoreRow
-                label="Résistance UV"
+                label="Résistance chimique"
                 materials={materials}
-                field="uv"
+                field="chemicalResistance"
               />
 
               <ScoreRow
@@ -97,19 +100,23 @@ export default function MaterialsCompare({
               />
 
               <ScoreRow
+                label="Facilité d'impression"
+                materials={materials}
+                field="easeOfPrint"
+              />
+
+              <ScoreRow
                 label="Qualité finition"
                 materials={materials}
-                field="finish"
+                field="surfaceQuality"
               />
 
               <CompareRow
-                label="Usage recommandé"
+                label="Usages recommandés"
                 materials={materials}
-                render={(material) =>
-                  material.applications?.length
-                    ? material.applications.join(", ")
-                    : "—"
-                }
+                render={(material) => (
+                  <TagList items={material.applications || []} />
+                )}
               />
             </tbody>
           </table>
@@ -150,9 +157,26 @@ function ScoreRow({ label, materials, field }) {
           key={material._id || material.name}
           className="p-5"
         >
-          <ScoreDots value={material.resistance?.[field]} />
+          <ScoreDots value={material.performance?.[field]} />
         </td>
       ))}
     </tr>
+  );
+}
+
+function TagList({ items = [] }) {
+  if (!items.length) return "—";
+
+  return (
+    <div className="flex flex-wrap justify-center gap-2">
+      {items.slice(0, 4).map((item) => (
+        <span
+          key={item}
+          className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-zinc-200"
+        >
+          {item}
+        </span>
+      ))}
+    </div>
   );
 }
