@@ -4,15 +4,14 @@ export default function Header({ content }) {
 
   return (
     <header className="fixed left-0 top-0 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-8">
-        
+<div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-6 lg:px-8">        
         {/* LOGO */}
         <a href="#" className="flex items-center gap-3">
           {brand.logoUrl ? (
             <img
               src={brand.logoUrl}
               alt={name}
-              className="h-16 w-auto object-contain transition duration-300 hover:scale-105"
+              className="h-20 w-auto object-contain transition duration-300 hover:scale-105"
             />
           ) : (
             <div className="text-2xl font-black tracking-tight text-white">
