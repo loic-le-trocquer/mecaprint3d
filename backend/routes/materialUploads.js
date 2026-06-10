@@ -58,11 +58,8 @@ router.post("/datasheet", upload.single("file"), async (req, res) => {
   folder: "materials/datasheets",
   resource_type: "raw",
   public_id:
-    Date.now() + "-" +
-    req.file.originalname
-      .replace(".pdf", "")
-      .replace(/[^a-zA-Z0-9-_]/g, "_"),
-  overwrite: true,
+    "pdf-" + Date.now(),
+  format: "pdf",
 },
         (error, result) => {
           if (error) reject(error);
