@@ -8,28 +8,72 @@ const emptyMaterial = {
   name: "",
   brand: "Polymaker",
   family: "",
+  range: "",
   category: "",
+
   imageUrl: "",
   imagePublicId: "",
+
+  shortDescription: "",
   description: "",
+
   colors: "",
   applications: "",
-  properties: "",
-  resistance: {
-  mechanical: 3,
-  temperature: 2,
-  uv: 2,
-  flexibility: 1,
-  finish: 4,
-},
-  active: true,
+  strengths: "",
+
+  performance: {
+    strength: 3,
+    heatResistance: 2,
+    chemicalResistance: 2,
+    flexibility: 1,
+    easeOfPrint: 4,
+    surfaceQuality: 4,
+  },
+
+  printSettings: {
+    nozzleTemp: "",
+    bedTemp: "",
+    chamberTemp: "",
+    printSpeed: "",
+    fan: "",
+    drying: "",
+    enclosureRecommended: false,
+    abrasive: false,
+    hygroscopic: false,
+  },
+
+  physical: {
+    density: "",
+    shrinkage: "",
+  },
+
+  mechanical: {
+    tensileStrength: "",
+    youngModulus: "",
+    bendingStrength: "",
+    impactStrength: "",
+    elongationAtBreak: "",
+  },
+
+  thermal: {
+    hdt: "",
+    glassTransition: "",
+    meltingTemp: "",
+  },
+
+  isActive: true,
+  isFeatured: false,
+
   sortOrder: 0,
   price: 0,
   stock: 0,
   leadTime: "",
+
   datasheetUrl: "",
+  printingGuideUrl: "",
+  safetyDataUrl: "",
   manufacturerUrl: "",
-  };
+};
 
 export default function AdminMaterials() {
   const [materials, setMaterials] = useState([]);
@@ -120,21 +164,43 @@ console.log(file.type);
   }
 }
   
-  function normalizePayload() {
-    return {
-      ...form,
-      colors: form.colors
-        ? form.colors.split(",").map((item) => item.trim()).filter(Boolean)
-        : [],
-      applications: form.applications
-        ? form.applications.split(",").map((item) => item.trim()).filter(Boolean)
-        : [],
-      properties: form.properties
-        ? form.properties.split(",").map((item) => item.trim()).filter(Boolean)
-        : [],
-      sortOrder: Number(form.sortOrder || 0),
-    };
-  }
+ function normalizePayload() {
+  return {
+    ...form,
+
+    colors: form.colors
+      ? form.colors.split(",").map((item) => item.trim()).filter(Boolean)
+      : [],
+
+    applications: form.applications
+      ? form.applications.split(",").map((item) => item.trim()).filter(Boolean)
+      : [],
+
+    strengths: form.strengths
+      ? form.strengths.split(",").map((item) => item.trim()).filter(Boolean)
+      : [],
+
+    sortOrder: Number(form.sortOrder || 0),
+    price: Number(form.price || 0),
+    stock: Number(form.stock || 0),
+
+    performance: {
+      strength: Number(form.performance?.strength || 0),
+      heatResistance: Number(form.performance?.heatResistance || 0),
+      chemicalResistance: Number(form.performance?.chemicalResistance || 0),
+      flexibility: Number(form.performance?.flexibility || 0),
+      easeOfPrint: Number(form.performance?.easeOfPrint || 0),
+      surfaceQuality: Number(form.performance?.surfaceQuality || 0),
+    },
+
+    printSettings: {
+      ...form.printSettings,
+      enclosureRecommended: Boolean(form.printSettings?.enclosureRecommended),
+      abrasive: Boolean(form.printSettings?.abrasive),
+      hygroscopic: Boolean(form.printSettings?.hygroscopic),
+    },
+  };
+}
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -167,35 +233,80 @@ console.log(file.type);
   // =====================================================
 
   function handleEdit(material) {
-    setEditingId(material._id);
+  setEditingId(material._id);
 
-    setForm({
-      name: material.name || "",
-      brand: material.brand || "Polymaker",
-      family: material.family || "",
-      category: material.category || "",
-      imageUrl: material.imageUrl || "",
-      imagePublicId: material.imagePublicId || "",
-      description: material.description || "",
-      colors: material.colors?.join(", ") || "",
-      applications: material.applications?.join(", ") || "",
-      properties: material.properties?.join(", ") || "",
-      resistance: {
-      mechanical: material.resistance?.mechanical || 0,
-      temperature: material.resistance?.temperature || 0,
-      uv: material.resistance?.uv || 0,
-      flexibility: material.resistance?.flexibility || 0,
-      finish: material.resistance?.finish || 0,
+  setForm({
+    name: material.name || "",
+    brand: material.brand || "Polymaker",
+    family: material.family || "",
+    range: material.range || "",
+    category: material.category || "",
+
+    imageUrl: material.imageUrl || "",
+    imagePublicId: material.imagePublicId || "",
+
+    shortDescription: material.shortDescription || "",
+    description: material.description || "",
+
+    colors: material.colors?.join(", ") || "",
+    applications: material.applications?.join(", ") || "",
+    strengths: material.strengths?.join(", ") || "",
+
+    performance: {
+      strength: material.performance?.strength || 3,
+      heatResistance: material.performance?.heatResistance || 2,
+      chemicalResistance: material.performance?.chemicalResistance || 2,
+      flexibility: material.performance?.flexibility || 1,
+      easeOfPrint: material.performance?.easeOfPrint || 4,
+      surfaceQuality: material.performance?.surfaceQuality || 4,
     },
-      active: material.active ?? true,
-      sortOrder: material.sortOrder || 0,
-      price: material.price || 0,
-      stock: material.stock || 0,
-      leadTime: material.leadTime || "",
-      datasheetUrl: material.datasheetUrl || "",
-      manufacturerUrl: material.manufacturerUrl || "",
-      });
-    }
+
+    printSettings: {
+      nozzleTemp: material.printSettings?.nozzleTemp || "",
+      bedTemp: material.printSettings?.bedTemp || "",
+      chamberTemp: material.printSettings?.chamberTemp || "",
+      printSpeed: material.printSettings?.printSpeed || "",
+      fan: material.printSettings?.fan || "",
+      drying: material.printSettings?.drying || "",
+      enclosureRecommended:
+        material.printSettings?.enclosureRecommended || false,
+      abrasive: material.printSettings?.abrasive || false,
+      hygroscopic: material.printSettings?.hygroscopic || false,
+    },
+
+    physical: {
+      density: material.physical?.density || "",
+      shrinkage: material.physical?.shrinkage || "",
+    },
+
+    mechanical: {
+      tensileStrength: material.mechanical?.tensileStrength || "",
+      youngModulus: material.mechanical?.youngModulus || "",
+      bendingStrength: material.mechanical?.bendingStrength || "",
+      impactStrength: material.mechanical?.impactStrength || "",
+      elongationAtBreak: material.mechanical?.elongationAtBreak || "",
+    },
+
+    thermal: {
+      hdt: material.thermal?.hdt || "",
+      glassTransition: material.thermal?.glassTransition || "",
+      meltingTemp: material.thermal?.meltingTemp || "",
+    },
+
+    isActive: material.isActive ?? true,
+    isFeatured: material.isFeatured ?? false,
+
+    sortOrder: material.sortOrder || 0,
+    price: material.price || 0,
+    stock: material.stock || 0,
+    leadTime: material.leadTime || "",
+
+    datasheetUrl: material.datasheetUrl || "",
+    printingGuideUrl: material.printingGuideUrl || "",
+    safetyDataUrl: material.safetyDataUrl || "",
+    manufacturerUrl: material.manufacturerUrl || "",
+  });
+}
 // =====================================================
 // DUPLICATION
 // =====================================================
@@ -207,56 +318,72 @@ function handleDuplicate(material) {
     name: `${material.name} (copie)`,
     brand: material.brand || "Polymaker",
     family: material.family || "",
+    range: material.range || "",
     category: material.category || "",
+
     imageUrl: material.imageUrl || "",
     imagePublicId: material.imagePublicId || "",
+
+    shortDescription: material.shortDescription || "",
     description: material.description || "",
 
-    colors:
-      material.colors?.join(", ") || "",
+    colors: material.colors?.join(", ") || "",
+    applications: material.applications?.join(", ") || "",
+    strengths: material.strengths?.join(", ") || "",
 
-    applications:
-      material.applications?.join(", ") || "",
-
-    properties:
-      material.properties?.join(", ") || "",
-
-    resistance: {
-      mechanical:
-        material.resistance?.mechanical || 3,
-
-      temperature:
-        material.resistance?.temperature || 2,
-
-      uv:
-        material.resistance?.uv || 2,
-
-      flexibility:
-        material.resistance?.flexibility || 1,
-
-      finish:
-        material.resistance?.finish || 4,
+    performance: {
+      strength: material.performance?.strength || 3,
+      heatResistance: material.performance?.heatResistance || 2,
+      chemicalResistance: material.performance?.chemicalResistance || 2,
+      flexibility: material.performance?.flexibility || 1,
+      easeOfPrint: material.performance?.easeOfPrint || 4,
+      surfaceQuality: material.performance?.surfaceQuality || 4,
     },
 
-    active: true,
+    printSettings: {
+      nozzleTemp: material.printSettings?.nozzleTemp || "",
+      bedTemp: material.printSettings?.bedTemp || "",
+      chamberTemp: material.printSettings?.chamberTemp || "",
+      printSpeed: material.printSettings?.printSpeed || "",
+      fan: material.printSettings?.fan || "",
+      drying: material.printSettings?.drying || "",
+      enclosureRecommended:
+        material.printSettings?.enclosureRecommended || false,
+      abrasive: material.printSettings?.abrasive || false,
+      hygroscopic: material.printSettings?.hygroscopic || false,
+    },
 
-    sortOrder:
-      material.sortOrder || 0,
+    physical: {
+      density: material.physical?.density || "",
+      shrinkage: material.physical?.shrinkage || "",
+    },
 
-    price:
-      material.price || 0,
+    mechanical: {
+      tensileStrength: material.mechanical?.tensileStrength || "",
+      youngModulus: material.mechanical?.youngModulus || "",
+      bendingStrength: material.mechanical?.bendingStrength || "",
+      impactStrength: material.mechanical?.impactStrength || "",
+      elongationAtBreak: material.mechanical?.elongationAtBreak || "",
+    },
 
-    stock:
-      material.stock || 0,
+    thermal: {
+      hdt: material.thermal?.hdt || "",
+      glassTransition: material.thermal?.glassTransition || "",
+      meltingTemp: material.thermal?.meltingTemp || "",
+    },
 
-    leadTime:
-      material.leadTime || "",
+    isActive: true,
+    isFeatured: material.isFeatured ?? false,
 
-    datasheetUrl:
-      material.datasheetUrl || "",
+    sortOrder: material.sortOrder || 0,
+    price: material.price || 0,
+    stock: material.stock || 0,
+    leadTime: material.leadTime || "",
 
-    manufacturerUrl:
-      material.manufacturerUrl || "",
+    datasheetUrl: material.datasheetUrl || "",
+    printingGuideUrl: material.printingGuideUrl || "",
+    safetyDataUrl: material.safetyDataUrl || "",
+    manufacturerUrl: material.manufacturerUrl || "",
   });
 
   window.scrollTo({
@@ -264,7 +391,6 @@ function handleDuplicate(material) {
     behavior: "smooth",
   });
 }
-
   // =====================================================
   // SUPRESSION
   // =====================================================
@@ -370,10 +496,10 @@ function handleDuplicate(material) {
             />
 
             <Input
-              label="Propriétés"
-              placeholder="Rigide, UV, Flexible"
-              value={form.properties}
-              onChange={(v) => updateField("properties", v)}
+             label="Points forts"
+             placeholder="Facile à imprimer, Bonne finition, Faible retrait"
+             value={form.strengths}
+             onChange={(v) => updateField("strengths", v)}
             />
 
             <Input

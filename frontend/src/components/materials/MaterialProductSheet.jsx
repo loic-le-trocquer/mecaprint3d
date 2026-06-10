@@ -1,30 +1,30 @@
-export default function MaterialProductSheet({
-  material,
-  onClose,
-}) {
+export default function MaterialProductSheet({ material, onClose }) {
   if (!material) return null;
 
-  console.log("MATERIAL MODAL:", material);
-  console.log("PDF URL:", material.datasheetUrl);
-
-  const sheet = material.productSheet || {};
   const hasImage = Boolean(material.imageUrl);
+
+  const strengths = material.strengths || [];
+  const applications = material.applications || [];
+  const colors = material.colors || [];
+
+  const performance = material.performance || {};
+  const printSettings = material.printSettings || {};
+  const physical = material.physical || {};
+  const mechanical = material.mechanical || {};
+  const thermal = material.thermal || {};
 
   return (
     <div className="fixed inset-0 z-[230] overflow-auto bg-black/90 p-6 backdrop-blur">
-      {/* ================= CLOSE ================= */}
       <button
         type="button"
         onClick={onClose}
-        className="fixed right-5 top-5 rounded-full border border-white/20 bg-white/10 px-4 py-2 font-black text-white transition hover:bg-orange-500"
+        className="fixed right-5 top-5 z-[240] rounded-full border border-white/20 bg-white/10 px-4 py-2 font-black text-white transition hover:bg-orange-500"
       >
         Fermer
       </button>
 
-      {/* ================= CONTAINER ================= */}
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-6xl">
         <div className="rounded-3xl border border-white/10 bg-zinc-950 p-8 shadow-2xl shadow-orange-500/5">
-          {/* ================= IMAGE ================= */}
           {hasImage && (
             <div className="mb-8 overflow-hidden rounded-3xl border border-white/10 bg-black">
               <img
@@ -35,8 +35,7 @@ export default function MaterialProductSheet({
             </div>
           )}
 
-          {/* ================= HEADER ================= */}
-          <p className="mb-3 text-sm font-bold uppercase tracking-widest text-orange-400">
+          <p className="mb-3 text-sm font-black uppercase tracking-widest text-orange-400">
             Fiche matériau
           </p>
 
@@ -46,264 +45,199 @@ export default function MaterialProductSheet({
 
           <p className="mt-2 text-zinc-400">
             {material.brand || "Marque non renseignée"} ·{" "}
-            {material.family || material.category || "Famille non renseignée"}
+            {material.family || "Famille non renseignée"}
           </p>
 
-          {/* ================= BADGES ================= */}
           <div className="mt-6 flex flex-wrap gap-3">
-            {material.category && (
-              <span className="rounded-full bg-orange-500 px-4 py-2 text-sm font-black text-black">
-                {material.category}
-              </span>
-            )}
-
-            {sheet.printDifficulty && (
-              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white">
-                Difficulté : {sheet.printDifficulty}
-              </span>
-            )}
-
-            {sheet.priceLevel && (
-              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white">
-                Prix : {sheet.priceLevel}
-              </span>
-            )}
+            {material.category && <Badge strong>{material.category}</Badge>}
+            {material.range && <Badge>{material.range}</Badge>}
+            {material.isFeatured && <Badge>Matériau recommandé</Badge>}
           </div>
 
-          {/* ================= DESCRIPTION ================= */}
           {material.description && (
             <p className="mt-8 text-lg leading-relaxed text-zinc-300">
               {material.description}
             </p>
           )}
 
-
-          {/* ================= COMMERCE ================= */}
-<div className="mt-8 grid gap-4 md:grid-cols-3">
-  <InfoCard
-    title="Prix indicatif"
-    text={
-      material.price
-        ? `${material.price} €`
-        : "Sur demande"
-    }
-  />
-
-  <InfoCard
-    title="Stock"
-    text={
-      material.stock
-        ? `${material.stock} bobine(s)`
-        : "Sur commande"
-    }
-  />
-
-  <InfoCard
-    title="Délai"
-    text={material.leadTime || "Sur demande"}
-  />
-</div>
-
-          {/* ================= APPLICATIONS ================= */}
-          {!!material.applications?.length && (
-            <div className="mt-10">
-              <h3 className="mb-4 text-xl font-black text-white">
-                Applications
-              </h3>
-
-              <div className="flex flex-wrap gap-2">
-                {material.applications.map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-200"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ================= PROPERTIES ================= */}
-          {!!material.properties?.length && (
-            <div className="mt-10">
-              <h3 className="mb-4 text-xl font-black text-white">
-                Points forts
-              </h3>
-
-              <div className="flex flex-wrap gap-2">
-                {material.properties.map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-full border border-orange-500/20 bg-orange-500/10 px-4 py-2 text-sm text-orange-300"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-{/* ================= PERFORMANCES ================= */}
-{material.resistance && (
-  <div className="mt-10">
-    <h3 className="mb-4 text-xl font-black text-white">
-      Performances
-    </h3>
-
-    <div className="grid gap-4 md:grid-cols-5">
-
-      {[
-        {
-          label: "Mécanique",
-          value: material.resistance.mechanical,
-        },
-        {
-          label: "Température",
-          value: material.resistance.temperature,
-        },
-        {
-          label: "UV",
-          value: material.resistance.uv,
-        },
-        {
-          label: "Flexibilité",
-          value: material.resistance.flexibility,
-        },
-        {
-          label: "Finition",
-          value: material.resistance.finish,
-        },
-      ].map((item) => (
-        <div
-          key={item.label}
-          className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
-        >
-          <p className="mb-3 text-xs font-black uppercase tracking-widest text-orange-400">
-            {item.label}
-          </p>
-
-          <div className="flex gap-1">
-            {[1, 2, 3, 4, 5].map((level) => (
-              <span
-                key={level}
-                className={`h-2.5 w-2.5 rounded-full ${
-                  level <= Number(item.value || 0)
-                    ? "bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.6)]"
-                    : "bg-white/10"
-                }`}
-              />
-            ))}
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            <InfoCard
+              title="Prix indicatif"
+              text={material.price ? `${material.price} €` : "Sur demande"}
+            />
+            <InfoCard
+              title="Stock"
+              text={material.stock ? `${material.stock} bobine(s)` : "Sur commande"}
+            />
+            <InfoCard
+              title="Délai"
+              text={material.leadTime || "Sur demande"}
+            />
           </div>
-        </div>
-      ))}
 
-    </div>
-  </div>
-)}
-
-          {/* ================= GRID INFOS ================= */}
-          {(sheet.idealFor ||
-            sheet.sellingPoint ||
-            sheet.limits ||
-            sheet.quoteText) && (
-            <div className="mt-10 grid gap-5 md:grid-cols-2">
-              <InfoCard title="Usage idéal" text={sheet.idealFor} />
-              <InfoCard title="Point fort commercial" text={sheet.sellingPoint} />
-              <InfoCard title="Limites" text={sheet.limits} />
-              <InfoCard title="Texte devis" text={sheet.quoteText} />
-            </div>
+          {!!applications.length && (
+            <Section title="Applications">
+              <TagList items={applications} />
+            </Section>
           )}
 
-          {/* ================= PRINT SETTINGS ================= */}
-          {(sheet.nozzle ||
-            sheet.recommendedNozzle ||
-            sheet.bed ||
-            sheet.drying) && (
-            <div className="mt-10 rounded-3xl border border-white/10 bg-black/40 p-6">
-              <h3 className="mb-5 text-2xl font-black text-white">
-                Préconisations d’impression
-              </h3>
+          {!!strengths.length && (
+            <Section title="Points forts">
+              <TagList items={strengths} orange />
+            </Section>
+          )}
 
+          <Section title="Performances MecaPrint3D">
+            <div className="grid gap-4 md:grid-cols-3">
+              <Rating label="Solidité" value={performance.strength} />
+              <Rating label="Température" value={performance.heatResistance} />
+              <Rating label="Résistance chimique" value={performance.chemicalResistance} />
+              <Rating label="Flexibilité" value={performance.flexibility} />
+              <Rating label="Facilité d'impression" value={performance.easeOfPrint} />
+              <Rating label="Qualité de surface" value={performance.surfaceQuality} />
+            </div>
+          </Section>
+
+          <Section title="Préconisations d'impression">
+            <div className="grid gap-4 md:grid-cols-2">
+              <Spec label="Température buse" value={printSettings.nozzleTemp} />
+              <Spec label="Température plateau" value={printSettings.bedTemp} />
+              <Spec label="Température chambre" value={printSettings.chamberTemp} />
+              <Spec label="Vitesse d'impression" value={printSettings.printSpeed} />
+              <Spec label="Ventilation" value={printSettings.fan} />
+              <Spec label="Séchage" value={printSettings.drying} />
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-2">
+              {printSettings.enclosureRecommended && <Badge>Caisson recommandé</Badge>}
+              {printSettings.abrasive && <Badge>Filament abrasif</Badge>}
+              {printSettings.hygroscopic && <Badge>Sensible à l'humidité</Badge>}
+            </div>
+          </Section>
+
+          {(physical.density || physical.shrinkage) && (
+            <Section title="Propriétés physiques">
               <div className="grid gap-4 md:grid-cols-2">
-                <Spec label="Buse" value={sheet.nozzle} />
-                <Spec
-                  label="Diamètre conseillé"
-                  value={sheet.recommendedNozzle}
-                />
-                <Spec label="Plateau" value={sheet.bed} />
-                <Spec label="Séchage" value={sheet.drying} />
+                <Spec label="Densité" value={physical.density} />
+                <Spec label="Retrait" value={physical.shrinkage} />
               </div>
-            </div>
+            </Section>
           )}
 
-          {/* ================= COLORS ================= */}
-          {!!material.colors?.length && (
-            <div className="mt-10">
-              <h3 className="mb-4 text-xl font-black text-white">
-                Coloris disponibles
-              </h3>
-
-              <div className="flex flex-wrap gap-2">
-                {material.colors.map((color) => (
-                  <span
-                    key={color}
-                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-200"
-                  >
-                    {color}
-                  </span>
-                ))}
+          {(mechanical.tensileStrength ||
+            mechanical.youngModulus ||
+            mechanical.bendingStrength ||
+            mechanical.impactStrength ||
+            mechanical.elongationAtBreak) && (
+            <Section title="Propriétés mécaniques">
+              <div className="grid gap-4 md:grid-cols-2">
+                <Spec label="Résistance traction" value={mechanical.tensileStrength} />
+                <Spec label="Module de Young" value={mechanical.youngModulus} />
+                <Spec label="Résistance flexion" value={mechanical.bendingStrength} />
+                <Spec label="Résistance impact" value={mechanical.impactStrength} />
+                <Spec label="Allongement rupture" value={mechanical.elongationAtBreak} />
               </div>
-            </div>
+            </Section>
           )}
 
-           {/* ================= CTA ================= */}
-<div className="mt-10 flex flex-wrap gap-4">
-  <a
-    href="#devis"
-    onClick={onClose}
-    className="rounded-full bg-orange-500 px-6 py-3 font-black text-black transition hover:bg-orange-400"
-  >
-    Demander un devis
-  </a>
+          {(thermal.hdt || thermal.glassTransition || thermal.meltingTemp) && (
+            <Section title="Propriétés thermiques">
+              <div className="grid gap-4 md:grid-cols-3">
+                <Spec label="HDT" value={thermal.hdt} />
+                <Spec label="Transition vitreuse" value={thermal.glassTransition} />
+                <Spec label="Température de fusion" value={thermal.meltingTemp} />
+              </div>
+            </Section>
+          )}
 
- {material.datasheetUrl && (
-  <a
-    href={material.datasheetUrl}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="rounded-full border border-orange-500 px-6 py-3 font-black text-orange-400 transition hover:bg-orange-500 hover:text-black"
-  >
-    Ouvrir la fiche technique PDF
-  </a>
-)}
+          {!!colors.length && (
+            <Section title="Coloris disponibles">
+              <TagList items={colors} />
+            </Section>
+          )}
 
-  <button
-    type="button"
-    onClick={onClose}
-    className="rounded-full border border-white/15 px-6 py-3 font-black text-white transition hover:border-orange-500 hover:text-orange-400"
-  >
-    Retour
-  </button>
-</div>
+          <div className="mt-10 flex flex-wrap gap-4">
+            <a
+              href="#devis"
+              onClick={onClose}
+              className="rounded-full bg-orange-500 px-6 py-3 font-black text-black transition hover:bg-orange-400"
+            >
+              Demander un devis
+            </a>
 
+            {material.datasheetUrl && (
+              <a
+                href={material.datasheetUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full border border-orange-500 px-6 py-3 font-black text-orange-400 transition hover:bg-orange-500 hover:text-black"
+              >
+                Fiche technique PDF
+              </a>
+            )}
+
+            {material.printingGuideUrl && (
+              <a
+                href={material.printingGuideUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full border border-white/15 px-6 py-3 font-black text-white transition hover:border-orange-500 hover:text-orange-400"
+              >
+                Guide d'impression
+              </a>
+            )}
+
+            {material.safetyDataUrl && (
+              <a
+                href={material.safetyDataUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full border border-white/15 px-6 py-3 font-black text-white transition hover:border-orange-500 hover:text-orange-400"
+              >
+                Fiche sécurité
+              </a>
+            )}
+
+            {material.manufacturerUrl && (
+              <a
+                href={material.manufacturerUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full border border-white/15 px-6 py-3 font-black text-white transition hover:border-orange-500 hover:text-orange-400"
+              >
+                Site fabricant
+              </a>
+            )}
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-full border border-white/15 px-6 py-3 font-black text-white transition hover:border-orange-500 hover:text-orange-400"
+            >
+              Retour
+            </button>
           </div>
         </div>
       </div>
+    </div>
   );
 }
 
-/* ================= SMALL COMPONENTS ================= */
+function Section({ title, children }) {
+  return (
+    <div className="mt-10 rounded-3xl border border-white/10 bg-black/30 p-6">
+      <h3 className="mb-5 text-2xl font-black text-white">{title}</h3>
+      {children}
+    </div>
+  );
+}
 
 function InfoCard({ title, text }) {
-  if (!text) return null;
-
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
       <h4 className="mb-2 text-sm font-black uppercase tracking-widest text-orange-400">
         {title}
       </h4>
-
       <p className="leading-relaxed text-zinc-300">{text}</p>
     </div>
   );
@@ -317,8 +251,65 @@ function Spec({ label, value }) {
       <div className="text-xs font-black uppercase tracking-widest text-zinc-500">
         {label}
       </div>
-
       <div className="mt-1 font-semibold text-white">{value}</div>
     </div>
+  );
+}
+
+function Rating({ label, value }) {
+  const score = Number(value || 0);
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+      <p className="mb-3 text-xs font-black uppercase tracking-widest text-orange-400">
+        {label}
+      </p>
+
+      <div className="flex gap-1">
+        {[1, 2, 3, 4, 5].map((level) => (
+          <span
+            key={level}
+            className={`h-2.5 w-2.5 rounded-full ${
+              level <= score
+                ? "bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.6)]"
+                : "bg-white/10"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TagList({ items, orange = false }) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {items.map((item) => (
+        <span
+          key={item}
+          className={`rounded-full border px-4 py-2 text-sm ${
+            orange
+              ? "border-orange-500/20 bg-orange-500/10 text-orange-300"
+              : "border-white/10 bg-white/5 text-zinc-200"
+          }`}
+        >
+          {item}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function Badge({ children, strong = false }) {
+  return (
+    <span
+      className={
+        strong
+          ? "rounded-full bg-orange-500 px-4 py-2 text-sm font-black text-black"
+          : "rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white"
+      }
+    >
+      {children}
+    </span>
   );
 }
