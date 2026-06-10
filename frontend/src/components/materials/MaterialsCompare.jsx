@@ -68,7 +68,7 @@ const selectedOption = SORT_OPTIONS.find(
   (option) => option.key === sortKey
 );
 
-const sortedMaterials = [...materials].sort((a, b) => {
+const orderedMaterials = [...materials].sort((a, b) => {
   const scoreA = Number(a.performance?.[sortKey] || 0);
   const scoreB = Number(b.performance?.[sortKey] || 0);
 
@@ -130,7 +130,7 @@ const sortedMaterials = [...materials].sort((a, b) => {
                   Critère
                 </th>
 
-                {sortedMaterials.map((material) => (
+                {orderedMaterials.map((material) => (
                   <th
                     key={material._id || material.name}
                     className="border-b border-white/10 p-5 text-center text-xl font-black text-white"
@@ -144,49 +144,49 @@ const sortedMaterials = [...materials].sort((a, b) => {
             <tbody>
               <CompareRow
                 label="Famille"
-                materials={sortedMaterials}
+                materials={orderedMaterials}
                 render={(material) => material.family || "—"}
               />
 
               <ScoreRow
                 label="Solidité"
-                materials={sortedMaterials}
+                materials={orderedMaterials}
                 field="strength"
               />
 
               <ScoreRow
                 label="Tenue température"
-                materials={sortedMaterials}
+                materials={orderedMaterials}
                 field="heatResistance"
               />
 
               <ScoreRow
                 label="Résistance chimique"
-                materials={sortedMaterials}
+                materials={orderedMaterials}
                 field="chemicalResistance"
               />
 
               <ScoreRow
                 label="Flexibilité"
-                materials={sortedMaterials}
+                materials={orderedMaterials}
                 field="flexibility"
               />
 
               <ScoreRow
                 label="Facilité d'impression"
-                materials={sortedMaterials}
+                materials={orderedMaterials}
                 field="easeOfPrint"
               />
 
               <ScoreRow
                 label="Qualité finition"
-                materials={sortedMaterials}
+                materials={orderedMaterials}
                 field="surfaceQuality"
               />
 
               <CompareRow
                 label="Usages recommandés"
-                materials={sortedMaterials}
+                materials={orderedMaterials}
                 render={(material) => (
                   <TagList items={material.applications || []} />
                 )}
