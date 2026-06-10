@@ -31,7 +31,7 @@ export default function Header({ content }) {
   </a>
 
   <a href="#services" className="transition hover:text-orange-400">
-    Services
+    Solutions
   </a>
 
   <a href="#univers" className="transition hover:text-orange-400">
