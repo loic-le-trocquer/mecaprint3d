@@ -60,6 +60,42 @@ export default function TechnologyCard({
     });
   };
 
+  // ================= PRODUCTION MODE =================
+  const getProductionMode = () => {
+    const text = [
+      item.badge,
+      item.process,
+      item.title,
+      item.description,
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    const isPartner =
+      text.includes("partenaire") ||
+      text.includes("sls") ||
+      text.includes("mjf") ||
+      text.includes("métal") ||
+      text.includes("metal") ||
+      text.includes("dmls");
+
+    if (isPartner) {
+      return {
+        label: "Réseau partenaires industriels",
+        color: "blue",
+        icon: "🤝",
+      };
+    }
+
+    return {
+      label: "Fabrication atelier MecaPrint3D",
+      color: "orange",
+      icon: "🟠",
+    };
+  };
+
+  const productionMode = getProductionMode();
+
   return (
     <article className="group relative overflow-hidden rounded-3xl border border-white/10 bg-zinc-900/70 p-5 shadow-2xl shadow-black/40 backdrop-blur-xl transition duration-500 hover:-translate-y-1 hover:border-orange-500/50 hover:bg-zinc-900">
       <div className="absolute inset-0 bg-gradient-to-br from-orange-500/0 via-orange-500/0 to-orange-500/5 opacity-0 transition duration-500 group-hover:opacity-100" />
@@ -89,16 +125,16 @@ export default function TechnologyCard({
           {item.title}
         </h3>
 
-<div
-  className={`mt-3 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-black uppercase tracking-widest ${
-    productionMode.color === "blue"
-      ? "border-blue-500/30 bg-blue-500/10 text-blue-300"
-      : "border-orange-500/30 bg-orange-500/10 text-orange-300"
-  }`}
->
-  <span>{productionMode.icon}</span>
-  {productionMode.label}
-</div>
+        <div
+          className={`mt-3 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-black uppercase tracking-widest ${
+            productionMode.color === "blue"
+              ? "border-blue-500/30 bg-blue-500/10 text-blue-300"
+              : "border-orange-500/30 bg-orange-500/10 text-orange-300"
+          }`}
+        >
+          <span>{productionMode.icon}</span>
+          {productionMode.label}
+        </div>
 
         <p className="mt-3 leading-relaxed text-zinc-300">
           {item.description}
@@ -124,40 +160,7 @@ export default function TechnologyCard({
                     />
                   );
                 }
-const getProductionMode = () => {
-  const text = [
-    item.badge,
-    item.process,
-    item.title,
-    item.description,
-  ]
-    .join(" ")
-    .toLowerCase();
 
-  const isPartner =
-    text.includes("partenaire") ||
-    text.includes("sls") ||
-    text.includes("mjf") ||
-    text.includes("métal") ||
-    text.includes("metal") ||
-    text.includes("dmls");
-
-  if (isPartner) {
-    return {
-      label: "Réseau partenaires industriels",
-      color: "blue",
-      icon: "🤝",
-    };
-  }
-
-  return {
-    label: "Fabrication atelier MecaPrint3D",
-    color: "orange",
-    icon: "🟠",
-  };
-};
-
-const productionMode = getProductionMode();
                 return (
                   <span
                     key={materialName}
