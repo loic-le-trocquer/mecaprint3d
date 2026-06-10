@@ -61,7 +61,7 @@ export default function Univers({ content }) {
               >
 
                 {/* ================= IMAGE ================= */}
-                <div className="relative h-80 overflow-hidden">
+                <div className="relative h-64 overflow-hidden">
 
                   {item.imageUrl ? (
 
@@ -113,20 +113,6 @@ export default function Univers({ content }) {
                     {item.description}
 
                   </p>
-
-                  {/* CTA */}
-                  <a
-                    href={item.link || "#"}
-                    className="mt-8 inline-flex items-center gap-3 text-sm font-black uppercase tracking-[0.2em] text-orange-400 transition hover:text-orange-300"
-                  >
-
-                    Découvrir
-
-                    <span className="transition duration-300 group-hover:translate-x-1">
-                      →
-                    </span>
-
-                  </a>
 
                 </div>
 
