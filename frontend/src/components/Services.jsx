@@ -117,7 +117,7 @@ const services =
           </div>
 
           {/* ================= CARDS ================= */}
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
 
             {services.map((service, index) => {
 
