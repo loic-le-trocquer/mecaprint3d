@@ -7,27 +7,27 @@ import FadeInSection from "./ui/FadeInSection";
 const steps = [
   {
     number: "01",
-    title: "Analyse du besoin",
+    title: "Comprendre le besoin",
     description:
-      "Étude du projet, des contraintes techniques, du rendu attendu et des solutions adaptées.",
+      "Nous analysons l’usage réel de la pièce : contraintes mécaniques, température, environnement, esthétique, tolérances et conditions d’utilisation.",
   },
   {
     number: "02",
-    title: "Conception / Scan / CAO",
+    title: "Concevoir la bonne solution",
     description:
-      "Création, modélisation, scan 3D ou rétroconception pour préparer une solution fiable et cohérente.",
+      "Conception CAO, scan 3D, rétroconception ou amélioration d’une pièce existante pour obtenir une solution fiable, fabricable et adaptée.",
   },
   {
     number: "03",
-    title: "Fabrication & transformation",
+    title: "Choisir le bon matériau",
     description:
-      "Impression 3D, covering, rénovation, fabrication technique ou intégration des solutions partenaires.",
+      "PLA, PETG, ASA, TPU, PC, composites carbone, ESD ou haute température : chaque projet reçoit un choix matière cohérent avec ses contraintes.",
   },
   {
     number: "04",
-    title: "Finition & livraison",
+    title: "Fabriquer, contrôler et finaliser",
     description:
-      "Contrôle visuel, ajustements, finitions et accompagnement jusqu’à la livraison du projet.",
+      "Fabrication en atelier ou via nos partenaires industriels, contrôle de la pièce, ajustements, finitions et accompagnement jusqu’à la livraison.",
   },
 ];
 
@@ -47,15 +47,15 @@ export default function ProcessTimeline() {
           <div className="mb-20 max-w-4xl">
 
             <p className="text-sm font-black uppercase tracking-[0.35em] text-orange-500">
-              Méthodologie
+              Notre méthode
             </p>
 
             <h2 className="mt-6 text-5xl font-black leading-none tracking-tight text-white md:text-7xl">
-              Une approche claire & structurée
+              Une pièce réussie commence avant l'impression
             </h2>
 
             <p className="mt-8 max-w-3xl text-lg leading-relaxed text-zinc-400">
-              Chaque projet suit une logique de conception, validation et fabrication afin de garantir un résultat cohérent, durable et adapté au besoin réel.
+              Chez MecaPrint3D, nous ne lançons pas simplement une impression. Nous analysons le besoin, concevons la solution, sélectionnons le matériau adapté puis fabriquons une pièce cohérente avec son usage réel.
             </p>
 
           </div>
