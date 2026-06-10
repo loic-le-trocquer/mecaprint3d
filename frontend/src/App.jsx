@@ -58,27 +58,25 @@ if (window.location.pathname === "/commande-rapide") {
     <div className="min-h-screen bg-zinc-950 text-white">
       <Header content={content} />
 
-      <main>
-        <Hero content={content} />
+    <main>
+  <Hero content={content} />
 
-        <Univers content={content} />
+  <ProcessTimeline />
 
-        <Services content={content} />
+  <Technologies content={content} />
 
-        <WhyMecaPrint />
-        
-        <ProcessTimeline />
+  <Services content={content} />
 
-        <Technologies content={content} />
+  <Univers content={content} />
 
-        <Transformations content={content} />
+  <Transformations content={content} />
 
-        <CoverStylAI />
+  <Realisations content={content} />
 
-        <Realisations content={content} />
-        
-        <QuoteForm content={content} />
-      </main>
+  <WhyMecaPrint />
+
+  <QuoteForm content={content} />
+</main>
 
         <FloatingChat />
 
