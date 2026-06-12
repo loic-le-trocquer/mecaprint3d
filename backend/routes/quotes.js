@@ -5,10 +5,8 @@ const streamifier = require("streamifier");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const crypto = require("crypto");
 const Quote = require("../models/Quote");
-
 const sendEmail = require("../utils/sendEmail");
 const generateQuotePdf = require("../utils/generateQuotePdf");
-
 const router = express.Router();
 
 // =====================================================
@@ -114,6 +112,28 @@ router.get("/", requireAdmin, async (req, res) => {
 });
 
 // =====================================================
+// 🔢 GÉNÉRATION NUMÉRO DE DEVIS
+// Format : MP3D-2026-0001
+// =====================================================
+async function generateQuoteNumber() {
+  const year = new Date().getFullYear();
+
+  const startOfYear = new Date(`${year}-01-01T00:00:00.000Z`);
+  const endOfYear = new Date(`${year + 1}-01-01T00:00:00.000Z`);
+
+  const count = await Quote.countDocuments({
+    createdAt: {
+      $gte: startOfYear,
+      $lt: endOfYear,
+    },
+  });
+
+  const number = String(count + 1).padStart(4, "0");
+
+  return `MP3D-${year}-${number}`;
+}
+
+// =====================================================
 // ✏️ UPDATE QUOTE
 // PUT /api/quotes/:id
 // =====================================================
@@ -121,21 +141,31 @@ router.put("/:id", requireAdmin, async (req, res) => {
 
   try {
 
-    // =====================================================
-    // FIND EXISTING QUOTE
-    // =====================================================
-    const existingQuote =
-      await Quote.findById(req.params.id);
+   // =====================================================
+// FIND EXISTING QUOTE
+// =====================================================
+const existingQuote =
+  await Quote.findById(req.params.id);
 
-    if (!existingQuote) {
+if (!existingQuote) {
 
-      return res.status(404).json({
-        success: false,
-        error: "Devis introuvable",
-      });
+  return res.status(404).json({
+    success: false,
+    error: "Devis introuvable",
+  });
 
-    }
+}
 
+// =====================================================
+// 🔢 NUMÉRO DE DEVIS SI ABSENT
+// Utile pour les anciens devis déjà créés
+// =====================================================
+if (!existingQuote.quoteNumber) {
+  existingQuote.quoteNumber =
+    await generateQuoteNumber();
+}
+
+    
     // =====================================================
     // OLD STATUS
     // =====================================================
@@ -404,13 +434,27 @@ await sendEmail({
 
     }
 
-    // =====================================================
-    // RESPONSE
-    // =====================================================
-    res.json({
-      success: true,
-      quote: existingQuote,
-    });
+   // =====================================================
+   // 🔄 RECHARGEMENT DU DEVIS APRÈS SAUVEGARDE
+   // Permet de retourner la dernière version de MongoDB
+   // avec tous les champs mis à jour :
+   // - quoteSentAt
+   // - token d'accès public
+   // - date d'expiration
+   // - updatedAt
+   // =====================================================
+  const updatedQuote = await Quote.findById(
+  req.params.id
+  ).lean();
+
+
+// =====================================================
+// 📤 RESPONSE API
+// =====================================================
+  res.json({
+  success: true,
+  quote: updatedQuote,
+  });
 
   } catch (error) {
 
@@ -519,17 +563,20 @@ router.post(
     // =====================================================
     // 💾 SAVE QUOTE
     // =====================================================
-    const quote = await Quote.create({
-    ...req.body,
-    files: uploadedFiles,
-    });
+   const quoteNumber = await generateQuoteNumber();
 
-console.log("✅ SAUVEGARDE MONGO OK");
-console.log("📄 ID :", quote._id);
-console.log("📄 BASE :", quote.constructor.db.name);
-console.log("📄 COLLECTION :", quote.constructor.collection.name);
+   const quote = await Quote.create({
+  ...req.body,
+  files: uploadedFiles,
+  quoteNumber,
+});
 
-console.log(
+  console.log("✅ SAUVEGARDE MONGO OK");
+  console.log("📄 ID :", quote._id);
+  console.log("📄 BASE :", quote.constructor.db.name);
+  console.log("📄 COLLECTION :", quote.constructor.collection.name);
+
+  console.log(
   "📩 Nouveau devis :",
   quote._id
 );
