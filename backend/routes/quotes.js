@@ -286,7 +286,9 @@ await sendEmail({
         to: existingQuote.email,
 
         subject:
-          `Mise à jour de votre projet - ${statusLabels[existingQuote.status]}`,
+  existingQuote.status === "Devis envoyé"
+    ? `Votre devis MecaPrint3D ${existingQuote.quoteNumber || ""}`
+    : `Mise à jour de votre projet - ${statusLabels[existingQuote.status]}`,
 
         html: `
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:30px 0;font-family:Arial,sans-serif;">
@@ -311,26 +313,41 @@ await sendEmail({
             </p>
 
             <p style="margin:0 0 22px 0;color:#374151;font-size:15px;line-height:1.6;">
-              ${statusMessages[existingQuote.status]}
-            </p>
+  ${
+    existingQuote.status === "Devis envoyé"
+      ? `Votre devis n° <strong>${existingQuote.quoteNumber || "-"}</strong>
+         est disponible. Vous pouvez le consulter, le télécharger et valider votre commande en ligne.`
+      : statusMessages[existingQuote.status]
+  }
+</p>
 
             <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;">
-              <tr>
-                <td style="padding:12px;background:#f9fafb;color:#6b7280;font-size:13px;width:160px;">
-                  Projet
-                </td>
-                <td style="padding:12px;color:#111827;font-size:13px;">
-                  ${existingQuote.project || "-"}
-                </td>
-              </tr>
-              <tr>
-                <td style="padding:12px;background:#f9fafb;color:#6b7280;font-size:13px;width:160px;border-top:1px solid #e5e7eb;">
-                  Statut
-                </td>
-                <td style="padding:12px;color:#111827;font-size:13px;border-top:1px solid #e5e7eb;">
-                  ${statusLabels[existingQuote.status] || existingQuote.status}
-                </td>
-              </tr>
+             <tr>
+  <td style="padding:12px;background:#f9fafb;color:#6b7280;font-size:13px;width:160px;">
+    N° devis
+  </td>
+  <td style="padding:12px;color:#111827;font-size:13px;">
+    ${existingQuote.quoteNumber || "-"}
+  </td>
+</tr>
+
+<tr>
+  <td style="padding:12px;background:#f9fafb;color:#6b7280;font-size:13px;width:160px;border-top:1px solid #e5e7eb;">
+    Projet
+  </td>
+  <td style="padding:12px;color:#111827;font-size:13px;border-top:1px solid #e5e7eb;">
+    ${existingQuote.project || "-"}
+  </td>
+</tr>
+
+<tr>
+  <td style="padding:12px;background:#f9fafb;color:#6b7280;font-size:13px;width:160px;border-top:1px solid #e5e7eb;">
+    Statut
+  </td>
+  <td style="padding:12px;color:#111827;font-size:13px;border-top:1px solid #e5e7eb;">
+    ${statusLabels[existingQuote.status] || existingQuote.status}
+  </td>
+</tr>
             </table>
 
             ${

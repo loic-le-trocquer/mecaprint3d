@@ -26,9 +26,11 @@ module.exports = function generateQuotePdf(res, quote) {
   const pageWidth = doc.page.width;
   const contentWidth = pageWidth - 84;
 
-  const quoteNumber = `DEVIS-${new Date().getFullYear()}-${String(
-    quote._id
-  ).slice(-6).toUpperCase()}`;
+  const quoteNumber =
+  quote.quoteNumber ||
+  `MP3D-${new Date().getFullYear()}-${String(quote._id)
+    .slice(-4)
+    .toUpperCase()}`;
 
   const lines = quote.quoteLines || [];
 
@@ -47,7 +49,7 @@ module.exports = function generateQuotePdf(res, quote) {
 
   res.setHeader(
     "Content-Disposition",
-    `attachment; filename=${quoteNumber}.pdf`
+    `attachment; filename=devis-${quoteNumber}.pdf`
   );
 
   doc.pipe(res);
@@ -83,7 +85,7 @@ module.exports = function generateQuotePdf(res, quote) {
   doc
     .fontSize(10)
     .fillColor("#444444")
-    .text(`N° : ${quoteNumber}`, 360, 120, {
+    .text(`Devis n° ${quoteNumber}`, 360, 120, {
       width: 190,
       align: "right",
     });
