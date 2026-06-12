@@ -110,18 +110,20 @@ router.get("/", requireAdmin, async (req, res) => {
 
   }
 });
-
 // =====================================================
 // 🔢 GÉNÉRATION NUMÉRO DE DEVIS
 // Format : MP3D-2026-0001
+// Exclut le devis en cours de génération
 // =====================================================
-async function generateQuoteNumber() {
+async function generateQuoteNumber(quoteId) {
+
   const year = new Date().getFullYear();
 
   const startOfYear = new Date(`${year}-01-01T00:00:00.000Z`);
   const endOfYear = new Date(`${year + 1}-01-01T00:00:00.000Z`);
 
   const count = await Quote.countDocuments({
+    _id: { $ne: quoteId },
     createdAt: {
       $gte: startOfYear,
       $lt: endOfYear,
@@ -161,10 +163,11 @@ if (!existingQuote) {
 // Utile pour les anciens devis déjà créés
 // =====================================================
 if (!existingQuote.quoteNumber) {
-  existingQuote.quoteNumber =
-    await generateQuoteNumber();
-}
 
+  existingQuote.quoteNumber =
+    await generateQuoteNumber(existingQuote._id);
+
+}
     
     // =====================================================
     // OLD STATUS
