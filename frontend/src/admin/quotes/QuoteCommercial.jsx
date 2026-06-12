@@ -66,7 +66,7 @@ export default function QuoteCommercial({ quote, setQuotes, onUpdate }) {
           : item
       )
     );
-0  };
+  };
 
   const saveCommercialQuote = () => {
     onUpdate(quote._id, {
@@ -79,6 +79,18 @@ export default function QuoteCommercial({ quote, setQuotes, onUpdate }) {
       quoteComment: quote.quoteComment,
     });
   };
+
+  const sendToClient = () => {
+  onUpdate(quote._id, {
+    status: "Devis envoyé",
+    adminNotes: quote.adminNotes,
+    archived: quote.archived,
+    quoteLines,
+    quoteAmount: totalTTC,
+    quoteDelay: quote.quoteDelay,
+    quoteComment: quote.quoteComment,
+  });
+};
 
 const downloadPdf = () => {
   const token = localStorage.getItem("mecaprint3d_admin_token");
@@ -243,11 +255,12 @@ const downloadPdf = () => {
 
             {/* SEND */}
           <button
-            type="button"
-            className="w-full rounded-xl border border-green-500/20 bg-green-500/10 px-4 py-3 font-black text-green-300 transition hover:bg-green-500 hover:text-white"
-          >
-            Envoyer au client
-          </button>
+  type="button"
+  onClick={sendToClient}
+  className="w-full rounded-xl border border-green-500/20 bg-green-500/10 px-4 py-3 font-black text-green-300 transition hover:bg-green-500 hover:text-white"
+>
+  Envoyer au client
+</button>
         </div>
       </div>
     </div>
