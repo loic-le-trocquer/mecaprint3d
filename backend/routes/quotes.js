@@ -110,30 +110,27 @@ router.get("/", requireAdmin, async (req, res) => {
 
   }
 });
+
 // =====================================================
 // 🔢 GÉNÉRATION NUMÉRO DE DEVIS
 // Format : MP3D-2026-0001
-// Exclut le devis en cours de génération
 // =====================================================
-async function generateQuoteNumber(quoteId) {
+async function generateQuoteNumber() {
 
   const year = new Date().getFullYear();
 
-  const startOfYear = new Date(`${year}-01-01T00:00:00.000Z`);
-  const endOfYear = new Date(`${year + 1}-01-01T00:00:00.000Z`);
-
   const count = await Quote.countDocuments({
-    _id: { $ne: quoteId },
-    createdAt: {
-      $gte: startOfYear,
-      $lt: endOfYear,
+    quoteNumber: {
+      $regex: `^MP3D-${year}-`,
     },
   });
 
-  const number = String(count + 1).padStart(4, "0");
+  const number =
+    String(count + 1).padStart(4, "0");
 
   return `MP3D-${year}-${number}`;
 }
+
 
 // =====================================================
 // ✏️ UPDATE QUOTE
@@ -165,7 +162,7 @@ if (!existingQuote) {
 if (!existingQuote.quoteNumber) {
 
   existingQuote.quoteNumber =
-    await generateQuoteNumber(existingQuote._id);
+    await generateQuoteNumber();
 
 }
     
@@ -351,11 +348,32 @@ await sendEmail({
             </table>
 
             ${
-  existingQuote.status === "Devis envoyé"
-    ? `
+ existingQuote.status === "Devis envoyé"
+  ? `
 
-    <!-- PDF -->
+    <!-- BOUTON PRINCIPAL : VALIDATION / PAIEMENT -->
     <table cellpadding="0" cellspacing="0" align="center" style="margin-top:28px;">
+      <tr>
+        <td bgcolor="#f97316" style="padding:14px 26px;">
+          <a
+            href="https://mecaprint3d.fr/commande/${existingQuote._id}"
+            style="
+              color:#ffffff;
+              text-decoration:none;
+              font-weight:bold;
+              font-size:15px;
+              display:inline-block;
+            "
+          >
+            Valider et régler mon devis
+          </a>
+        </td>
+      </tr>
+    </table>
+
+
+    <!-- BOUTON PDF -->
+    <table cellpadding="0" cellspacing="0" align="center" style="margin-top:16px;">
       <tr>
         <td bgcolor="#27272a" style="padding:14px 24px;">
           <a
@@ -368,69 +386,60 @@ await sendEmail({
               display:inline-block;
             "
           >
-            Visualiser le devis PDF
+            Consulter le devis PDF
           </a>
         </td>
       </tr>
     </table>
 
-    <!-- STRIPE -->
-    <table cellpadding="0" cellspacing="0" align="center" style="margin-top:16px;">
-      <tr>
-        <td bgcolor="#f97316" style="padding:14px 24px;">
-          <a
-            href="https://mecaprint3d.fr/commande/${existingQuote._id}"
-            style="
-              color:#ffffff;
-              text-decoration:none;
-              font-weight:bold;
-              font-size:15px;
-              display:inline-block;
-            "
-          >
-            Commander / régler le devis
-          </a>
-        </td>
-      </tr>
-    </table>
 
+    <!-- INFORMATION SÉCURITÉ -->
+    <p style="
+      margin:20px 0 0 0;
+      color:#6b7280;
+      font-size:12px;
+      line-height:1.6;
+      text-align:center;
+    ">
+      Ce lien sécurisé est personnel et reste valable pendant 30 jours.
+    </p>
+
+
+    <!-- LIENS DE SECOURS -->
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:22px;">
-  <tr>
-    <td style="padding:14px;background:#f9fafb;border:1px solid #e5e7eb;">
+      <tr>
+        <td style="padding:14px;background:#f9fafb;border:1px solid #e5e7eb;">
 
-      <p style="margin:0 0 12px 0;color:#374151;font-size:12px;line-height:1.6;">
-        Certains pare-feu professionnels, antivirus ou logiciels de messagerie peuvent bloquer l’ouverture directe des boutons ou liens sécurisés.
-      </p>
+          <p style="margin:0 0 12px 0;color:#374151;font-size:12px;line-height:1.6;">
+            Certains pare-feu professionnels ou logiciels de messagerie peuvent bloquer l'ouverture directe des boutons.
+          </p>
 
-      <p style="margin:0 0 12px 0;color:#6b7280;font-size:12px;line-height:1.6;">
-        Si nécessaire, copiez simplement les liens ci-dessous dans votre navigateur internet :
-      </p>
+          <p style="margin:0 0 12px 0;color:#6b7280;font-size:12px;">
+            En cas de besoin, copiez les liens ci-dessous dans votre navigateur :
+          </p>
 
-      <p style="margin:0 0 10px 0;color:#111827;font-size:12px;line-height:1.5;">
-        <strong>Visualisation du devis PDF :</strong><br/>
-        <a
-          href="${publicPdfUrl}"
-          style="color:#f97316;text-decoration:underline;"
-        >
-          ${publicPdfUrl}
-        </a>
-      </p>
+          <p style="margin:0 0 10px 0;font-size:12px;">
+            <strong>Validation et paiement :</strong><br>
+            <a href="https://mecaprint3d.fr/commande/${existingQuote._id}"
+               style="color:#f97316;">
+              https://mecaprint3d.fr/commande/${existingQuote._id}
+            </a>
+          </p>
 
-      <p style="margin:0;color:#111827;font-size:12px;line-height:1.5;">
-        <strong>Paiement sécurisé :</strong><br/>
-        <a
-          href="https://mecaprint3d.fr/commande/${existingQuote._id}"
-          style="color:#f97316;text-decoration:underline;"
-        >
-          https://mecaprint3d.fr/commande/${existingQuote._id}
-        </a>
-      </p>
+          <p style="margin:0;font-size:12px;">
+            <strong>Consultation du devis :</strong><br>
+            <a href="${publicPdfUrl}"
+               style="color:#f97316;">
+              ${publicPdfUrl}
+            </a>
+          </p>
 
-    </td>
-  </tr>
-</table>
-    `
-    : ""
+        </td>
+      </tr>
+    </table>
+
+  `
+  : ""
 }
             <p style="margin:30px 0 0 0;color:#6b7280;font-size:13px;line-height:1.6;">
               Merci pour votre confiance,<br/>
@@ -583,23 +592,20 @@ router.post(
     // =====================================================
     // 💾 SAVE QUOTE
     // =====================================================
-   const quoteNumber = await generateQuoteNumber();
+    const quoteNumber = await generateQuoteNumber();
 
-   const quote = await Quote.create({
-  ...req.body,
-  files: uploadedFiles,
-  quoteNumber,
-});
+    const quote = await Quote.create({
+      ...req.body,
+      files: uploadedFiles,
+      quoteNumber,
+    });
 
-  console.log("✅ SAUVEGARDE MONGO OK");
-  console.log("📄 ID :", quote._id);
-  console.log("📄 BASE :", quote.constructor.db.name);
-  console.log("📄 COLLECTION :", quote.constructor.collection.name);
-
-  console.log(
-  "📩 Nouveau devis :",
-  quote._id
-);
+    console.log("✅ SAUVEGARDE MONGO OK");
+    console.log("📄 ID :", quote._id);
+    console.log("📄 BASE :", quote.constructor.db.name);
+    console.log("📄 COLLECTION :", quote.constructor.collection.name);
+    console.log("📩 Nouveau devis :", quote._id);
+    console.log("🔢 Numéro devis :", quote.quoteNumber);
 
       // =====================================================
       // 📧 EMAIL CLIENT
