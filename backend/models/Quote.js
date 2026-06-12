@@ -73,6 +73,11 @@ const quoteSchema = new mongoose.Schema(
       default: "",
     },
 
+    quoteSentAt: {
+    type: Date,
+    default: null,
+    },
+
 // ===============================
 // ACCÈS PUBLIC SÉCURISÉ AU DEVIS
 // ===============================
