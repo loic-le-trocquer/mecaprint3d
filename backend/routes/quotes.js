@@ -114,9 +114,9 @@ router.get("/", requireAdmin, async (req, res) => {
 // =====================================================
 // 🔢 GÉNÉRATION NUMÉRO DE DEVIS
 // Format : MP3D-2026-0001
+// Le compteur se base uniquement sur les devis déjà numérotés
 // =====================================================
 async function generateQuoteNumber() {
-
   const year = new Date().getFullYear();
 
   const count = await Quote.countDocuments({
@@ -125,8 +125,7 @@ async function generateQuoteNumber() {
     },
   });
 
-  const number =
-    String(count + 1).padStart(4, "0");
+  const number = String(count + 1).padStart(4, "0");
 
   return `MP3D-${year}-${number}`;
 }
