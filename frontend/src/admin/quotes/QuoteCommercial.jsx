@@ -250,6 +250,13 @@ const sendToClient = () => {
       </span>
     </div>
 
+  <div className="flex justify-between gap-4">
+     <span className="text-zinc-500">N° devis</span>
+     <span className="font-black text-orange-300">
+       {quote.quoteNumber || "—"}
+     </span>
+    </div>        
+
     <div className="flex justify-between gap-4">
       <span className="text-zinc-500">Devis envoyé</span>
       <span className="font-bold text-white">
