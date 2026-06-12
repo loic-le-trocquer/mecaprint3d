@@ -80,7 +80,31 @@ export default function QuoteCommercial({ quote, setQuotes, onUpdate }) {
     });
   };
 
-  const sendToClient = () => {
+const downloadPdf = () => {
+  const token = localStorage.getItem("mecaprint3d_admin_token");
+
+  window.open(
+    `${API_URL}/api/quotes/${quote._id}/pdf?token=${token}`,
+    "_blank"
+  );
+};
+
+const formatDate = (date) =>
+  date ? new Date(date).toLocaleString("fr-FR") : "—";
+
+const quoteSentDate = quote.quoteSentAt
+  ? new Date(quote.quoteSentAt).toLocaleString("fr-FR")
+  : null;
+
+const sendToClient = () => {
+  if (quoteSentDate) {
+    const confirmResend = window.confirm(
+      `Ce devis a déjà été envoyé le ${quoteSentDate}.\n\nVoulez-vous le renvoyer au client ?`
+    );
+
+    if (!confirmResend) return;
+  }
+
   onUpdate(quote._id, {
     status: "Devis envoyé",
     adminNotes: quote.adminNotes,
@@ -90,15 +114,6 @@ export default function QuoteCommercial({ quote, setQuotes, onUpdate }) {
     quoteDelay: quote.quoteDelay,
     quoteComment: quote.quoteComment,
   });
-};
-
-const downloadPdf = () => {
-  const token = localStorage.getItem("mecaprint3d_admin_token");
-
-  window.open(
-    `${API_URL}/api/quotes/${quote._id}/pdf?token=${token}`,
-    "_blank"
-  );
 };
 
   return (
@@ -222,6 +237,42 @@ const downloadPdf = () => {
         />
       </div>
 
+      <div className="mt-6 rounded-2xl border border-white/10 bg-zinc-950/70 p-5">
+  <p className="mb-4 text-sm font-black uppercase tracking-widest text-orange-400">
+    Suivi du dossier
+  </p>
+
+  <div className="grid gap-3 text-sm text-zinc-300">
+    <div className="flex justify-between gap-4">
+      <span className="text-zinc-500">Demande reçue</span>
+      <span className="font-bold text-white">
+        {formatDate(quote.createdAt)}
+      </span>
+    </div>
+
+    <div className="flex justify-between gap-4">
+      <span className="text-zinc-500">Devis envoyé</span>
+      <span className="font-bold text-white">
+        {formatDate(quote.quoteSentAt)}
+      </span>
+    </div>
+
+    <div className="flex justify-between gap-4">
+      <span className="text-zinc-500">Paiement</span>
+      <span className="font-bold text-orange-300">
+        {quote.paymentStatus || "En attente"}
+      </span>
+    </div>
+
+    <div className="flex justify-between gap-4">
+      <span className="text-zinc-500">Statut projet</span>
+      <span className="font-bold text-white">
+        {quote.status || "Nouveau"}
+      </span>
+    </div>
+  </div>
+</div>
+
       <div className="mt-6 flex justify-end">
         <div className="w-full max-w-sm rounded-2xl border border-orange-500/20 bg-orange-500/10 p-5">
           <div className="flex items-center justify-between">
@@ -254,12 +305,18 @@ const downloadPdf = () => {
 </button>
 
             {/* SEND */}
-          <button
+<button
   type="button"
   onClick={sendToClient}
-  className="w-full rounded-xl border border-green-500/20 bg-green-500/10 px-4 py-3 font-black text-green-300 transition hover:bg-green-500 hover:text-white"
+  className={`w-full rounded-xl border px-4 py-3 font-black transition ${
+    quoteSentDate
+      ? "border-zinc-500/20 bg-zinc-500/10 text-zinc-300 hover:bg-zinc-500/20"
+      : "border-green-500/20 bg-green-500/10 text-green-300 hover:bg-green-500 hover:text-white"
+  }`}
 >
-  Envoyer au client
+  {quoteSentDate
+    ? `✓ Devis envoyé le ${quoteSentDate}`
+    : "Envoyer au client"}
 </button>
         </div>
       </div>
