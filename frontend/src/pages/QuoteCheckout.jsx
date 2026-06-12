@@ -8,12 +8,22 @@ export default function QuoteCheckout() {
     .replace("/commande/", "")
     .trim();
 
+  const token = new URLSearchParams(window.location.search).get("token");
+
   useEffect(() => {
     const startCheckout = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/quotes/${id}/checkout`, {
-          method: "POST",
-        });
+        if (!id || !token) {
+          setError("Lien de commande invalide ou incomplet.");
+          return;
+        }
+
+        const response = await fetch(
+          `${API_URL}/api/quotes/${id}/checkout?token=${token}`,
+          {
+            method: "POST",
+          }
+        );
 
         const data = await response.json();
 
@@ -29,8 +39,8 @@ export default function QuoteCheckout() {
       }
     };
 
-    if (id) startCheckout();
-  }, [id]);
+    startCheckout();
+  }, [id, token]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">

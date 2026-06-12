@@ -354,18 +354,18 @@ await sendEmail({
     <table cellpadding="0" cellspacing="0" align="center" style="margin-top:28px;">
       <tr>
         <td bgcolor="#f97316" style="padding:14px 26px;">
-          <a
-            href="https://mecaprint3d.fr/commande/${existingQuote._id}"
-            style="
-              color:#ffffff;
-              text-decoration:none;
-              font-weight:bold;
-              font-size:15px;
-              display:inline-block;
-            "
-          >
-            Valider et régler mon devis
-          </a>
+         <a
+  href="https://mecaprint3d.fr/commande/${existingQuote._id}?token=${existingQuote.publicAccessToken}"
+  style="
+    color:#ffffff;
+    text-decoration:none;
+    font-weight:bold;
+    font-size:15px;
+    display:inline-block;
+  "
+>
+  Valider et régler mon devis
+</a>
         </td>
       </tr>
     </table>
@@ -419,10 +419,12 @@ await sendEmail({
 
           <p style="margin:0 0 10px 0;font-size:12px;">
             <strong>Validation et paiement :</strong><br>
-            <a href="https://mecaprint3d.fr/commande/${existingQuote._id}"
-               style="color:#f97316;">
-              https://mecaprint3d.fr/commande/${existingQuote._id}
-            </a>
+            <a 
+  href="https://mecaprint3d.fr/commande/${existingQuote._id}?token=${existingQuote.publicAccessToken}"
+  style="color:#f97316;text-decoration:underline;"
+>
+  https://mecaprint3d.fr/commande/${existingQuote._id}?token=${existingQuote.publicAccessToken}
+</a>
           </p>
 
           <p style="margin:0;font-size:12px;">
@@ -667,102 +669,112 @@ router.post(
 
   }
 );
-
 // =====================================================
 // 💳 STRIPE CHECKOUT
-// POST /api/quotes/:id/checkout
+// POST /api/quotes/:id/checkout?token=...
 // =====================================================
 router.post("/:id/checkout", async (req, res) => {
-
   try {
-
-    const quote =
-      await Quote.findById(req.params.id);
+    // =====================================================
+    // FIND QUOTE
+    // =====================================================
+    const quote = await Quote.findById(req.params.id);
 
     if (!quote) {
-
       return res.status(404).json({
         success: false,
         error: "Devis introuvable",
       });
-
     }
 
-    const lines =
-      quote.quoteLines || [];
+    // =====================================================
+    // 🔐 TOKEN PUBLIC OBLIGATOIRE
+    // Le paiement est autorisé uniquement avec le lien sécurisé
+    // envoyé par email au client.
+    // =====================================================
+    const token = req.query.token;
+
+    if (
+      !token ||
+      !quote.publicAccessToken ||
+      token !== quote.publicAccessToken
+    ) {
+      return res.status(403).json({
+        success: false,
+        error: "Lien de paiement invalide.",
+      });
+    }
+
+    // =====================================================
+    // ⏳ EXPIRATION DU LIEN
+    // Même logique que le PDF public.
+    // =====================================================
+    if (
+      quote.publicAccessTokenExpiresAt &&
+      new Date(quote.publicAccessTokenExpiresAt) < new Date()
+    ) {
+      return res.status(403).json({
+        success: false,
+        error: "Lien de paiement expiré.",
+      });
+    }
+
+    // =====================================================
+    // CHECK LINES
+    // =====================================================
+    const lines = quote.quoteLines || [];
 
     if (!lines.length) {
-
       return res.status(400).json({
         success: false,
         error: "Aucune ligne de devis",
       });
-
     }
 
     // =====================================================
     // CREATE STRIPE SESSION
     // =====================================================
-    const session =
-      await stripe.checkout.sessions.create({
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
 
-        payment_method_types: ["card"],
+      customer_email: quote.email,
 
-        mode: "payment",
+      line_items: lines.map((line) => ({
+        price_data: {
+          currency: "eur",
 
-        customer_email:
-          quote.email,
+          product_data: {
+            name:
+              line.label ||
+              `Devis ${quote.quoteNumber || "MecaPrint3D"}`,
+          },
 
-        line_items:
-          lines.map((line) => ({
-
-            price_data: {
-
-              currency: "eur",
-
-              product_data: {
-                name:
-                  line.label ||
-                  "Prestation MecaPrint3D",
-              },
-
-              unit_amount:
-                Math.round(
-                  Number(
-                    line.unitPrice || 0
-                  ) * 100
-                ),
-
-            },
-
-            quantity:
-              Number(
-                line.quantity || 1
-              ),
-
-          })),
-
-        success_url:
-          "https://mecaprint3d.fr/success",
-
-        cancel_url:
-          "https://mecaprint3d.fr/cancel",
-
-        metadata: {
-          quoteId:
-            String(quote._id),
+          unit_amount: Math.round(
+            Number(line.unitPrice || 0) * 100
+          ),
         },
 
-      });
+        quantity: Number(line.quantity || 1),
+      })),
+
+      success_url:
+        "https://mecaprint3d.fr/success",
+
+      cancel_url:
+        `https://mecaprint3d.fr/commande/${quote._id}?token=${quote.publicAccessToken}`,
+
+      metadata: {
+        quoteId: String(quote._id),
+        quoteNumber: quote.quoteNumber || "",
+      },
+    });
 
     // =====================================================
     // SAVE STRIPE SESSION
     // =====================================================
-    quote.stripeSessionId =
-      session.id;
-
-    quote.paymentStatus =
-      "En attente";
+    quote.stripeSessionId = session.id;
+    quote.paymentStatus = "En attente";
 
     await quote.save();
 
@@ -775,20 +787,15 @@ router.post("/:id/checkout", async (req, res) => {
     });
 
   } catch (error) {
-
-    console.error(
-      "❌ Erreur checkout devis :",
-      error
-    );
+    console.error("❌ Erreur checkout devis :", error);
 
     res.status(500).json({
       success: false,
       error: "Erreur Stripe",
     });
-
   }
-
 });
+
 // =====================================================
 // 📄 PDF PUBLIC SÉCURISÉ
 // GET /api/quotes/:id/public-pdf?token=...
