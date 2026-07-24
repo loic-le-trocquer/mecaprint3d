@@ -10,6 +10,7 @@ const path = require("path");
 const fs = require("fs");
 const materialRoutes = require("./routes/materials");
 const materialUploadsRoutes = require("./routes/materialUploads");
+const qontoRoutes = require("./routes/qonto");
 // ================= APP =================
 const app = express();
 
@@ -330,6 +331,7 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/simple-orders", simpleOrdersRoutes);
 app.use("/api/materials", materialRoutes);
 app.use("/api/material-uploads", materialUploadsRoutes);
+app.use("/api/qonto", qontoRoutes);
 // =====================================================
 // 💳 ANCIEN CHECKOUT COMMANDE CLASSIQUE
 // =====================================================

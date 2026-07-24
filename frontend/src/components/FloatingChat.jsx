@@ -39,6 +39,9 @@ const initialForm = {
   name: "",
   email: "",
   phone: "",
+  address: "",
+  zipCode: "",
+  city: "",
 };
 
 export default function FloatingChat() {
@@ -66,7 +69,10 @@ export default function FloatingChat() {
     if (step === 2) {
       return (
         form.name.trim().length >= 2 &&
-        /^\S+@\S+\.\S+$/.test(form.email.trim())
+        /^\S+@\S+\.\S+$/.test(form.email.trim()) &&
+        form.address.trim().length >= 3 &&
+        form.zipCode.trim().length >= 4 &&
+        form.city.trim().length >= 2
       );
     }
     return true;
@@ -100,6 +106,9 @@ export default function FloatingChat() {
       payload.append("name", form.name.trim());
       payload.append("email", form.email.trim());
       payload.append("phone", form.phone.trim());
+      payload.append("address", form.address.trim());
+      payload.append("zipCode", form.zipCode.trim());
+      payload.append("city", form.city.trim());
       payload.append("project", `[${form.universe}] ${form.project.trim()}`);
       payload.append("quantity", form.quantity || "1");
       payload.append("material", form.material.trim() || "À définir");
@@ -318,6 +327,33 @@ export default function FloatingChat() {
                       className={inputClass}
                     />
                   </Field>
+                  <Field label="Adresse de facturation *">
+                    <input
+                      value={form.address}
+                      onChange={(event) => update("address", event.target.value)}
+                      autoComplete="street-address"
+                      placeholder="Numéro et nom de rue"
+                      className={inputClass}
+                    />
+                  </Field>
+                  <div className="grid grid-cols-[0.8fr_1.2fr] gap-3">
+                    <Field label="Code postal *">
+                      <input
+                        value={form.zipCode}
+                        onChange={(event) => update("zipCode", event.target.value)}
+                        autoComplete="postal-code"
+                        className={inputClass}
+                      />
+                    </Field>
+                    <Field label="Ville *">
+                      <input
+                        value={form.city}
+                        onChange={(event) => update("city", event.target.value)}
+                        autoComplete="address-level2"
+                        className={inputClass}
+                      />
+                    </Field>
+                  </div>
                 </div>
               </div>
             )}

@@ -8,6 +8,9 @@ const quoteSchema = new mongoose.Schema(
     name: String,
     email: String,
     phone: String,
+    address: String,
+    zipCode: String,
+    city: String,
 
     // =====================================================
     // 📦 PROJET
@@ -109,7 +112,7 @@ stripeSessionId: {
   default: "",
 },
 
-quoteNumber: {
+    quoteNumber: {
   type: String,
   default: "",
 },
@@ -122,6 +125,32 @@ quoteLines: [
       type: Number,
       default: 1,
     },
+
+qontoSyncStatus: {
+  type: String,
+  enum: ["En attente", "Synchronisé", "Erreur"],
+  default: "En attente",
+},
+
+qontoClientId: {
+  type: String,
+  default: "",
+},
+
+qontoQuoteId: {
+  type: String,
+  default: "",
+},
+
+qontoQuoteUrl: {
+  type: String,
+  default: "",
+},
+
+qontoSyncError: {
+  type: String,
+  default: "",
+},
     unitPrice: {
       type: Number,
       default: 0,

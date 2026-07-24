@@ -7,6 +7,7 @@ const crypto = require("crypto");
 const Quote = require("../models/Quote");
 const sendEmail = require("../utils/sendEmail");
 const generateQuotePdf = require("../utils/generateQuotePdf");
+const { syncQuoteRequest } = require("../services/qonto");
 const router = express.Router();
 
 // =====================================================
@@ -607,6 +608,26 @@ router.post(
     console.log("📄 COLLECTION :", quote.constructor.collection.name);
     console.log("📩 Nouveau devis :", quote._id);
     console.log("🔢 Numéro devis :", quote.quoteNumber);
+
+      // =====================================================
+      // 🧾 SYNCHRONISATION QONTO (non bloquante)
+      // =====================================================
+      syncQuoteRequest(quote)
+        .then(async ({ clientId, quoteId, quoteUrl }) => {
+          quote.qontoSyncStatus = "Synchronisé";
+          quote.qontoClientId = clientId || "";
+          quote.qontoQuoteId = quoteId || "";
+          quote.qontoQuoteUrl = quoteUrl || "";
+          quote.qontoSyncError = "";
+          await quote.save();
+          console.log("✅ Demande synchronisée avec Qonto :", quoteId);
+        })
+        .catch(async (qontoError) => {
+          quote.qontoSyncStatus = "Erreur";
+          quote.qontoSyncError = String(qontoError.message || qontoError);
+          await quote.save().catch(() => {});
+          console.error("⚠️ Synchronisation Qonto :", qontoError.message);
+        });
 
       // =====================================================
       // 📧 EMAIL CLIENT

@@ -17,6 +17,9 @@ const [quotesCount, setQuotesCount] =
 
 const [chatCount, setChatCount] =
   useState(0);
+
+const [qontoStatus, setQontoStatus] =
+  useState("loading");
   // =====================================================
 // LOAD COUNTS
 // =====================================================
@@ -104,12 +107,39 @@ useEffect(() => {
 
       }
 
+      const qontoResponse = await fetch(
+        `${API_URL}/api/qonto/status`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const qontoData = await qontoResponse.json();
+      setQontoStatus(qontoData.connected ? "connected" : "disconnected");
+
     } catch (error) {
 
       console.error(error);
 
     }
 
+  };
+
+  const connectQonto = async () => {
+    const token = localStorage.getItem("mecaprint3d_admin_token");
+    const response = await fetch(`${API_URL}/api/qonto/authorization-url`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok || !data.url) {
+      window.alert(data.error || "Connexion Qonto impossible.");
+      return;
+    }
+    window.location.href = data.url;
   };
 
   loadCounts();
@@ -180,6 +210,16 @@ useEffect(() => {
               NAVIGATION
           ===================================================== */}
           <nav className="space-y-3">
+
+            <button
+              type="button"
+              onClick={connectQonto}
+              className="w-full rounded-2xl border border-white/10 px-5 py-4 text-left font-bold text-zinc-300 transition hover:border-orange-500 hover:text-white"
+            >
+              {qontoStatus === "connected"
+                ? "Qonto connecté ✓"
+                : "Connecter Qonto"}
+            </button>
 
             {/* =====================================================
                 SITE CONTENT
