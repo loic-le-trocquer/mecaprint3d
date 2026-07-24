@@ -126,6 +126,19 @@ useEffect(() => {
 
   };
 
+  loadCounts();
+
+  const interval =
+    setInterval(
+      loadCounts,
+      10000
+    );
+
+  return () =>
+    clearInterval(interval);
+
+}, []);
+
   const connectQonto = async () => {
     const token = localStorage.getItem("mecaprint3d_admin_token");
     const response = await fetch(`${API_URL}/api/qonto/authorization-url`, {
@@ -141,19 +154,6 @@ useEffect(() => {
     }
     window.location.href = data.url;
   };
-
-  loadCounts();
-
-  const interval =
-    setInterval(
-      loadCounts,
-      10000
-    );
-
-  return () =>
-    clearInterval(interval);
-
-}, []);
 
   // =====================================================
   // LOGOUT
