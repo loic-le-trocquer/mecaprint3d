@@ -8,22 +8,22 @@ export default function Hero({ content = {} }) {
 
   const badge =
     hero.badge ||
-    "Atelier de conception & fabrication additive — Normandie";
+    "Conception • Fabrication • Transformation — Normandie";
 
   const title =
     hero.title ||
-    "L'impression 3D est devenue accessible.";
+    "Des idées techniques.";
 
   const highlight =
     hero.highlight ||
-    "La conception reste la clé d'une pièce performante.";
+    "Des réalisations qui ont du caractère.";
 
   const description =
     hero.description ||
-    "Une pièce cassée, une idée à développer ou un projet à concrétiser ? MecaPrint3D vous accompagne de l'analyse du besoin jusqu'à la fabrication d'une solution sur mesure grâce à la conception CAO, au scan 3D et à un large choix de matériaux techniques.";
+    "MecaPrint3D réunit trois expertises complémentaires : fabrication numérique et ingénierie, rénovation design premium, et aménagement intérieur ou extérieur sur mesure.";
 
   const primaryButton = hero.primaryButton || "Demander un devis";
-  const secondaryButton = hero.secondaryButton || "Découvrir nos matériaux";
+  const secondaryButton = hero.secondaryButton || "Découvrir nos univers";
 
   const backgroundVideo = hero.videoUrl || "";
 
@@ -99,7 +99,7 @@ export default function Hero({ content = {} }) {
             </a>
 
             <a
-              href="#technologies"
+              href="#univers"
               className="group inline-flex items-center justify-center gap-3 rounded-full border border-white/20 bg-white/10 px-8 py-4 text-base font-black text-white backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:bg-white/20"
             >
               <Play size={16} className="text-orange-300" />
@@ -111,32 +111,32 @@ export default function Hero({ content = {} }) {
           <div className="mt-14 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <HeroKpi
               value="🧠"
-              label="Expertise industrielle"
-              text="Une approche issue du terrain et de la maintenance."
+              label="TECH"
+              text="Impression 3D, scan, CAO et pièces sur mesure."
             />
 
             <HeroKpi
               value="📐"
-              label="CAO & Scan 3D"
-              text="Reproduction, amélioration et conception de pièces."
+              label="DESIGN"
+              text="Covering premium, mobilier et transformation d'espaces."
             />
 
             <HeroKpi
               value="🧵"
-              label="+15 matériaux techniques"
-              text="PLA, ASA, TPU, PC, carbone, ESD et haute température."
+              label="HOME & OUTDOOR"
+              text="Décoration, acier Corten et aménagement extérieur."
             />
 
             <HeroKpi
               value="🏭"
-              label="Atelier & partenaires"
-              text="FDM, SLA, SLS et fabrication métal sur demande."
+              label="UN SEUL INTERLOCUTEUR"
+              text="De l'idée à la finition, avec un réseau de partenaires."
             />
           </div>
 
           {/* SIGNATURE */}
           <p className="mt-8 max-w-4xl text-sm font-semibold uppercase tracking-widest text-zinc-400">
-            Chaque pièce a une fonction. Notre mission est de choisir la meilleure façon de la concevoir et de la fabriquer.
+            De la conception à la finition, nous transformons vos idées en réalisations techniques, décoratives et durables.
           </p>
         </FadeInSection>
       </div>

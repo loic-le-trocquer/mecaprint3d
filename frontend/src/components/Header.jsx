@@ -22,20 +22,20 @@ export default function Header({ content }) {
 
         <nav className="hidden items-center gap-7 text-sm font-semibold uppercase tracking-wider text-zinc-300 lg:flex">
 
-  <a href="#methodologie" className="transition hover:text-orange-400">
-    Méthode
+  <a href="#univers" className="transition hover:text-orange-400">
+    Nos univers
   </a>
 
   <a href="#technologies" className="transition hover:text-orange-400">
-    Matériaux
+    Tech
   </a>
 
-  <a href="#services" className="transition hover:text-orange-400">
-    Solutions
+  <a href="#showroom" className="transition hover:text-orange-400">
+    Design
   </a>
 
-  <a href="#univers" className="transition hover:text-orange-400">
-    Domaines
+  <a href="#corten" className="transition hover:text-orange-400">
+    Home & Outdoor
   </a>
 
   <a href="#realisations" className="transition hover:text-orange-400">

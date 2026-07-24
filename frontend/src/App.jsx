@@ -10,6 +10,7 @@ import Transformations from "./components/showroom/Transformations";
 import WhyMecaPrint from "./components/WhyMecaPrint";
 import ProcessTimeline from "./components/ProcessTimeline";
 import CoverStylAI from "./components/CoverStylAI";
+import CortenShowcase from "./components/CortenShowcase";
 import QuoteCheckout from "./pages/QuoteCheckout";
 import FloatingChat from "./components/FloatingChat";
 import AdminChat from "./admin/AdminChat";
@@ -68,6 +69,8 @@ if (window.location.pathname === "/commande-rapide") {
   <Services content={content} />
 
   <Univers content={content} />
+
+  <CortenShowcase />
 
   <Transformations content={content} />
 

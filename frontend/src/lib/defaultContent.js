@@ -6,15 +6,15 @@ export const defaultContent = {
     location: "France",
   },
   hero: {
-  badge: "Atelier de conception & rénovation sur mesure",
+  badge: "Conception • Fabrication • Transformation — Normandie",
 
   title:
-    "Fabrication 3D, covering premium & rénovation design",
+    "Des idées techniques.",
 
-  highlight: "sur mesure",
+  highlight: "Des réalisations qui ont du caractère.",
 
   description:
-    "MecaPrint3D conçoit et transforme vos projets grâce à la fabrication numérique, au covering décoratif premium et à l’aménagement sur mesure.",
+    "MecaPrint3D réunit trois expertises complémentaires : fabrication numérique et ingénierie, rénovation design premium, et aménagement intérieur ou extérieur sur mesure.",
 
   slogan:
     "L’impression 3D est devenue accessible. La conception reste la clé d’une pièce performante.",
@@ -38,7 +38,7 @@ universIntro: {
   eyebrow: "NOS UNIVERS",
   title: "Un atelier, trois expertises complémentaires",
   description:
-    "MecaPrint3D accompagne particuliers et professionnels de la conception technique à la transformation visuelle premium.",
+    "MecaPrint3D accompagne particuliers et professionnels de la conception technique à l’aménagement intérieur et extérieur.",
 },
 
 univers: {
@@ -49,25 +49,25 @@ univers: {
       description:
         "Impression 3D, scan, CAO et fabrication de pièces techniques.",
       imageUrl: "",
-      link: "#",
+      link: "#technologies",
     },
 
     {
       title: "DESIGN",
-      subtitle: "Covering & mobilier",
+      subtitle: "Covering & transformation",
       description:
-        "Covering, rénovation intérieure, mobilier, cuisines et commerces.",
+        "Covering premium, rénovation de mobilier, cuisines, commerces et espaces professionnels.",
       imageUrl: "",
-      link: "#",
+      link: "#transformations",
     },
 
     {
-      title: "CAMPER",
-      subtitle: "Van & camping-car",
+      title: "HOME & OUTDOOR",
+      subtitle: "Maison, jardin & acier Corten",
       description:
-        "Vans, fourgons et camping-cars personnalisés et rénovés sur mesure.",
+        "Décoration, mobilier, bordures de jardin, jardinières, claustras et créations en acier Corten.",
       imageUrl: "",
-      link: "#",
+      link: "#corten",
     },
   ],
 },

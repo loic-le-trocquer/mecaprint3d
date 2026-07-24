@@ -1,5 +1,8 @@
 // ================= IMPORTS =================
 import FadeInSection from "./ui/FadeInSection";
+import { ArrowRight, Cpu, House, SwatchBook } from "lucide-react";
+
+const icons = [Cpu, SwatchBook, House];
 
 // ================= UNIVERS COMPONENT =================
 export default function Univers({ content }) {
@@ -92,6 +95,14 @@ export default function Univers({ content }) {
 
                 {/* ================= CONTENT ================= */}
                 <div className="relative p-8">
+                  {(() => {
+                    const Icon = icons[index] || House;
+                    return (
+                      <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl border border-orange-500/20 bg-orange-500/10 text-orange-400">
+                        <Icon size={24} />
+                      </div>
+                    );
+                  })()}
 
                   {/* SUBTITLE */}
                   <p className="text-sm font-black uppercase tracking-[0.3em] text-orange-400">
@@ -113,6 +124,14 @@ export default function Univers({ content }) {
                     {item.description}
 
                   </p>
+
+                  <a
+                    href={item.link || "#devis"}
+                    className="mt-7 inline-flex items-center gap-2 text-sm font-black uppercase tracking-wider text-orange-400 transition hover:text-orange-300"
+                  >
+                    Découvrir
+                    <ArrowRight size={16} />
+                  </a>
 
                 </div>
 

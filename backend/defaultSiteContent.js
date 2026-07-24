@@ -7,15 +7,15 @@ module.exports = {
     location: "France",
   },
   hero: {
-badge: "Atelier de conception & rénovation sur mesure",
+badge: "Conception • Fabrication • Transformation — Normandie",
 
 title:
-  "Fabrication 3D, covering premium & rénovation design",
+  "Des idées techniques.",
 
-highlight: "sur mesure",
+highlight: "Des réalisations qui ont du caractère.",
 
 description:
-  "De la pièce technique à la rénovation complète, MecaPrint3D conçoit, fabrique et transforme vos projets grâce à la fabrication numérique, au covering décoratif et au sur-mesure.",    slogan:
+  "MecaPrint3D réunit trois expertises complémentaires : fabrication numérique et ingénierie, rénovation design premium, et aménagement intérieur ou extérieur sur mesure.",    slogan:
       "L’impression 3D est devenue accessible. La conception reste la clé d’une pièce performante.",
     primaryButton: "Demander un devis",
     secondaryButton: "Découvrir nos univers",
@@ -202,16 +202,16 @@ description:
     },
 
     {
-      title: "CAMPER",
+      title: "HOME & OUTDOOR",
 
-      subtitle: "Vans & camping-cars",
+      subtitle: "Maison, jardin & acier Corten",
 
       description:
-        "Rénovation intérieure, personnalisation et covering premium pour véhicules de loisirs.",
+        "Décoration, mobilier, bordures de jardin, jardinières, claustras et créations en acier Corten.",
 
       imageUrl: "",
 
-      link: "#camper",
+      link: "#corten",
     },
   ],
 },
