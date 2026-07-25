@@ -49,7 +49,7 @@ console.log(
 );
 
 // ================= DATABASE =================
-console.log("🌍 MONGO URI utilisée :", process.env.MONGO_URI);
+console.log("🌍 MONGO URI :", process.env.MONGO_URI ? "CONFIGURÉE" : "ABSENTE");
 mongoose.connect(process.env.MONGO_URI);
 
 mongoose.connection.once("open", () => {
