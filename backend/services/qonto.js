@@ -311,7 +311,7 @@ async function syncQuoteRequest(quote) {
           unit: "piece",
           currency: "EUR",
           unit_price: { value: "0.00", currency: "EUR" },
-          vat_rate: "20",
+          vat_rate: "0.2",
         },
       ],
     }),
