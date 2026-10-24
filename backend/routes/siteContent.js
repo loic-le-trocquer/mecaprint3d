@@ -5,6 +5,9 @@ const streamifier = require("streamifier");
 
 const SiteContent = require("../models/SiteContent");
 const defaultSiteContent = require("../defaultSiteContent");
+const adminAuth = require('../middleware/adminAuth');
+const { matchesSecret } = require('../middleware/adminCredentials');
+const rateLimit = require('express-rate-limit');
 
 const router = express.Router();
 
@@ -42,25 +45,6 @@ async function getOrCreateContent() {
   return content;
 }
 
-function adminAuth(req, res, next) {
-  const authHeader = req.headers.authorization || "";
-  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
-  const expectedToken = process.env.ADMIN_TOKEN || process.env.ADMIN_PASSWORD;
-
-  if (!expectedToken) {
-    return res.status(500).json({
-      success: false,
-      error: "ADMIN_PASSWORD ou ADMIN_TOKEN manquant dans les variables d’environnement.",
-    });
-  }
-
-  if (token !== expectedToken) {
-    return res.status(401).json({ success: false, error: "Accès admin refusé." });
-  }
-
-  next();
-}
-
 function uploadMediaToCloudinary(file) {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
@@ -92,8 +76,8 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/admin/login", (req, res) => {
-  const { password } = req.body;
+router.post("/admin/login", rateLimit({ windowMs: 15 * 60 * 1000, limit: 10, standardHeaders: 'draft-8', legacyHeaders: false }), (req, res) => {
+  const password = req.body?.password;
   const expectedToken = process.env.ADMIN_TOKEN || process.env.ADMIN_PASSWORD;
 
   if (!expectedToken) {
@@ -103,7 +87,7 @@ router.post("/admin/login", (req, res) => {
     });
   }
 
-  if (password !== process.env.ADMIN_PASSWORD && password !== expectedToken) {
+  if (!matchesSecret(password, process.env.ADMIN_PASSWORD) && !matchesSecret(password, expectedToken)) {
     return res.status(401).json({ success: false, error: "Mot de passe incorrect." });
   }
 
