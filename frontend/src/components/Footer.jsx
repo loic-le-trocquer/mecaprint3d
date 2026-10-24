@@ -1,4 +1,5 @@
-export default function Footer({ content }) {
+import { SocialLinks } from './SocialNews';
+export default function Footer({ content, socialLinks }) {
   const brand = content?.brand || {};
   const footer = content?.footer || {};
   const partners = content?.partners || [];
@@ -23,6 +24,7 @@ export default function Footer({ content }) {
           <p className="mt-4 text-zinc-400">
             {footer.description}
           </p>
+          <div className="mt-6"><SocialLinks links={socialLinks} /></div>
         </div>
 
         {/* NAVIGATION */}
@@ -36,6 +38,7 @@ export default function Footer({ content }) {
             <p><a href="#univers" className="hover:text-orange-400">Univers</a></p>
             <p><a href="#technologies" className="hover:text-orange-400">Technologies</a></p>
             <p><a href="#realisations" className="hover:text-orange-400">Réalisations</a></p>
+            <p><a href="#actualites" className="hover:text-orange-400">Actualités</a></p>
             <p><a href="#devis" className="hover:text-orange-400">Demande de devis</a></p>
           </div>
         </div>

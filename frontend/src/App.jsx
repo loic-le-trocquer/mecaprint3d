@@ -18,6 +18,9 @@ import QuickOrder from "./pages/QuickOrder";
 import Admin from "./admin/Admin";
 import AdminQuotes from "./admin/AdminQuotes";
 import AdminMaterials from "./admin/AdminMaterials.jsx";
+import AdminSocial from './admin/AdminSocial';
+import SocialNews from './components/SocialNews';
+import { useState } from 'react';
 
 import { useSiteContent } from "./lib/useSiteContent";
 
@@ -25,6 +28,7 @@ import "./index.css";
 
 
 export default function App() {
+  const [socialLinks, setSocialLinks] = useState({});
 
   const isQuoteCheckout =
   window.location.pathname.startsWith("/commande/");
@@ -32,6 +36,7 @@ export default function App() {
   const { content, setContent } = useSiteContent();
 
   const isAdmin = window.location.pathname.startsWith("/admin");
+  if (window.location.pathname === '/admin/social') return <AdminSocial />;
 
   if (window.location.pathname === "/admin/quotes") {
     return <AdminQuotes />;
@@ -75,6 +80,7 @@ if (window.location.pathname === "/commande-rapide") {
   <Transformations content={content} />
 
   <Realisations content={content} />
+  <SocialNews onLinks={setSocialLinks} />
 
   <WhyMecaPrint />
 
@@ -83,7 +89,7 @@ if (window.location.pathname === "/commande-rapide") {
 
         <FloatingChat />
 
-      <Footer content={content} />
+      <Footer content={content} socialLinks={socialLinks} />
     </div>
   );
 }
