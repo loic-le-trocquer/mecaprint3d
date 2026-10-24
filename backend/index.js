@@ -278,6 +278,7 @@ app.use(
       "http://localhost:5173",
       "http://localhost:5174",
       "https://mecaprint3d-fr.vercel.app",
+      "https://mecaprint3d.vercel.app",
       "https://mecaprint3d.fr",
       "https://www.mecaprint3d.fr",
     ],
@@ -327,6 +328,7 @@ app.post("/upload", upload.array("files"), (req, res) => {
 // =====================================================
 app.use("/api/quotes", quotesRoutes);
 app.use("/api/site-content", siteContentRoutes);
+app.use('/api/social', require('./routes/social').createSocialRouter());
 app.use("/api/chat", chatRoutes);
 app.use("/api/simple-orders", simpleOrdersRoutes);
 app.use("/api/materials", materialRoutes);

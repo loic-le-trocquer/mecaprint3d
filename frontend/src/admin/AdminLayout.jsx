@@ -176,14 +176,14 @@ useEffect(() => {
 
     <div className="min-h-screen bg-zinc-950 text-white">
 
-      <div className="flex min-h-screen">
+      <div className="flex min-h-screen flex-col lg:flex-row">
 
         {/* =====================================================
             SIDEBAR
         ===================================================== */}
         <aside
           className="
-            w-72
+            w-full lg:w-72 lg:shrink-0
             border-r
             border-white/10
             bg-black/40
@@ -210,6 +210,7 @@ useEffect(() => {
               NAVIGATION
           ===================================================== */}
           <nav className="space-y-3">
+            <a href="/admin/social" className="block rounded-2xl border border-white/10 px-5 py-4 font-bold text-zinc-300 transition hover:border-orange-500 hover:text-white">Actualités & Réseaux</a>
 
             <button
               type="button"
@@ -357,7 +358,7 @@ useEffect(() => {
         {/* =====================================================
             CONTENT
         ===================================================== */}
-        <main className="flex-1 p-8">
+        <main className="min-w-0 flex-1 p-4 md:p-8">
 
           <div className="mx-auto max-w-7xl">
 
@@ -370,7 +371,7 @@ useEffect(() => {
                 Administration
               </p>
 
-              <h2 className="mt-3 text-5xl font-black">
+              <h2 className="mt-3 text-3xl font-black md:text-5xl">
                 {title}
               </h2>
 

@@ -20,7 +20,7 @@ export default function Header({ content }) {
           )}
         </a>
 
-        <nav className="hidden items-center gap-7 text-sm font-semibold uppercase tracking-wider text-zinc-300 lg:flex">
+        <nav className="hidden items-center gap-4 text-sm font-semibold uppercase tracking-wider text-zinc-300 lg:flex">
 
   <a href="#univers" className="transition hover:text-orange-400">
     Nos univers
@@ -45,8 +45,10 @@ export default function Header({ content }) {
   <a href="#contact" className="transition hover:text-orange-400">
     Contact
   </a>
+  <a href="#actualites" className="transition hover:text-orange-400">Actualités</a>
 
 </nav>
+        <a href="#actualites" className="text-sm font-bold text-orange-400 lg:hidden">Actualités</a>
       
         {/* CTA */}
         <a
