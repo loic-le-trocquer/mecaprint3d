@@ -8,7 +8,20 @@ const schema = new mongoose.Schema({
   channels: [{ type: String, enum: ['facebook', 'instagram', 'linkedin'] }],
   image: { type: String, default: '', maxlength: 1000 },
   imageAlt: { type: String, default: '', maxlength: 240 },
+  importKey: { type: String, maxlength: 100 },
+  sourceKeys: { type: [String], default: undefined },
+  sourcePublishedDate: { type: String, match: /^\d{4}-\d{2}-\d{2}$/ },
+  sources: [{
+    _id: false,
+    platform: { type: String, enum: ['facebook', 'linkedin'] },
+    id: { type: String, maxlength: 40 },
+    url: { type: String, maxlength: 2000 },
+    publishedDate: String,
+    originalText: { type: String, maxlength: 10000 }
+  }],
   publishedAt: { type: Date, default: null }
 }, { timestamps: true });
 schema.index({ status: 1, publishedAt: -1, _id: -1 });
+schema.index({ importKey: 1 }, { unique: true, sparse: true });
+schema.index({ sourceKeys: 1 }, { unique: true, sparse: true });
 module.exports = mongoose.model('SocialPost', schema);

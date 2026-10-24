@@ -291,6 +291,7 @@ app.use(
 // =====================================================
 // BODY PARSERS
 // =====================================================
+app.use('/api/social', express.json({ limit: '1mb' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

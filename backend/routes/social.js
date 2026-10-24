@@ -2,6 +2,7 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const adminAuth = require('../middleware/adminAuth');
 const { networks, validateLinks, validatePost } = require('../socialValidation');
+const { validateHistoryBatch } = require('../historyImport');
 
 function createSocialRouter(repository = require('../socialRepository')) {
   const router = express.Router();
@@ -22,6 +23,22 @@ function createSocialRouter(repository = require('../socialRepository')) {
     let links;
     try { links = validateLinks(req.body); } catch (err) { return res.status(400).json({ success: false, error: err.message }); }
     res.json({ success: true, links: await repository.setLinks(links) });
+  }));
+  router.post('/admin/import', wrap(async (req, res) => {
+    let posts;
+    try { posts = validateHistoryBatch(req.body); }
+    catch (error) { return res.status(400).json({ success: false, error: error.message }); }
+    let created = 0;
+    let skipped = 0;
+    for (const post of posts) {
+      try {
+        const result = await repository.importDraft(post);
+        if (result.created) created++; else skipped++;
+      } catch {
+        return res.status(500).json({ success: false, created, skipped, error: 'Import interrompu. Les brouillons déjà enregistrés sont conservés ; vous pouvez relancer sans doublon.' });
+      }
+    }
+    res.json({ success: true, created, skipped });
   }));
   router.post('/admin/posts', wrap(async (req, res) => {
     let post;

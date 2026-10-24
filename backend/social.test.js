@@ -30,7 +30,7 @@ test('MongoDB : la requête publique exclut brouillons et champs de préparation
   const result = await repository.posts(true, 2);
   assert.equal(result.posts.length, 12);
   assert.equal(result.hasMore, true);
-  assert.deepEqual(Object.keys(projection).sort(), ['category', 'content', 'image', 'imageAlt', 'publishedAt', 'title']);
+  assert.deepEqual(Object.keys(projection).sort(), ['category', 'content', 'image', 'imageAlt', 'publishedAt', 'sourcePublishedDate', 'title']);
 });
 
 test('MongoDB : publication, retrait et données durables utilisent le modèle', async t => {
