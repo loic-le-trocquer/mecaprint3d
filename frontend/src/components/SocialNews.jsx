@@ -7,9 +7,10 @@ export function SocialLinks({ links = {} }) {
   return <nav aria-label="Réseaux sociaux" className="flex flex-wrap gap-3">{profiles.map(([key, name]) => <a key={key} href={profileUrl(links[key], key)} target="_blank" rel="noopener noreferrer" className="rounded-full border border-white/20 px-4 py-2 text-sm transition hover:border-orange-500 hover:text-orange-400">{name} ↗</a>)}</nav>;
 }
 export function PublicationCard({ post }) {
+  const displayDate = post.sourcePublishedDate || post.publishedAt;
   return <article id={post._id ? `publication-${post._id}` : undefined} className="scroll-mt-28 overflow-hidden rounded-3xl border border-white/10 bg-zinc-900">
     {post.image && <img src={post.image} alt={post.imageAlt || post.title} loading="lazy" referrerPolicy="no-referrer" className="h-60 w-full object-cover" />}
-    <div className="p-6"><p className="text-xs font-bold uppercase tracking-wider text-orange-400">{post.category === 'realisation' ? 'Réalisation' : 'Actualité'}{post.publishedAt && <> · <time dateTime={post.publishedAt}>{new Date(post.publishedAt).toLocaleDateString('fr-FR')}</time></>}</p><h3 className="mt-3 break-words text-2xl font-black">{post.title}</h3><p className="mt-4 whitespace-pre-wrap break-words leading-7 text-zinc-300">{post.content}</p></div>
+    <div className="p-6"><p className="text-xs font-bold uppercase tracking-wider text-orange-400">{post.category === 'realisation' ? 'Réalisation' : 'Actualité'}{displayDate && <> · <time title={post.sourcePublishedDate ? 'Date de publication d’origine' : undefined} dateTime={displayDate}>{new Date(displayDate).toLocaleDateString('fr-FR', post.sourcePublishedDate ? { timeZone: 'UTC' } : undefined)}</time></>}</p><h3 className="mt-3 break-words text-2xl font-black">{post.title}</h3><p className="mt-4 whitespace-pre-wrap break-words leading-7 text-zinc-300">{post.content}</p></div>
   </article>;
 }
 export default function SocialNews({ onLinks }) {

@@ -3,6 +3,7 @@ import AdminLayout from './AdminLayout';
 import { API_URL } from '../lib/api';
 import { socialNames, postStatuses, newPost, socialRequest } from '../lib/social';
 import { PublicationCard } from '../components/SocialNews';
+import HistoryImport from './HistoryImport';
 
 const field = 'mt-2 w-full rounded-xl border border-white/20 bg-zinc-950 p-3 text-white focus:border-orange-500';
 const button = 'rounded-xl border border-white/20 px-4 py-3 text-sm font-bold transition hover:border-orange-500 disabled:opacity-50';
@@ -45,6 +46,7 @@ export default function AdminSocial() {
     {authError && <a href="/admin" className="text-orange-400 underline">Vérifier votre connexion à l’administration</a>}
     {!data && !authError && <p role="status">Chargement…</p>}
     {data && <>
+      <HistoryImport token={token} busy={busy} perform={perform} refresh={refresh} setNotice={setNotice} />
       <form className="mb-10 rounded-3xl border border-white/10 bg-zinc-900 p-6" onSubmit={e => { e.preventDefault(); perform(async () => { await socialRequest('/admin/links', token, 'PUT', data.links); setNotice('Liens enregistrés. Ils apparaissent sur le site, sans connexion automatique.'); }); }}>
         <h3 className="text-2xl font-black">Vos profils sociaux</h3><p className="mt-2 text-zinc-400">Laissez vide pour masquer un réseau.</p>
         <fieldset disabled={busy} className="mt-4 grid gap-4 xl:grid-cols-3">{Object.entries(socialNames).map(([key, name]) => <Field key={key} label={name}><input type="url" className={field} value={data.links[key] || ''} placeholder={`https://www.${key}.com/…`} onChange={e => setData(prev => ({ ...prev, links: { ...prev.links, [key]: e.target.value } }))} /></Field>)}</fieldset><button disabled={busy} className={button}>Enregistrer les liens</button>
@@ -57,6 +59,7 @@ export default function AdminSocial() {
         </section>
         <form className="min-w-0 rounded-3xl border border-white/10 bg-zinc-900 p-6" onSubmit={e => { e.preventDefault(); perform(async () => { const saved = await socialRequest(post._id ? `/admin/posts/${post._id}` : '/admin/posts', token, post._id ? 'PUT' : 'POST', post); setPost(saved.post); await refresh(1); setNotice(saved.post.status === 'published' ? 'Publication visible sur le site. Aucun envoi vers les réseaux sociaux.' : 'Préparation enregistrée. Elle reste privée.'); }); }}>
           <h3 className="text-2xl font-black">{post._id ? 'Modifier' : 'Créer'} une publication</h3>
+          {post.sources?.length > 0 && <details className="mt-5 rounded-xl border border-white/10 p-4"><summary className="cursor-pointer font-bold text-orange-300">Sources et textes d’origine ({post.sources.length})</summary>{post.sources.map(source => <div key={`${source.platform}:${source.id}`} className="mt-4 border-t border-white/10 pt-4"><a href={source.url} target="_blank" rel="noopener noreferrer" className="text-orange-300 underline">{socialNames[source.platform]} — {source.publishedDate}</a><p className="mt-3 whitespace-pre-wrap break-words text-sm text-zinc-400">{source.originalText}</p></div>)}</details>}
           <fieldset disabled={busy}>
             <Field label="Titre"><input className={field} required maxLength={160} value={post.title} onChange={e => change('title', e.target.value)} /></Field>
             <Field label="Rubrique"><select className={field} value={post.category} onChange={e => change('category', e.target.value)}><option value="actualite">Actualité</option><option value="realisation">Réalisation</option></select></Field>
