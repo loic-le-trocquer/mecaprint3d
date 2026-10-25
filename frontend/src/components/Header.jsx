@@ -1,63 +1,9 @@
+import { useState } from "react";
+const links = [["#univers", "Nos univers"], ["#technologies", "Tech"], ["#showroom", "Design"], ["#corten", "Home & Outdoor"], ["#realisations", "Réalisations"], ["#actualites", "Actualités"], ["#contact", "Contact"]];
 export default function Header({ content }) {
-  const brand = content?.brand || {};
-  const name = brand.name || "MecaPrint3D";
-
-  return (
-    <header className="fixed left-0 top-0 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur-xl">
-<div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-6 lg:px-8">        
-        {/* LOGO */}
-        <a href="#" className="flex items-center gap-3">
-          {brand.logoUrl ? (
-            <img
-              src={brand.logoUrl}
-              alt={name}
-              className="h-25 w-auto object-contain transition duration-300 hover:scale-105"
-            />
-          ) : (
-            <div className="text-2xl font-black tracking-tight text-white">
-              Meca<span className="text-orange-500">Print3D</span>
-            </div>
-          )}
-        </a>
-
-        <nav className="hidden items-center gap-4 text-sm font-semibold uppercase tracking-wider text-zinc-300 lg:flex">
-
-  <a href="#univers" className="transition hover:text-orange-400">
-    Nos univers
-  </a>
-
-  <a href="#technologies" className="transition hover:text-orange-400">
-    Tech
-  </a>
-
-  <a href="#showroom" className="transition hover:text-orange-400">
-    Design
-  </a>
-
-  <a href="#corten" className="transition hover:text-orange-400">
-    Home & Outdoor
-  </a>
-
-  <a href="#realisations" className="transition hover:text-orange-400">
-    Réalisations
-  </a>
-
-  <a href="#contact" className="transition hover:text-orange-400">
-    Contact
-  </a>
-  <a href="#actualites" className="transition hover:text-orange-400">Actualités</a>
-
-</nav>
-        <a href="#actualites" className="text-sm font-bold text-orange-400 lg:hidden">Actualités</a>
-      
-        {/* CTA */}
-        <a
-          href="#devis"
-          className="hidden rounded-full bg-orange-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-orange-500/20 transition hover:bg-orange-400 lg:inline-flex"
-        >
-          Demander un devis
-        </a>
-      </div>
-    </header>
-  );
+ const [open, setOpen] = useState(false);
+ const brand = content?.brand || {};
+ return <header className="atelier-header"><a href="#" className="atelier-brand" onClick={() => setOpen(false)}>{brand.logoUrl ? <img src={brand.logoUrl} alt={brand.name || "MecaPrint3D"} /> : <><span>MecaPrint<b>3D.</b></span><small>ATELIER DE FABRICATION & DESIGN</small></>}</a>
+ <button type="button" className="atelier-menu" aria-expanded={open} aria-controls="atelier-navigation" onClick={() => setOpen(!open)}>{open ? "Fermer ×" : "Menu +"}</button>
+ <nav id="atelier-navigation" aria-label="Navigation principale" className={open ? "is-open" : ""}>{links.map(([href,label]) => <a key={href} href={href} onClick={() => setOpen(false)}>{label}</a>)}<a href="#devis" className="atelier-button" onClick={() => setOpen(false)}>Demander un devis ↗</a></nav></header>;
 }

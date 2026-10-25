@@ -18,3 +18,30 @@ body {
   background: #f97316;
   color: white;
 }
+/* Atelier theme — presentation layer; checkout and admin retain their styles. */
+.atelier-site{background:#f4f3ed;color:#232722;--atelier-orange:#eb5b2a;--atelier-line:#d9dad1}
+.atelier-site main{scroll-margin-top:90px}
+.atelier-site section[id],.atelier-site footer[id]{scroll-margin-top:90px}
+.atelier-site :focus-visible{outline:2px solid #eb5b2a;outline-offset:5px}
+.atelier-site main>section h2{font-size:clamp(2rem,3.6vw,3.4rem);font-weight:500;letter-spacing:-.05em;line-height:1.12}
+.atelier-site main>section h3{font-weight:500;letter-spacing:-.025em}
+.atelier-site main>section>.blur-3xl{display:none}
+.atelier-site #services article{box-shadow:none;backdrop-filter:none}
+.atelier-site #services article:hover{box-shadow:none;transform:translateY(-4px)}
+.atelier-site #devis{background:#e8e9df}
+.atelier-site #devis input,.atelier-site #devis textarea,.atelier-site #devis select{color:#232722}
+.atelier-site #devis input::placeholder,.atelier-site #devis textarea::placeholder{color:#65695f;opacity:1}
+.atelier-site #devis form{box-shadow:none}
+.atelier-header{height:88px;border-bottom:1px solid var(--atelier-line);display:flex;align-items:center;justify-content:space-between;gap:25px;padding:0 4%;background:#f4f3ed;position:sticky;top:0;z-index:50}
+.atelier-brand{font-size:23px;font-weight:800;letter-spacing:-1px;flex-shrink:0}.atelier-brand b{color:var(--atelier-orange)}.atelier-brand small{font-size:8px;display:block;letter-spacing:2px;margin-top:4px}.atelier-brand img{max-width:190px;max-height:65px;object-fit:contain}
+.atelier-header nav{display:flex;gap:20px;align-items:center;font-size:12px}.atelier-header nav>a:hover{color:#bc421d}.atelier-header .atelier-button{background:#232722}.atelier-header nav>a.atelier-button:hover{color:#fff;background:#3c443a}
+.atelier-button{background:var(--atelier-orange);color:#fff;padding:16px 23px;display:inline-flex;gap:25px;align-items:center;justify-content:center;font-size:13px;font-weight:600;text-decoration:none;transition:background .2s}.atelier-button:hover{background:#c9471c}
+.atelier-hero{display:grid;grid-template-columns:1fr 1fr;min-height:655px;border-bottom:1px solid var(--atelier-line)}
+.atelier-intro{padding:65px 8% 55px 10%}.atelier-eyebrow{font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;display:flex;align-items:center;gap:10px;line-height:1.8}.atelier-eyebrow>span,.atelier-caption>span{height:7px;width:7px;flex-shrink:0;border-radius:50%;background:var(--atelier-orange)}
+.atelier-intro h1{font-size:clamp(46px,4.7vw,72px);line-height:1.04;letter-spacing:-.055em;margin:32px 0 25px;font-weight:500;overflow-wrap:break-word}.atelier-intro h1 em{font-style:normal;color:var(--atelier-orange)}.atelier-description{font-size:16px;line-height:1.8;color:#65695f;max-width:440px}.atelier-actions{display:flex;gap:24px;align-items:center;flex-wrap:wrap;margin-top:30px}.atelier-textlink{font-size:13px;border-bottom:1px solid;padding:8px 0}.atelier-note{font-size:10px;margin-top:35px;color:#65695f;letter-spacing:1px;text-transform:uppercase}
+.atelier-visual{position:relative;overflow:hidden;background-color:#e7e8df;background-image:linear-gradient(#cfd2c740 1px,transparent 1px),linear-gradient(90deg,#cfd2c740 1px,transparent 1px);background-size:35px 35px;display:flex;align-items:center;justify-content:center}.atelier-piece{width:100%;max-width:650px}.atelier-media{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}.atelier-drawing-label{position:absolute;z-index:1;top:30px;left:30px;font-family:monospace;font-size:10px;line-height:1.8;background:#e7e8dfeb;padding:8px}.atelier-drawing-footer{position:absolute;bottom:25px;left:30px;right:30px;display:flex;justify-content:space-between;gap:20px;font-size:9px;letter-spacing:1px;background:#e7e8dfeb;padding:8px}.atelier-caption{display:flex;gap:8px;align-items:center;background:#f4f3ed;padding:12px 18px;position:absolute;bottom:100px;right:28px;font-size:12px;box-shadow:0 8px 30px #23272212}.atelier-ticker{display:flex;justify-content:space-around;gap:20px;flex-wrap:wrap;padding:23px 5%;font-size:10px;font-weight:600;letter-spacing:1.7px;border-bottom:1px solid var(--atelier-line)}
+@media(max-width:1150px){.atelier-header nav{gap:12px;font-size:11px}.atelier-header .atelier-button{padding:14px}.atelier-brand{font-size:20px}.atelier-brand small{font-size:7px;letter-spacing:1px}}
+@media(max-width:950px){.atelier-header{height:76px}.atelier-menu{display:block;font-size:13px;background:transparent;border:1px solid var(--atelier-line);padding:10px 15px}.atelier-header nav{display:none;position:absolute;top:76px;left:0;right:0;background:#f4f3ed;border-bottom:1px solid var(--atelier-line);padding:25px 6%;flex-direction:column;align-items:stretch;gap:0;font-size:14px;max-height:calc(100dvh - 76px);overflow:auto}.atelier-header nav.is-open{display:flex}.atelier-header nav>a{padding:12px 0}.atelier-header nav>a.atelier-button{padding:16px;margin-top:10px}.atelier-hero{grid-template-columns:1fr}.atelier-intro{padding:50px 6%}.atelier-intro h1{font-size:clamp(42px,8vw,68px);max-width:700px}.atelier-visual{min-height:420px}.atelier-piece{max-width:530px}.atelier-ticker{font-size:9px;gap:15px}}
+@media(min-width:951px){.atelier-menu{display:none}}
+@media(max-width:430px){.atelier-drawing-footer{font-size:7px;left:15px;right:15px}.atelier-drawing-label{left:15px;top:15px}.atelier-caption{bottom:65px}.atelier-visual{min-height:365px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.atelier-site *{animation:none!important;transition:none!important}}

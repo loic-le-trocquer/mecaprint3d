@@ -61,7 +61,7 @@ if (window.location.pathname === "/commande-rapide") {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="atelier-site min-h-screen bg-zinc-950 text-white">
       <Header content={content} />
 
     <main>

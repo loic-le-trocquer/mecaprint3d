@@ -36,7 +36,7 @@ export default function ProcessTimeline() {
   return (
     <section 
     id="methodologie"
-    className="relative overflow-hidden border-t border-white/10 bg-zinc-950 px-6 py-28">
+    className="relative overflow-hidden border-t border-[#d9dad1] bg-[#f4f3ed] px-6 py-28">
       {/* BACKGROUND */}
       <div className="absolute left-1/2 top-1/2 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange-500/10 blur-3xl" />
 
@@ -50,11 +50,11 @@ export default function ProcessTimeline() {
               Notre méthode
             </p>
 
-            <h2 className="mt-6 text-5xl font-black leading-none tracking-tight text-white md:text-7xl">
+            <h2 className="mt-6 text-5xl font-black leading-none tracking-tight text-[#232722] md:text-7xl">
               Une pièce réussie commence avant l'impression
             </h2>
 
-            <p className="mt-8 max-w-3xl text-lg leading-relaxed text-zinc-400">
+            <p className="mt-8 max-w-3xl text-lg leading-relaxed text-[#65695f]">
               Chez MecaPrint3D, nous ne lançons pas simplement une impression. Nous analysons le besoin, concevons la solution, sélectionnons le matériau adapté puis fabriquons une pièce cohérente avec son usage réel.
             </p>
 
@@ -76,24 +76,24 @@ export default function ProcessTimeline() {
                 >
 
                   {/* NUMBER */}
-                  <div className="relative z-10 flex h-[62px] w-[62px] shrink-0 items-center justify-center rounded-full border border-orange-500/30 bg-black text-xl font-black text-orange-400 shadow-[0_0_30px_rgba(249,115,22,0.2)]">
+                  <div className="relative z-10 flex h-[62px] w-[62px] shrink-0 items-center justify-center rounded-full border border-orange-500/30 bg-[#f4f3ed] text-xl font-black text-[#bc421d] shadow-[0_0_30px_rgba(249,115,22,0.2)]">
 
                     {step.number}
 
                   </div>
 
                   {/* CARD */}
-                  <div className="relative overflow-hidden rounded-[30px] border border-white/10 bg-zinc-900/70 p-8 backdrop-blur-xl transition duration-500 group-hover:-translate-y-1 group-hover:border-orange-500/40 group-hover:shadow-[0_0_40px_rgba(249,115,22,0.12)]">
+                  <div className="relative overflow-hidden rounded-none border border-[#d9dad1] bg-[#f4f3ed] p-8 backdrop-blur-xl transition duration-500 group-hover:-translate-y-1 group-hover:border-orange-500/40 group-hover:shadow-[0_0_40px_rgba(249,115,22,0.12)]">
 
                     <div className="absolute inset-0 bg-gradient-to-br from-orange-500/0 to-orange-500/5 opacity-0 transition duration-500 group-hover:opacity-100" />
 
                     <div className="relative z-10">
 
-                      <h3 className="text-3xl font-black text-white">
+                      <h3 className="text-3xl font-black text-[#232722]">
                         {step.title}
                       </h3>
 
-                      <p className="mt-5 max-w-3xl leading-relaxed text-zinc-400">
+                      <p className="mt-5 max-w-3xl leading-relaxed text-[#65695f]">
                         {step.description}
                       </p>
 

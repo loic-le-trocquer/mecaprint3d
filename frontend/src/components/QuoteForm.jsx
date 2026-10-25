@@ -281,7 +281,7 @@ const [errorMessage, setErrorMessage] =
 
     <section
       id="devis"
-      className="border-t border-white/10 px-6 py-24"
+      className="border-t border-[#d9dad1] px-6 py-24"
     >
 
       <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2 lg:items-start">
@@ -305,7 +305,7 @@ const [errorMessage, setErrorMessage] =
 
           </h2>
 
-          <p className="mt-6 text-lg leading-relaxed text-zinc-300">
+          <p className="mt-6 text-lg leading-relaxed text-[#65695f]">
 
             {quoteIntro.description ||
               "Envoyez les informations principales de votre projet."}
@@ -319,7 +319,7 @@ const [errorMessage, setErrorMessage] =
         ===================================================== */}
         <form
           onSubmit={handleSubmit}
-          className="rounded-3xl border border-white/10 bg-zinc-900/90 p-6 shadow-2xl shadow-black/40 md:p-8"
+          className="rounded-none border border-[#d9dad1] bg-[#f4f3ed]/90 p-6 shadow-2xl shadow-black/40 md:p-8"
         >
 
           {/* ================= GRID ================= */}
@@ -333,7 +333,7 @@ const [errorMessage, setErrorMessage] =
               value={form.name}
               onChange={handleChange}
               required
-              className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+              className="rounded-none border border-[#d9dad1] bg-[#f4f3ed] px-5 py-4 outline-none transition focus:border-orange-500"
             />
 
             {/* EMAIL */}
@@ -344,7 +344,7 @@ const [errorMessage, setErrorMessage] =
               value={form.email}
               onChange={handleChange}
               required
-              className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+              className="rounded-none border border-[#d9dad1] bg-[#f4f3ed] px-5 py-4 outline-none transition focus:border-orange-500"
             />
 
             {/* PHONE */}
@@ -354,7 +354,7 @@ const [errorMessage, setErrorMessage] =
               placeholder="Téléphone"
               value={form.phone}
               onChange={handleChange}
-              className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+              className="rounded-none border border-[#d9dad1] bg-[#f4f3ed] px-5 py-4 outline-none transition focus:border-orange-500"
             />
 
             {/* QUANTITY */}
@@ -365,7 +365,7 @@ const [errorMessage, setErrorMessage] =
               min="1"
               value={form.quantity}
               onChange={handleChange}
-              className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+              className="rounded-none border border-[#d9dad1] bg-[#f4f3ed] px-5 py-4 outline-none transition focus:border-orange-500"
             />
 
             {/* TYPE PROJET */}
@@ -374,7 +374,7 @@ const [errorMessage, setErrorMessage] =
               value={form.project}
               onChange={handleChange}
               required
-              className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+              className="rounded-none border border-[#d9dad1] bg-[#f4f3ed] px-5 py-4 outline-none transition focus:border-orange-500"
             >
 
               <option value="">
@@ -420,7 +420,7 @@ const [errorMessage, setErrorMessage] =
               name="material"
               value={form.material}
               onChange={handleChange}
-              className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+              className="rounded-none border border-[#d9dad1] bg-[#f4f3ed] px-5 py-4 outline-none transition focus:border-orange-500"
             >
 
               <option value="">
@@ -471,7 +471,7 @@ const [errorMessage, setErrorMessage] =
                 placeholder="Surface à rénover"
                 value={form.surface}
                 onChange={handleChange}
-                className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+                className="rounded-none border border-[#d9dad1] bg-[#f4f3ed] px-5 py-4 outline-none transition focus:border-orange-500"
               />
 
               <input
@@ -480,7 +480,7 @@ const [errorMessage, setErrorMessage] =
                 placeholder="Référence COVER STYL souhaitée"
                 value={form.coveringReference}
                 onChange={handleChange}
-                className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+                className="rounded-none border border-[#d9dad1] bg-[#f4f3ed] px-5 py-4 outline-none transition focus:border-orange-500"
               />
 
             </div>
@@ -499,7 +499,7 @@ const [errorMessage, setErrorMessage] =
                 placeholder="Modèle du véhicule"
                 value={form.vehicle}
                 onChange={handleChange}
-                className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+                className="rounded-none border border-[#d9dad1] bg-[#f4f3ed] px-5 py-4 outline-none transition focus:border-orange-500"
               />
 
               <input
@@ -508,7 +508,7 @@ const [errorMessage, setErrorMessage] =
                 placeholder="Zone à transformer"
                 value={form.surface}
                 onChange={handleChange}
-                className="rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+                className="rounded-none border border-[#d9dad1] bg-[#f4f3ed] px-5 py-4 outline-none transition focus:border-orange-500"
               />
 
             </div>
@@ -527,7 +527,7 @@ const [errorMessage, setErrorMessage] =
                 placeholder="Dimensions approximatives"
                 value={form.dimensions}
                 onChange={handleChange}
-                className="w-full rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+                className="w-full rounded-none border border-[#d9dad1] bg-[#f4f3ed] px-5 py-4 outline-none transition focus:border-orange-500"
               />
 
             </div>
@@ -542,11 +542,11 @@ const [errorMessage, setErrorMessage] =
             value={form.message}
             onChange={handleChange}
             required
-            className="mt-5 w-full rounded-2xl border border-white/10 bg-black/60 px-5 py-4 outline-none transition focus:border-orange-500"
+            className="mt-5 w-full rounded-none border border-[#d9dad1] bg-[#f4f3ed] px-5 py-4 outline-none transition focus:border-orange-500"
           />
 
           {/* ================= FILES ================= */}
-          <label className="mt-5 block cursor-pointer rounded-2xl border border-dashed border-white/15 bg-black/40 p-5 text-center text-sm text-zinc-400 transition hover:border-orange-500">
+          <label className="mt-5 block cursor-pointer rounded-none border border-dashed border-[#d9dad1] bg-[#f4f3ed] p-5 text-center text-sm text-[#65695f] transition hover:border-orange-500">
 
             <input
               type="file"
@@ -565,10 +565,10 @@ const [errorMessage, setErrorMessage] =
 
                   <div
                     key={`${file.name}-${index}`}
-                    className="flex items-center justify-between rounded-xl border border-white/10 bg-black/40 px-4 py-3"
+                    className="flex items-center justify-between rounded-xl border border-[#d9dad1] bg-[#f4f3ed] px-4 py-3"
                   >
 
-                    <div className="truncate text-left text-sm text-orange-300">
+                    <div className="truncate text-left text-sm text-[#bc421d]">
 
                       {file.name}
 
@@ -581,7 +581,7 @@ const [errorMessage, setErrorMessage] =
                       onClick={() =>
                         removeFile(index)
                       }
-                      className="ml-3 rounded-full bg-red-500 px-2 py-1 text-xs font-black text-white hover:bg-red-400"
+                      className="ml-3 rounded-full bg-red-500 px-2 py-1 text-xs font-black text-[#232722] hover:bg-red-400"
                     >
 
                       X
@@ -610,7 +610,7 @@ const [errorMessage, setErrorMessage] =
 ===================================================== */}
 {successMessage && (
 
-  <div className="mt-6 rounded-2xl border border-green-500/20 bg-green-500/10 px-5 py-4 text-sm font-semibold text-green-300 shadow-[0_0_25px_rgba(34,197,94,0.12)]">
+  <div className="mt-6 rounded-none border border-green-500/20 bg-green-500/10 px-5 py-4 text-sm font-semibold text-green-800 shadow-[0_0_25px_rgba(34,197,94,0.12)]">
 
     ✅ {successMessage}
 
@@ -623,7 +623,7 @@ const [errorMessage, setErrorMessage] =
 ===================================================== */}
 {errorMessage && (
 
-  <div className="mt-6 rounded-2xl border border-red-500/20 bg-red-500/10 px-5 py-4 text-sm font-semibold text-red-300 shadow-[0_0_25px_rgba(239,68,68,0.12)]">
+  <div className="mt-6 rounded-none border border-red-500/20 bg-red-500/10 px-5 py-4 text-sm font-semibold text-red-800 shadow-[0_0_25px_rgba(239,68,68,0.12)]">
 
     ❌ {errorMessage}
 
@@ -637,7 +637,7 @@ const [errorMessage, setErrorMessage] =
           <button
             type="submit"
             disabled={sending}
-            className="mt-6 flex w-full items-center justify-center gap-3 rounded-2xl bg-orange-500 px-6 py-4 text-lg font-black text-white shadow-lg shadow-orange-500/20 transition hover:-translate-y-1 hover:bg-orange-400 disabled:cursor-not-allowed disabled:opacity-70"
+            className="mt-6 flex w-full items-center justify-center gap-3 rounded-none bg-orange-500 px-6 py-4 text-lg font-black text-white shadow-lg shadow-orange-500/20 transition hover:-translate-y-1 hover:bg-orange-400 disabled:cursor-not-allowed disabled:opacity-70"
           >
 
             {/* ================= SPINNER ================= */}
@@ -657,7 +657,7 @@ const [errorMessage, setErrorMessage] =
           {/* =====================================================
               INFO
           ===================================================== */}
-          <p className="mt-4 text-center text-xs text-zinc-500">
+          <p className="mt-4 text-center text-xs text-[#65695f]">
 
             Aucun paiement maintenant.
             Le devis est validé avant fabrication.

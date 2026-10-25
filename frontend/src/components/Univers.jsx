@@ -16,7 +16,7 @@ export default function Univers({ content }) {
 
     <section 
     id="univers"
-    className="relative overflow-hidden border-y border-white/5 bg-black py-28">
+    className="relative overflow-hidden border-y border-white/5 bg-[#f4f3ed] py-28">
 
       {/* ================= BACKGROUND ================= */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(249,115,22,0.18),transparent_55%)]" />
@@ -38,14 +38,14 @@ export default function Univers({ content }) {
             </p>
 
             {/* TITLE */}
-            <h2 className="mt-6 text-5xl font-black leading-none tracking-tight text-white md:text-7xl">
+            <h2 className="mt-6 text-5xl font-black leading-none tracking-tight text-[#232722] md:text-7xl">
 
               {intro.title}
 
             </h2>
 
             {/* DESCRIPTION */}
-            <p className="mt-8 max-w-3xl text-lg leading-relaxed text-zinc-400">
+            <p className="mt-8 max-w-3xl text-lg leading-relaxed text-[#65695f]">
 
               {intro.description}
 
@@ -60,7 +60,7 @@ export default function Univers({ content }) {
 
               <article
                 key={index}
-                className="group relative overflow-hidden rounded-3xl border border-white/10 bg-zinc-900/70 backdrop-blur-xl transition duration-500 hover:-translate-y-2 hover:border-orange-500/40 hover:shadow-[0_0_40px_rgba(249,115,22,0.18)]"
+                className="group relative overflow-hidden rounded-none border border-[#d9dad1] bg-[#f4f3ed] backdrop-blur-xl transition duration-500 hover:-translate-y-2 hover:border-orange-500/40 hover:shadow-[0_0_40px_rgba(249,115,22,0.18)]"
               >
 
                 {/* ================= IMAGE ================= */}
@@ -98,28 +98,28 @@ export default function Univers({ content }) {
                   {(() => {
                     const Icon = icons[index] || House;
                     return (
-                      <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl border border-orange-500/20 bg-orange-500/10 text-orange-400">
+                      <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-none border border-orange-500/20 bg-orange-500/10 text-[#bc421d]">
                         <Icon size={24} />
                       </div>
                     );
                   })()}
 
                   {/* SUBTITLE */}
-                  <p className="text-sm font-black uppercase tracking-[0.3em] text-orange-400">
+                  <p className="text-sm font-black uppercase tracking-[0.3em] text-[#bc421d]">
 
                     {item.subtitle}
 
                   </p>
 
                   {/* TITLE */}
-                  <h3 className="mt-4 text-3xl font-black text-white">
+                  <h3 className="mt-4 text-3xl font-black text-[#232722]">
 
                     {item.title}
 
                   </h3>
 
                   {/* DESCRIPTION */}
-                  <p className="mt-5 text-base leading-relaxed text-zinc-400">
+                  <p className="mt-5 text-base leading-relaxed text-[#65695f]">
 
                     {item.description}
 
@@ -127,7 +127,7 @@ export default function Univers({ content }) {
 
                   <a
                     href={item.link || "#devis"}
-                    className="mt-7 inline-flex items-center gap-2 text-sm font-black uppercase tracking-wider text-orange-400 transition hover:text-orange-300"
+                    className="mt-7 inline-flex items-center gap-2 text-sm font-black uppercase tracking-wider text-[#bc421d] transition hover:text-[#bc421d]"
                   >
                     Découvrir
                     <ArrowRight size={16} />

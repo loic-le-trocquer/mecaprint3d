@@ -82,7 +82,7 @@ const services =
 
     <section
       id="services"
-      className="relative overflow-hidden border-t border-white/10 bg-black px-6 py-20"
+      className="relative overflow-hidden border-t border-[#d9dad1] bg-[#f4f3ed] px-6 py-20"
     >
 
       {/* ================= BACKGROUND GLOW ================= */}
@@ -104,14 +104,14 @@ const services =
             </p>
 
             {/* TITLE */}
-            <h2 className="text-4xl font-black leading-tight text-white md:text-6xl">
+            <h2 className="text-4xl font-black leading-tight text-[#232722] md:text-6xl">
 
               {intro.title || "De l'idée à la pièce finie"}
 
             </h2>
 
             {/* DESCRIPTION */}
-            <p className="mt-6 text-lg leading-relaxed text-zinc-300">
+            <p className="mt-6 text-lg leading-relaxed text-[#65695f]">
 
               {intro.description ||
 "De la réparation d'une pièce introuvable au développement d'un nouveau produit, MecaPrint3D vous accompagne grâce à la conception CAO, au scan 3D et à la fabrication adaptée à votre besoin."}
@@ -132,7 +132,7 @@ const services =
 
                 <article
                   key={`${service.title}-${index}`}
-                  className="group relative overflow-hidden rounded-3xl border border-white/10 bg-zinc-900/70 p-8 backdrop-blur-xl transition duration-500 hover:-translate-y-2 hover:border-orange-500/50 hover:bg-zinc-900 hover:shadow-[0_0_40px_rgba(249,115,22,0.15)]"
+                  className="group relative overflow-hidden rounded-none border border-[#d9dad1] bg-[#f4f3ed] p-8 backdrop-blur-xl transition duration-500 hover:-translate-y-2 hover:border-orange-500/50 hover:bg-[#f4f3ed] hover:shadow-[0_0_40px_rgba(249,115,22,0.15)]"
                 >
 
                   {/* ================= HOVER GLOW ================= */}
@@ -145,14 +145,14 @@ const services =
                     <div className="mb-8 flex items-start justify-between">
 
                       {/* ICON */}
-                      <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-orange-500/20 bg-orange-500/10 text-orange-400">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-none border border-orange-500/20 bg-orange-500/10 text-[#bc421d]">
 
                         <Icon size={30} />
 
                       </div>
 
                       {/* BADGE */}
-                      <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-orange-300">
+                      <span className="rounded-full border border-[#d9dad1] bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#bc421d]">
 
                         {service.badge || "SERVICE"}
 
@@ -168,21 +168,21 @@ const services =
                     </span>
 
                     {/* TITLE */}
-                    <h3 className="mt-5 text-2xl font-black text-white">
+                    <h3 className="mt-5 text-2xl font-black text-[#232722]">
 
                       {service.title}
 
                     </h3>
 
                     {/* DESCRIPTION */}
-                    <p className="mt-5 leading-relaxed text-zinc-300">
+                    <p className="mt-5 leading-relaxed text-[#65695f]">
 
                       {service.description}
 
                     </p>
 
                     {/* CTA */}
-                    <div className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-orange-300 transition duration-300 group-hover:translate-x-1">
+                    <div className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#bc421d] transition duration-300 group-hover:translate-x-1">
 
                       Découvrir
 
