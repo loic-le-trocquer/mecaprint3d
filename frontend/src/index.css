@@ -45,3 +45,8 @@ body {
 @media(min-width:951px){.atelier-menu{display:none}}
 @media(max-width:430px){.atelier-drawing-footer{font-size:7px;left:15px;right:15px}.atelier-drawing-label{left:15px;top:15px}.atelier-caption{bottom:65px}.atelier-visual{min-height:365px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.atelier-site *{animation:none!important;transition:none!important}}
+
+/* Logo sombre et orange sur fond blanc dans l’en-tête clair. */
+.atelier-header .atelier-brand{display:flex;align-items:center;background:#fff}
+.atelier-header .atelier-brand img{display:block;width:220px;height:76px;max-width:220px;max-height:76px;object-fit:contain}
+@media(max-width:950px){.atelier-header .atelier-brand img{width:185px;height:64px;max-width:185px;max-height:64px}}
