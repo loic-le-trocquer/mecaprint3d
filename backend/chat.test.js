@@ -1,0 +1,51 @@
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const express = require('express');
+const { tokenHash, visitorAuthorized, publicConversation, escapeHtml } = require('./chatSecurity');
+test('Un visiteur ne peut lire ou écrire que dans sa propre conversation', () => {
+ const token = 'a'.repeat(64);
+ const conversation = { visitorTokenHash: tokenHash(token), visitorEmail: 'private@example.com', messages: [{from:'client',text:'Bonjour',readByAdmin:false}] };
+ assert.equal(visitorAuthorized(conversation, `Bearer ${token}`), true);
+ assert.equal(visitorAuthorized(conversation, `Bearer ${'b'.repeat(64)}`), false);
+ assert.equal(visitorAuthorized(conversation), false);
+ assert.equal(visitorAuthorized({}, `Bearer ${token}`), false);
+ assert.equal(publicConversation(conversation).visitorTokenHash, undefined);
+ assert.equal(publicConversation(conversation).visitorEmail, undefined);
+ assert.equal(escapeHtml('<img src=x>'), '&lt;img src=x&gt;');
+});
+test('Conversation : création, contrôle d’accès, réponse admin et reprise visiteur', async t => {
+ const Model = require('./models/Conversation');
+ const oldToken = process.env.ADMIN_TOKEN, oldEmail = process.env.ADMIN_EMAIL;
+ process.env.ADMIN_TOKEN = 'chat-test-admin'; delete process.env.ADMIN_EMAIL;
+ t.after(()=>{ if(oldToken === undefined)delete process.env.ADMIN_TOKEN;else process.env.ADMIN_TOKEN=oldToken; if(oldEmail === undefined)delete process.env.ADMIN_EMAIL;else process.env.ADMIN_EMAIL=oldEmail; });
+ const id = '0123456789abcdef01234567'; let doc;
+ t.mock.method(Model, 'create', async data => { doc = {...data,_id:id, async save(){return this;}}; return doc; });
+ t.mock.method(Model, 'findById', key => { const result = key === id ? doc : null; const promise = Promise.resolve(result); promise.select = () => Promise.resolve(result); return promise; });
+ const app = express();app.use(express.json());app.use('/api/chat',require('./routes/chat'));
+ const server = app.listen(0,'127.0.0.1');await new Promise(resolve=>server.once('listening',resolve)); t.after(()=>new Promise(resolve=>server.close(resolve)));
+ const base = `http://127.0.0.1:${server.address().port}/api/chat`;
+ async function post(path,body,token) { const res = await fetch(base+path,{method:'POST',headers:{'Content-Type':'application/json',...(token ? {Authorization:`Bearer ${token}`} : {})},body:JSON.stringify(body)});return {status:res.status,data:await res.json()}; }
+ assert.equal((await fetch(base+'/capabilities')).status,200);
+ assert.equal((await post('',{name:'Visiteur',message:''})).status,400);
+ const created = await post('',{name:'Visiteur',email:'visitor@example.com',message:'Ma pièce est cassée'});
+ assert.equal(created.status,200);const token = created.data.visitorToken;assert.match(token,/^[a-f0-9]{64}$/);
+ assert.equal(created.data.conversation.visitorTokenHash,undefined);
+ assert.notEqual(doc.visitorTokenHash,token);
+ assert.equal((await fetch(base+'/'+id)).status,403);
+ assert.equal((await post('',{conversationId:id,message:'Intrusion'},'c'.repeat(64))).status,403);
+ assert.equal(doc.messages.length,1);
+ assert.equal((await post('',{conversationId:id,message:'Dimensions 50 mm'},token)).status,200);
+ assert.equal((await post('/admin/'+id+'/reply',{message:'Réponse équipe'})).status,401);
+ assert.equal((await post('/admin/'+id+'/reply',{message:'Réponse équipe'},'chat-test-admin')).status,200);
+ const recovered = await fetch(base+'/'+id,{headers:{Authorization:`Bearer ${token}`}});const data=await recovered.json();
+ assert.equal(data.conversation.messages.length,3);assert.equal(data.conversation.messages[2].text,'Réponse équipe');assert.equal(data.conversation.messages[2].from,'admin');
+ assert.equal((await fetch(base+'/invalid')).status,400);
+});
+test('Assistant : orientation vers devis et humain, sans inventer de prix ni de délais', async () => {
+ const { projectReply }=await import('../frontend/src/lib/projectAssistant.mjs');
+ assert.equal(projectReply('Quel prix pour ma pièce ?').action,'quote');
+ assert.match(projectReply('Mon projet est urgent').text,/ne peux pas garantir/);
+ assert.equal(projectReply('Je veux parler à Loïc').action,'human');
+ assert.match(projectReply('Quel fichier STL envoyer ?').text,/STEP/);
+ assert.equal(projectReply('question totalement inconnue').action,'human');
+});

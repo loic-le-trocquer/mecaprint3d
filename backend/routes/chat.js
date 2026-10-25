@@ -1,17 +1,30 @@
 const express = require("express");
 const multer = require("multer");
+const crypto = require("node:crypto");
+const fs = require("node:fs");
+const path = require("node:path");
+const rateLimit = require("express-rate-limit");
+const requireAdmin = require("../middleware/adminAuth");
+const { tokenHash, visitorAuthorized, publicConversation, escapeHtml } = require("../chatSecurity");
+const chatDirectory = path.join(__dirname, "../uploads/chat");
+fs.mkdirSync(chatDirectory, { recursive: true });
 
 
 const Conversation = require("../models/Conversation");
 const sendEmail = require("../utils/sendEmail");
 
 const router = express.Router();
+router.use((req, res, next) => { res.set("Cache-Control", "no-store"); next(); });
+router.get("/capabilities", (req, res) => res.json({ success: true, visitorSession: true, version: 2 }));
+const visitorWriteLimit = rateLimit({ windowMs: 15 * 60 * 1000, limit: 40, standardHeaders: true, legacyHeaders: false });
+const visitorReadLimit = rateLimit({ windowMs: 60 * 1000, limit: 300, standardHeaders: true, legacyHeaders: false });
+const validId = id => /^[a-f0-9]{24}$/i.test(String(id || ""));
 
 // =====================================================
 // 📂 CHAT FILE STORAGE
 // =====================================================
 const storage = multer.diskStorage({
-  destination: "uploads/chat/",
+  destination: chatDirectory,
 
   filename: (req, file, cb) => {
     cb(
@@ -35,43 +48,14 @@ const upload = multer({
 // =====================================================
 // 🔐 ADMIN MIDDLEWARE
 // =====================================================
-function requireAdmin(req, res, next) {
-
-  const auth =
-    req.headers.authorization || "";
-
-  const token =
-    auth.replace("Bearer ", "");
-
-  // =====================================================
-  // TOKEN VALIDATION
-  // =====================================================
-  if (
-    !token ||
-    token !== process.env.ADMIN_TOKEN
-  ) {
-
-    return res.status(401).json({
-
-      success: false,
-
-      error: "Accès non autorisé",
-
-    });
-
-  }
-
-  next();
-
-}
-
 // =====================================================
 // 💬 CREATE / SEND CLIENT MESSAGE
 // POST /api/chat
 // =====================================================
 router.post(
   "/",
-  upload.array("files"),
+  visitorWriteLimit,
+  upload.array("files", 10),
   async (req, res) => {
 
   try {
@@ -115,6 +99,9 @@ const uploadedFiles =
     // =====================================================
     // VALIDATION
     // =====================================================
+    if ([message, name, email, phone, conversationId].some(value => value != null && typeof value !== "string")) {
+      return res.status(400).json({ success: false, error: "Format de message invalide." });
+    }
     if (
   !message?.trim() &&
   uploadedFiles.length === 0
@@ -126,17 +113,23 @@ const uploadedFiles =
 }
 
 
+    if (String(message || "").length > 5000 || String(name || "").length > 120 || String(email || "").length > 254) {
+      return res.status(400).json({ success: false, error: "Message ou coordonnées trop longs." });
+    }
+    if (email && !/^\S+@\S+\.\S+$/.test(email)) return res.status(400).json({ success: false, error: "Adresse e-mail invalide." });
     let conversation = null;
+    let visitorToken;
 
     // =====================================================
     // EXISTING CONVERSATION
     // =====================================================
     if (conversationId) {
 
-      conversation =
-        await Conversation.findById(
-          conversationId
-        );
+      if (!validId(conversationId)) return res.status(400).json({ success: false, error: "Conversation invalide." });
+      conversation = await Conversation.findById(conversationId).select("+visitorTokenHash");
+      if (!conversation || !visitorAuthorized(conversation, req.get("Authorization"))) {
+        return res.status(403).json({ success: false, error: "Accès à la conversation refusé." });
+      }
 
     }
 
@@ -145,8 +138,11 @@ const uploadedFiles =
     // =====================================================
     if (!conversation) {
 
+      if (!String(name || "").trim()) return res.status(400).json({ success: false, error: "Votre prénom est requis." });
+      visitorToken = crypto.randomBytes(32).toString("hex");
       conversation =
         await Conversation.create({
+          visitorTokenHash: tokenHash(visitorToken),
 
           visitorName:
             name || "",
@@ -205,7 +201,7 @@ const uploadedFiles =
     // =====================================================
     if (process.env.ADMIN_EMAIL) {
 
-      await sendEmail({
+      sendEmail({
 
         to:
           process.env.ADMIN_EMAIL,
@@ -218,17 +214,17 @@ const uploadedFiles =
 
           <p>
             <strong>Nom :</strong>
-            ${conversation.visitorName || "-"}
+            ${escapeHtml(conversation.visitorName || "-")}
           </p>
 
           <p>
             <strong>Email :</strong>
-            ${conversation.visitorEmail || "-"}
+            ${escapeHtml(conversation.visitorEmail || "-")}
           </p>
 
           <p>
             <strong>Téléphone :</strong>
-            ${conversation.visitorPhone || "-"}
+            ${escapeHtml(conversation.visitorPhone || "-")}
           </p>
 
           <p>
@@ -236,10 +232,10 @@ const uploadedFiles =
           </p>
 
           <p>
-            ${message}
+            ${escapeHtml(message || "")}
           </p>
         `,
-      });
+      }).catch(error => console.error("Notification chat non envoyée :", error.name));
 
     }
 
@@ -252,11 +248,12 @@ const uploadedFiles =
 
       conversationId:
         conversation._id,
+      ...(visitorToken ? { visitorToken } : {}),
 
       reply:
         "Merci 👌 Votre message a bien été transmis. Nous vous répondrons rapidement.",
 
-      conversation,
+      conversation: publicConversation(conversation),
 
     });
 
@@ -601,14 +598,12 @@ router.put(
 // 💬 GET CLIENT CONVERSATION
 // GET /api/chat/:id
 // =====================================================
-router.get("/:id", async (req, res) => {
+router.get("/:id", visitorReadLimit, async (req, res) => {
 
   try {
 
-    const conversation =
-      await Conversation.findById(
-        req.params.id
-      );
+    if (!validId(req.params.id)) return res.status(400).json({ success: false, error: "Conversation invalide." });
+    const conversation = await Conversation.findById(req.params.id).select("+visitorTokenHash");
 
     if (!conversation) {
 
@@ -623,13 +618,8 @@ router.get("/:id", async (req, res) => {
 
     }
 
-    res.json({
-
-      success: true,
-
-      conversation,
-
-    });
+    if (!visitorAuthorized(conversation, req.get("Authorization"))) return res.status(403).json({ success: false, error: "Accès à la conversation refusé." });
+    res.json({ success: true, conversation: publicConversation(conversation) });
 
   } catch (error) {
 

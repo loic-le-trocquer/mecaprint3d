@@ -97,6 +97,8 @@ const conversationSchema =
       // =====================================================
       // VISITOR NAME
       // =====================================================
+      visitorTokenHash: { type: String, select: false },
+
       visitorName: {
         type: String,
 

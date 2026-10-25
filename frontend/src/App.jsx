@@ -12,7 +12,7 @@ import ProcessTimeline from "./components/ProcessTimeline";
 import CoverStylAI from "./components/CoverStylAI";
 import CortenShowcase from "./components/CortenShowcase";
 import QuoteCheckout from "./pages/QuoteCheckout";
-import FloatingChat from "./components/FloatingChat";
+import FloatingChat from "./components/ContactWidget";
 import AdminChat from "./admin/AdminChat";
 import QuickOrder from "./pages/QuickOrder";
 import Admin from "./admin/Admin";

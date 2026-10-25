@@ -44,8 +44,8 @@ const initialForm = {
   city: "",
 };
 
-export default function FloatingChat() {
-  const [open, setOpen] = useState(false);
+export default function FloatingChat({ embedded = false, onClose }) {
+  const [open, setOpen] = useState(embedded);
   const [step, setStep] = useState(0);
   const [form, setForm] = useState(initialForm);
   const [files, setFiles] = useState([]);
@@ -150,6 +150,7 @@ export default function FloatingChat() {
 
   return (
     <>
+      {!embedded && (<>
       <a
         href="https://wa.me/33627497055"
         target="_blank"
@@ -173,8 +174,10 @@ export default function FloatingChat() {
         {open ? <X size={27} /> : <MessageCircle size={27} />}
       </button>
 
+      </>)}
+
       {open && (
-        <section className="fixed bottom-40 right-4 z-50 flex max-h-[calc(100dvh-11rem)] w-[calc(100vw-2rem)] max-w-[430px] flex-col overflow-hidden rounded-[30px] border border-white/10 bg-zinc-950 shadow-2xl shadow-black/60 sm:right-6">
+        <section className={embedded ? "flex min-h-0 flex-col bg-zinc-950 text-white" : "fixed bottom-40 right-4 z-50 flex max-h-[calc(100dvh-11rem)] w-[calc(100vw-2rem)] max-w-[430px] flex-col overflow-hidden rounded-[30px] border border-white/10 bg-zinc-950 shadow-2xl shadow-black/60 sm:right-6"}>
           <header className="bg-gradient-to-r from-orange-600 to-orange-400 p-5 text-white">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -189,9 +192,9 @@ export default function FloatingChat() {
               </div>
               <button
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={() => embedded ? onClose?.() : setOpen(false)}
                 className="rounded-full bg-black/15 p-2 transition hover:bg-black/25"
-                aria-label="Fermer"
+                aria-label={embedded ? "Retour à l’assistant" : "Fermer"}
               >
                 <X size={18} />
               </button>
