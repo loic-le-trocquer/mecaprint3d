@@ -303,6 +303,7 @@ const removeAdminFile = (
   // =====================================================
   return (
     <AdminLayout title="Conversations">
+      <a href="/admin/chat/mobile" className="mb-6 inline-flex items-center gap-3 rounded-2xl bg-orange-500 px-5 py-4 font-bold text-white">📱 Ouvrir la messagerie mobile →</a>
       <div className="mb-8 rounded-[32px] border border-white/10 bg-gradient-to-br from-zinc-900 via-black to-zinc-950 p-6 shadow-2xl shadow-black/30">
         <p className="text-xs font-black uppercase tracking-[0.3em] text-orange-400">
           Chat client

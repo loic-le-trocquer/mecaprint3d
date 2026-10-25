@@ -14,6 +14,7 @@ import CortenShowcase from "./components/CortenShowcase";
 import QuoteCheckout from "./pages/QuoteCheckout";
 import FloatingChat from "./components/ContactWidget";
 import AdminChat from "./admin/AdminChat";
+import MobileChat from "./admin/MobileChat";
 import QuickOrder from "./pages/QuickOrder";
 import Admin from "./admin/Admin";
 import AdminQuotes from "./admin/AdminQuotes";
@@ -41,6 +42,8 @@ export default function App() {
   if (window.location.pathname === "/admin/quotes") {
     return <AdminQuotes />;
   }
+
+  if (window.location.pathname.replace(/\/+$/, "") === "/admin/chat/mobile") return <MobileChat />;
 
   if (window.location.pathname === "/admin/chat") {
     return <AdminChat />;
