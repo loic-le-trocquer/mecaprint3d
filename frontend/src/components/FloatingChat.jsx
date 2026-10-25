@@ -150,17 +150,31 @@ export default function FloatingChat() {
 
   return (
     <>
+      <a
+        href="https://wa.me/33627497055"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Contacter MecaPrint3D sur WhatsApp au 06 27 49 70 55"
+        title="Discuter sur WhatsApp"
+        className="fixed bottom-6 right-6 z-50 flex h-16 w-16 items-center justify-center rounded-full bg-[#25D366] text-white shadow-2xl transition hover:scale-105 hover:bg-[#128C7E] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#128C7E]"
+      >
+        <svg viewBox="0 0 32 32" width="34" height="34" fill="none" aria-hidden="true">
+          <path d="M27 15.5a11 11 0 0 1-16.3 9.7L5 27l1.8-5.5A11 11 0 1 1 27 15.5Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+          <path d="M12.1 10.5c-.4-.8-.8-.8-1.2-.8-.5 0-1.8.9-1.8 2.6 0 1.8 1.4 4 3.4 6 2.1 2 4.8 3.3 6.3 3.1 1.4-.2 2.4-1.2 2.5-2.1 0-.4-.2-.6-.6-.8l-2.3-1.1c-.5-.2-.7-.1-1 .3l-.9 1c-.3.3-.5.4-.9.2-1.4-.6-3-2-3.8-3.3-.3-.4-.2-.7.1-1l.8-.9c.3-.4.3-.6.1-1.1Z" fill="currentColor" />
+        </svg>
+      </a>
       <button
         type="button"
+        title="Assistant de devis"
         aria-label={open ? "Fermer l’assistant" : "Ouvrir l’assistant devis"}
         onClick={() => setOpen((value) => !value)}
-        className="fixed bottom-6 right-6 z-50 flex h-16 w-16 items-center justify-center rounded-full bg-orange-500 text-white shadow-2xl shadow-orange-500/30 transition hover:scale-105 hover:bg-orange-400"
+        className="fixed bottom-24 right-8 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-orange-500 text-white shadow-lg transition hover:scale-105 hover:bg-orange-400"
       >
         {open ? <X size={27} /> : <MessageCircle size={27} />}
       </button>
 
       {open && (
-        <section className="fixed bottom-24 right-4 z-50 flex max-h-[calc(100vh-7rem)] w-[calc(100vw-2rem)] max-w-[430px] flex-col overflow-hidden rounded-[30px] border border-white/10 bg-zinc-950 shadow-2xl shadow-black/60 sm:right-6">
+        <section className="fixed bottom-40 right-4 z-50 flex max-h-[calc(100dvh-11rem)] w-[calc(100vw-2rem)] max-w-[430px] flex-col overflow-hidden rounded-[30px] border border-white/10 bg-zinc-950 shadow-2xl shadow-black/60 sm:right-6">
           <header className="bg-gradient-to-r from-orange-600 to-orange-400 p-5 text-white">
             <div className="flex items-start justify-between gap-4">
               <div>
