@@ -1,3 +1,4 @@
+const { socialEmbed } = require('./socialEmbed');
 const networks = ['facebook', 'instagram', 'linkedin'];
 function validateLinks(body) {
   return Object.fromEntries(networks.map(network => {
@@ -24,6 +25,7 @@ function validatePost(body) {
     if (url.protocol !== 'https:' || url.username || url.password) throw new Error('Utilisez une image HTTPS.');
   }
   if (!Array.isArray(body.channels) || body.channels.some(n => !networks.includes(n))) throw new Error('Réseau invalide.');
-  return { title: text('title', 160, true), content: text('content', 10000, true), socialText: text('socialText', 5000), image, imageAlt: text('imageAlt', 240), category: body.category, status: body.status, channels: [...new Set(body.channels)] };
+  const source = socialEmbed(text('sourceUrl', 5000));
+  return { sourceUrl: source?.sourceUrl || '', title: text('title', 160, true), content: text('content', 10000, true), socialText: text('socialText', 5000), image, imageAlt: text('imageAlt', 240), category: body.category, status: body.status, channels: [...new Set(body.channels)] };
 }
 module.exports = { networks, validateLinks, validatePost };

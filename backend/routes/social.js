@@ -1,3 +1,4 @@
+const {renderArticle} = require('../socialArticle');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const adminAuth = require('../middleware/adminAuth');
@@ -9,6 +10,15 @@ function createSocialRouter(repository = require('../socialRepository')) {
   const wrap = handler => (req, res, next) => Promise.resolve(handler(req, res)).catch(next);
   const page = req => Math.max(1, Math.min(10000, Number.parseInt(req.query.page, 10) || 1));
   router.use((req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });
+  router.get('/article/:id', wrap(async (req, res) => {
+    if (!/^[a-f0-9]{24}$/i.test(req.params.id)) return res.status(404).type('html').send('<h1>Publication introuvable</h1><a href="https://www.mecaprint3d.fr/#actualites">Retour aux actualités</a>');
+    const post = await repository.published(req.params.id);
+    if (!post) return res.status(404).type('html').send('<h1>Publication introuvable</h1><a href="https://www.mecaprint3d.fr/#actualites">Retour aux actualités</a>');
+    res.set('X-Content-Type-Options','nosniff');
+    res.set('Referrer-Policy','strict-origin-when-cross-origin');
+    res.set('Content-Security-Policy', "default-src 'none'; img-src https:; style-src 'self' https://www.mecaprint3d.fr; script-src 'self' https://www.mecaprint3d.fr; frame-src https://www.facebook.com https://www.linkedin.com; base-uri 'none'; form-action 'none'; frame-ancestors 'none'");
+    res.type('html').send(renderArticle(post));
+  }));
   router.get('/public', wrap(async (req, res) => {
     const [links, feed] = await Promise.all([repository.links(), repository.posts(true, page(req))]);
     res.json({ success: true, links, ...feed });

@@ -1,0 +1,2 @@
+export const publicationUrl = post => /^[a-f0-9]{24}$/i.test(post?._id || '') ? `https://www.mecaprint3d.fr/actualites/${post._id}` : '';
+export const socialShareText = post => { const text = (post.socialText || post.content || '').trim(); const url = post.status === 'published' ? publicationUrl(post) : ''; return url && !text.includes(url) ? `${text}\n\nDécouvrez le projet et contactez l’atelier :\n${url}` : text; };

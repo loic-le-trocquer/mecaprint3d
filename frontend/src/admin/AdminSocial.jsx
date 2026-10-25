@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import AdminLayout from './AdminLayout';
 import { API_URL } from '../lib/api';
-import { socialNames, postStatuses, newPost, socialRequest } from '../lib/social';
+import { socialNames, postStatuses, newPost, socialRequest, publicationUrl, socialShareText } from '../lib/social';
 import { PublicationCard } from '../components/SocialNews';
 import HistoryImport from './HistoryImport';
 
@@ -41,7 +41,7 @@ export default function AdminSocial() {
   }
   if (!token) return <AdminLayout title="Actualités & Réseaux"><p><a className="text-orange-400 underline" href="/admin">Connectez-vous à l’administration existante</a> pour préparer vos publications.</p></AdminLayout>;
   return <AdminLayout title="Actualités & Réseaux">
-    <p className="mb-6 rounded-xl border border-orange-500/30 bg-orange-500/10 p-4 leading-7 text-orange-100">Facebook, Instagram et LinkedIn ne sont pas connectés. Aucune diffusion automatique ni programmation n’est active. Ajouter un lien de profil ne connecte pas son API.</p>
+    <p className="mb-6 rounded-xl border border-orange-500/30 bg-orange-500/10 p-4 leading-7 text-orange-100">Publiez une réalisation détaillée sur le site, puis partagez son lien sur vos réseaux pour y amener des visiteurs. Vous pouvez aussi intégrer une publication publique Facebook ou LinkedIn. Le partage sur les réseaux reste manuel.</p>
     <p role="status" aria-live="polite" className="mb-4 whitespace-pre-wrap text-orange-300">{notice}</p>
     {authError && <a href="/admin" className="text-orange-400 underline">Vérifier votre connexion à l’administration</a>}
     {!data && !authError && <p role="status">Chargement…</p>}
@@ -67,13 +67,15 @@ export default function AdminSocial() {
             <Field label="Envoyer une image (10 Mo maximum)"><input className={field} type="file" accept="image/*" onChange={e => { upload(e.target.files[0]); e.target.value = ''; }} /></Field>
             <Field label="Adresse de l’image (HTTPS ou /images/…)"><input className={field} maxLength={1000} value={post.image} onChange={e => change('image', e.target.value)} /></Field>
             <Field label="Description de l’image"><input className={field} maxLength={240} value={post.imageAlt} onChange={e => change('imageAlt', e.target.value)} /></Field>
+            <Field label="Publication Facebook ou LinkedIn à intégrer (facultatif)"><textarea className={field} rows={3} maxLength={5000} value={post.sourceUrl || ''} placeholder="Lien de la publication Facebook, ou code Intégrer fourni par LinkedIn" onChange={e => change('sourceUrl', e.target.value)} /></Field><p className="text-sm leading-6 text-zinc-400">Facebook : collez le lien d’une publication publique. LinkedIn : menu … de la publication → Intégrer cette publication → Copier le code. Seule l’adresse autorisée est conservée ; le code collé n’est pas exécuté. Le contenu intégré apparaîtra sur la page détaillée, après clic du visiteur.</p>
             <Field label="Texte à copier sur les réseaux"><textarea className={field} rows={5} maxLength={5000} value={post.socialText} onChange={e => change('socialText', e.target.value)} /></Field>
             <fieldset className="my-6"><legend className="font-bold">Destinations envisagées — partage manuel</legend>{Object.entries(socialNames).map(([key, name]) => <label className="mt-3 flex items-center gap-3 text-sm text-zinc-300" key={key}><input type="checkbox" checked={post.channels.includes(key)} onChange={e => change('channels', e.target.checked ? [...post.channels, key] : post.channels.filter(n => n !== key))} />{name} — non connecté</label>)}</fieldset>
             <Field label="État de la publication"><select className={field} value={post.status} onChange={e => change('status', e.target.value)}>{Object.entries(postStatuses).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></Field>
             <p className="mb-4 text-sm text-zinc-400">« Publié sur le site » rend le contenu public uniquement sur MecaPrint3D. Les brouillons et les préparations de partage restent privés.</p>
-            <div className="flex flex-wrap gap-3"><button className={`${button} border-orange-500 bg-orange-500 text-black`}>Enregistrer</button><button type="button" className={button} onClick={() => perform(async () => { await navigator.clipboard.writeText(post.socialText || post.content); setNotice('Texte copié. Collez-le sur le réseau choisi et ajoutez votre image.'); })}>Copier le texte social</button>
+            <div className="flex flex-wrap gap-3"><button className={`${button} border-orange-500 bg-orange-500 text-black`}>Enregistrer</button><button type="button" className={button} onClick={() => perform(async () => { await navigator.clipboard.writeText(socialShareText(post)); setNotice(post.status === 'published' ? 'Texte et lien vers la page du site copiés. Collez-les sur le réseau choisi et ajoutez votre image.' : 'Texte copié. Publiez d’abord sur le site pour disposer d’un lien partageable.'); })}>Copier le texte et le lien</button>
             {post._id && <button type="button" className={`${button} text-red-300`} onClick={() => { if (window.confirm('Supprimer définitivement cette publication ?')) perform(async () => { await socialRequest(`/admin/posts/${post._id}`, token, 'DELETE'); setPost(newPost()); await refresh(1); setNotice('Publication supprimée.'); }); }}>Supprimer</button>}</div>
           </fieldset>
+          {post.status === 'published' && publicationUrl(post) && <div className="mt-6 rounded-xl border border-orange-500/30 p-4"><p className="mb-3 font-bold">Page à partager</p><a className="break-all text-orange-300 underline" href={publicationUrl(post)} target="_blank" rel="noopener noreferrer">{publicationUrl(post)}</a><div className="mt-4 flex flex-wrap gap-3"><a className={button} href={'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(publicationUrl(post))} target="_blank" rel="noopener noreferrer">Préparer le partage Facebook ↗</a><a className={button} href={'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(publicationUrl(post))} target="_blank" rel="noopener noreferrer">Préparer le partage LinkedIn ↗</a></div><p className="mt-3 text-xs text-zinc-400">Le réseau ouvre son éditeur : vous gardez la main sur la publication finale.</p></div>}
           <h4 className="mb-4 mt-10 text-xl font-bold">Aperçu du contenu</h4><PublicationCard post={{ ...post, title: post.title || 'Titre de votre publication' }} />
         </form>
       </div>

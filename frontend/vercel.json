@@ -1,7 +1,20 @@
 {
   "rewrites": [
-    { "source": "/admin", "destination": "/" },
-    { "source": "/admin/(.*)", "destination": "/" },
-    { "source": "/(.*)", "destination": "/" }
+    {
+      "source": "/actualites/:id",
+      "destination": "https://mecaprint3d-backend.onrender.com/api/social/article/:id"
+    },
+    {
+      "source": "/admin",
+      "destination": "/"
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": "/"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
   ]
 }

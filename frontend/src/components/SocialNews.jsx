@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { socialNames, socialRequest, profileUrl } from '../lib/social';
+import { socialNames, socialRequest, profileUrl, publicationUrl } from '../lib/social';
 
 export function SocialLinks({ links = {} }) {
   const profiles = Object.entries(socialNames).filter(([key]) => profileUrl(links[key], key));
@@ -8,9 +8,10 @@ export function SocialLinks({ links = {} }) {
 }
 export function PublicationCard({ post }) {
   const displayDate = post.sourcePublishedDate || post.publishedAt;
+  const url = publicationUrl(post);
   return <article id={post._id ? `publication-${post._id}` : undefined} className="scroll-mt-28 overflow-hidden rounded-none border border-[#d9dad1] bg-[#f4f3ed]">
     {post.image && <img src={post.image} alt={post.imageAlt || post.title} loading="lazy" referrerPolicy="no-referrer" className="h-60 w-full object-cover" />}
-    <div className="p-6"><p className="text-xs font-bold uppercase tracking-wider text-[#bc421d]">{post.category === 'realisation' ? 'Réalisation' : 'Actualité'}{displayDate && <> · <time title={post.sourcePublishedDate ? 'Date de publication d’origine' : undefined} dateTime={displayDate}>{new Date(displayDate).toLocaleDateString('fr-FR', post.sourcePublishedDate ? { timeZone: 'UTC' } : undefined)}</time></>}</p><h3 className="mt-3 break-words text-2xl font-black">{post.title}</h3><p className="mt-4 whitespace-pre-wrap break-words leading-7 text-[#65695f]">{post.content}</p></div>
+    <div className="p-6"><p className="text-xs font-bold uppercase tracking-wider text-[#bc421d]">{post.category === 'realisation' ? 'Réalisation' : 'Actualité'}{displayDate && <> · <time title={post.sourcePublishedDate ? 'Date de publication d’origine' : undefined} dateTime={displayDate}>{new Date(displayDate).toLocaleDateString('fr-FR', post.sourcePublishedDate ? { timeZone: 'UTC' } : undefined)}</time></>}</p><h3 className="mt-3 break-words text-2xl font-black">{post.title}</h3><p className="mt-4 whitespace-pre-wrap break-words leading-7 text-[#65695f]">{post.content?.length > 320 ? post.content.slice(0,320) + '…' : post.content}</p>{url && <a href={url} className="mt-5 inline-flex font-bold text-[#bc421d]">Découvrir le projet et les détails →</a>}</div>
   </article>;
 }
 export default function SocialNews({ onLinks }) {

@@ -1,7 +1,8 @@
 const SocialPost = require('./models/SocialPost');
 const SocialSettings = require('./models/SocialSettings');
-const publicFields = { title: 1, content: 1, category: 1, image: 1, imageAlt: 1, publishedAt: 1, sourcePublishedDate: 1 };
+const publicFields = { title: 1, content: 1, category: 1, image: 1, imageAlt: 1, publishedAt: 1, sourcePublishedDate: 1, sourceUrl: 1 };
 module.exports = {
+  async published(id) { return SocialPost.findOne({ _id: id, status: 'published', publishedAt: { $ne: null } }, publicFields).lean(); },
   async links() { return await SocialSettings.findOne({ key: 'main' }).select('facebook instagram linkedin -_id').lean() || { facebook: '', instagram: '', linkedin: '' }; },
   async setLinks(links) { await SocialSettings.findOneAndUpdate({ key: 'main' }, { $set: links }, { upsert: true, runValidators: true }); return links; },
   async posts(isPublic, page) {

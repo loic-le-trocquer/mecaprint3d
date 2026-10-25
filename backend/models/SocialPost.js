@@ -8,6 +8,7 @@ const schema = new mongoose.Schema({
   channels: [{ type: String, enum: ['facebook', 'instagram', 'linkedin'] }],
   image: { type: String, default: '', maxlength: 1000 },
   imageAlt: { type: String, default: '', maxlength: 240 },
+  sourceUrl: { type: String, default: '', maxlength: 2000 },
   importKey: { type: String, maxlength: 100 },
   sourceKeys: { type: [String], default: undefined },
   sourcePublishedDate: { type: String, match: /^\d{4}-\d{2}-\d{2}$/ },
