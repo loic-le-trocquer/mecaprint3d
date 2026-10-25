@@ -29,6 +29,21 @@ function createSocialRouter(repository = require('../socialRepository')) {
     const [links, feed] = await Promise.all([repository.links(), repository.posts(false, page(req))]);
     res.json({ success: true, links, ...feed, connections: Object.fromEntries(networks.map(n => [n, 'not_connected'])) });
   }));
+  router.get('/admin/distribution', (req, res) => res.json({ success: true, connections: require('../socialPublisher').configuration() }));
+  router.get('/admin/deliveries/:id', wrap(async (req, res) => {
+    if (!/^[a-f0-9]{24}$/i.test(req.params.id)) return res.status(400).json({ success: false, error: 'Identifiant invalide.' });
+    res.json({ success: true, deliveries: await require('../socialDeliveryRepository').list(req.params.id) });
+  }));
+  router.post('/admin/posts/:id/distribute', wrap(async (req, res) => {
+    if (!/^[a-f0-9]{24}$/i.test(req.params.id)) return res.status(400).json({ success: false, error: 'Identifiant invalide.' });
+    try {
+      const distribute = require('../socialDistribution').createDistributor({ posts: repository, deliveries: require('../socialDeliveryRepository') });
+      res.json({ success: true, deliveries: await distribute(req.params.id, req.body?.channels) });
+    } catch (error) {
+      if (error.status) return res.status(error.status).json({ success: false, error: error.message });
+      throw error;
+    }
+  }));
   router.put('/admin/links', wrap(async (req, res) => {
     let links;
     try { links = validateLinks(req.body); } catch (err) { return res.status(400).json({ success: false, error: err.message }); }

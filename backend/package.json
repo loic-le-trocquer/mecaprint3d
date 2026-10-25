@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "node --test social.test.js historyImport.test.js chat.test.js socialArticle.test.js",
+    "test": "node --test social.test.js historyImport.test.js chat.test.js socialArticle.test.js socialDistribution.test.js",
     "dev": "node --watch index.js",
     "start": "node index.js"
   },

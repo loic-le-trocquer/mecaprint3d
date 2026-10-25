@@ -4,6 +4,7 @@ import { API_URL } from '../lib/api';
 import { socialNames, postStatuses, newPost, socialRequest, publicationUrl, socialShareText } from '../lib/social';
 import { PublicationCard } from '../components/SocialNews';
 import HistoryImport from './HistoryImport';
+import SocialDistribution from './SocialDistribution';
 
 const field = 'mt-2 w-full rounded-xl border border-white/20 bg-zinc-950 p-3 text-white focus:border-orange-500';
 const button = 'rounded-xl border border-white/20 px-4 py-3 text-sm font-bold transition hover:border-orange-500 disabled:opacity-50';
@@ -28,6 +29,10 @@ export default function AdminSocial() {
     try { await action(); } catch (error) { setNotice(error.message); } finally { setBusy(false); }
   }
   const change = (key, value) => setPost(prev => ({ ...prev, [key]: value }));
+  async function savePost(value) {
+    const saved = await socialRequest(value._id ? `/admin/posts/${value._id}` : '/admin/posts', token, value._id ? 'PUT' : 'POST', value);
+    setPost(saved.post); await refresh(1); return saved.post;
+  }
   async function upload(file) {
     if (!file) return;
     if (!file.type.startsWith('image/') || file.size > 10 * 1024 * 1024) { setNotice('Choisissez une image de moins de 10 Mo.'); return; }
@@ -41,7 +46,7 @@ export default function AdminSocial() {
   }
   if (!token) return <AdminLayout title="Actualités & Réseaux"><p><a className="text-orange-400 underline" href="/admin">Connectez-vous à l’administration existante</a> pour préparer vos publications.</p></AdminLayout>;
   return <AdminLayout title="Actualités & Réseaux">
-    <p className="mb-6 rounded-xl border border-orange-500/30 bg-orange-500/10 p-4 leading-7 text-orange-100">Publiez une réalisation détaillée sur le site, puis partagez son lien sur vos réseaux pour y amener des visiteurs. Vous pouvez aussi intégrer une publication publique Facebook ou LinkedIn. Le partage sur les réseaux reste manuel.</p>
+    <p className="mb-6 rounded-xl border border-orange-500/30 bg-orange-500/10 p-4 leading-7 text-orange-100">Préparez votre actualité ici, puis publiez-la sur le site et diffusez son lien sur Facebook et LinkedIn lorsque leurs accès de publication sont activés. Vous pouvez aussi utiliser les boutons de partage manuel.</p>
     <p role="status" aria-live="polite" className="mb-4 whitespace-pre-wrap text-orange-300">{notice}</p>
     {authError && <a href="/admin" className="text-orange-400 underline">Vérifier votre connexion à l’administration</a>}
     {!data && !authError && <p role="status">Chargement…</p>}
@@ -57,7 +62,7 @@ export default function AdminSocial() {
           {data.posts.map(item => <div key={item._id} className="border-b border-white/10 py-5"><h4 className="break-words font-bold">{item.title}</h4><p className="my-2 text-sm text-zinc-400">{postStatuses[item.status]}</p><button disabled={busy} type="button" className={button} onClick={() => { setPost({ ...newPost(), ...item }); setNotice(''); }}>Modifier</button></div>)}
           <div className="mt-4 flex flex-wrap gap-2">{page > 1 && <button disabled={busy} className={button} onClick={() => perform(() => refresh(page - 1))}>Précédent</button>}{data.hasMore && <button disabled={busy} className={button} onClick={() => perform(() => refresh(page + 1))}>Suivant</button>}</div>
         </section>
-        <form className="min-w-0 rounded-3xl border border-white/10 bg-zinc-900 p-6" onSubmit={e => { e.preventDefault(); perform(async () => { const saved = await socialRequest(post._id ? `/admin/posts/${post._id}` : '/admin/posts', token, post._id ? 'PUT' : 'POST', post); setPost(saved.post); await refresh(1); setNotice(saved.post.status === 'published' ? 'Publication visible sur le site. Aucun envoi vers les réseaux sociaux.' : 'Préparation enregistrée. Elle reste privée.'); }); }}>
+        <form className="min-w-0 rounded-3xl border border-white/10 bg-zinc-900 p-6" onSubmit={e => { e.preventDefault(); perform(async () => { const saved = await savePost(post); setNotice(saved.status === 'published' ? 'Publication visible sur le site. Aucun envoi vers les réseaux sociaux.' : 'Préparation enregistrée. Elle reste privée.'); }); }}>
           <h3 className="text-2xl font-black">{post._id ? 'Modifier' : 'Créer'} une publication</h3>
           {post.sources?.length > 0 && <details className="mt-5 rounded-xl border border-white/10 p-4"><summary className="cursor-pointer font-bold text-orange-300">Sources et textes d’origine ({post.sources.length})</summary>{post.sources.map(source => <div key={`${source.platform}:${source.id}`} className="mt-4 border-t border-white/10 pt-4"><a href={source.url} target="_blank" rel="noopener noreferrer" className="text-orange-300 underline">{socialNames[source.platform]} — {source.publishedDate}</a><p className="mt-3 whitespace-pre-wrap break-words text-sm text-zinc-400">{source.originalText}</p></div>)}</details>}
           <fieldset disabled={busy}>
@@ -69,12 +74,13 @@ export default function AdminSocial() {
             <Field label="Description de l’image"><input className={field} maxLength={240} value={post.imageAlt} onChange={e => change('imageAlt', e.target.value)} /></Field>
             <Field label="Publication Facebook ou LinkedIn à intégrer (facultatif)"><textarea className={field} rows={3} maxLength={5000} value={post.sourceUrl || ''} placeholder="Lien de la publication Facebook, ou code Intégrer fourni par LinkedIn" onChange={e => change('sourceUrl', e.target.value)} /></Field><p className="text-sm leading-6 text-zinc-400">Facebook : collez le lien d’une publication publique. LinkedIn : menu … de la publication → Intégrer cette publication → Copier le code. Seule l’adresse autorisée est conservée ; le code collé n’est pas exécuté. Le contenu intégré apparaîtra sur la page détaillée, après clic du visiteur.</p>
             <Field label="Texte à copier sur les réseaux"><textarea className={field} rows={5} maxLength={5000} value={post.socialText} onChange={e => change('socialText', e.target.value)} /></Field>
-            <fieldset className="my-6"><legend className="font-bold">Destinations envisagées — partage manuel</legend>{Object.entries(socialNames).map(([key, name]) => <label className="mt-3 flex items-center gap-3 text-sm text-zinc-300" key={key}><input type="checkbox" checked={post.channels.includes(key)} onChange={e => change('channels', e.target.checked ? [...post.channels, key] : post.channels.filter(n => n !== key))} />{name} — non connecté</label>)}</fieldset>
+            <fieldset className="my-6"><legend className="font-bold">Réseaux sélectionnés</legend>{Object.entries(socialNames).map(([key, name]) => <label className="mt-3 flex items-center gap-3 text-sm text-zinc-300" key={key}><input type="checkbox" checked={post.channels.includes(key)} onChange={e => change('channels', e.target.checked ? [...post.channels, key] : post.channels.filter(n => n !== key))} />{name}{key === 'instagram' ? ' — partage manuel' : ''}</label>)}</fieldset>
             <Field label="État de la publication"><select className={field} value={post.status} onChange={e => change('status', e.target.value)}>{Object.entries(postStatuses).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></Field>
             <p className="mb-4 text-sm text-zinc-400">« Publié sur le site » rend le contenu public uniquement sur MecaPrint3D. Les brouillons et les préparations de partage restent privés.</p>
             <div className="flex flex-wrap gap-3"><button className={`${button} border-orange-500 bg-orange-500 text-black`}>Enregistrer</button><button type="button" className={button} onClick={() => perform(async () => { await navigator.clipboard.writeText(socialShareText(post)); setNotice(post.status === 'published' ? 'Texte et lien vers la page du site copiés. Collez-les sur le réseau choisi et ajoutez votre image.' : 'Texte copié. Publiez d’abord sur le site pour disposer d’un lien partageable.'); })}>Copier le texte et le lien</button>
             {post._id && <button type="button" className={`${button} text-red-300`} onClick={() => { if (window.confirm('Supprimer définitivement cette publication ?')) perform(async () => { await socialRequest(`/admin/posts/${post._id}`, token, 'DELETE'); setPost(newPost()); await refresh(1); setNotice('Publication supprimée.'); }); }}>Supprimer</button>}</div>
           </fieldset>
+          <SocialDistribution token={token} post={post} busy={busy} perform={perform} save={savePost} setNotice={setNotice} />
           {post.status === 'published' && publicationUrl(post) && <div className="mt-6 rounded-xl border border-orange-500/30 p-4"><p className="mb-3 font-bold">Page à partager</p><a className="break-all text-orange-300 underline" href={publicationUrl(post)} target="_blank" rel="noopener noreferrer">{publicationUrl(post)}</a><div className="mt-4 flex flex-wrap gap-3"><a className={button} href={'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(publicationUrl(post))} target="_blank" rel="noopener noreferrer">Préparer le partage Facebook ↗</a><a className={button} href={'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(publicationUrl(post))} target="_blank" rel="noopener noreferrer">Préparer le partage LinkedIn ↗</a></div><p className="mt-3 text-xs text-zinc-400">Le réseau ouvre son éditeur : vous gardez la main sur la publication finale.</p></div>}
           <h4 className="mb-4 mt-10 text-xl font-bold">Aperçu du contenu</h4><PublicationCard post={{ ...post, title: post.title || 'Titre de votre publication' }} />
         </form>
