@@ -329,6 +329,7 @@ app.post("/upload", upload.array("files"), (req, res) => {
 // =====================================================
 app.use("/api/quotes", quotesRoutes);
 app.use("/api/site-content", siteContentRoutes);
+app.use('/api/catalog', require('./routes/catalog').createCatalogRouter());
 app.use('/api/social', require('./routes/social').createSocialRouter());
 app.use("/api/chat", chatRoutes);
 app.use("/api/simple-orders", simpleOrdersRoutes);

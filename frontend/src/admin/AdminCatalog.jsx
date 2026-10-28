@@ -1,0 +1,12 @@
+import { useEffect, useState } from 'react';
+import AdminLayout from './AdminLayout';
+import { apiFetch } from '../lib/api';
+const money = cents => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(cents / 100);
+export default function AdminCatalog() {
+  const [data, setData] = useState(null);
+  const [page, setPage] = useState(1);
+  const [error, setError] = useState('');
+  const token = localStorage.getItem('mecaprint3d_admin_token');
+  useEffect(() => { if (!token) return; let active = true; setData(null); setError(''); apiFetch(`/api/catalog/admin/orders?page=${page}`, { headers: { Authorization: `Bearer ${token}` } }).then(result => { if (active) setData(result); }).catch(err => { if (active) setError(err.message); }); return () => { active = false; }; }, [page, token]);
+  return <AdminLayout title="Demandes boutique"><p className="mb-6"><a href="/boutique" className="text-orange-400">Voir le catalogue →</a></p>{!token && <a href="/admin">Connectez-vous à l’administration.</a>}{error && <p role="alert">{error}</p>}{token && !data && !error && <p>Chargement…</p>}{data && <><p className="mb-6">Les demandes sont enregistrées même si la notification e-mail échoue. Confirmez les stocks et les frais avant de finaliser la commande.</p>{!data.orders.length && <p>Aucune demande.</p>}{data.orders.map(order => <article className="my-5 rounded-2xl border border-white/20 p-5" key={order.reference}><h2 className="text-xl font-bold">{order.reference} · {money(order.totalCents)}</h2><p className="my-3 text-zinc-400">{new Date(order.createdAt).toLocaleString('fr-FR', { timeZone: 'Europe/Paris' })} · Notification {order.notified ? 'envoyée' : 'non envoyée'}</p><p>{order.customer.name} · {order.customer.company}</p><p><a className="text-orange-400" href={`mailto:${order.customer.email}`}>{order.customer.email}</a> · {order.customer.phone}</p><p className="my-3 whitespace-pre-wrap">{order.delivery === 'pickup' ? 'Retrait atelier' : order.customer.address}</p><ul className="my-3 space-y-2">{order.items.map(item => <li key={item.sku}>{item.quantity} × {item.name} / {item.color} — {item.weight} g — {item.diameter} mm · {money(item.priceCents)} / unité <small>({item.sku})</small></li>)}</ul><p className="whitespace-pre-wrap">{order.customer.comment}</p></article>)}<div className="flex gap-6"><button disabled={page === 1} onClick={() => setPage(page - 1)}>← Précédent</button><span>Page {page}</span><button disabled={!data.hasMore} onClick={() => setPage(page + 1)}>Suivant →</button></div></>}</AdminLayout>;
+}

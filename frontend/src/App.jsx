@@ -16,6 +16,8 @@ import FloatingChat from "./components/ContactWidget";
 import AdminChat from "./admin/AdminChat";
 import MobileChat from "./admin/MobileChat";
 import QuickOrder from "./pages/QuickOrder";
+import Boutique from './pages/Boutique';
+import AdminCatalog from './admin/AdminCatalog';
 import Admin from "./admin/Admin";
 import AdminQuotes from "./admin/AdminQuotes";
 import AdminMaterials from "./admin/AdminMaterials.jsx";
@@ -37,6 +39,8 @@ export default function App() {
   const { content, setContent } = useSiteContent();
 
   const isAdmin = window.location.pathname.startsWith("/admin");
+  if (window.location.pathname.replace(/\/+$/, '') === '/boutique') return <Boutique content={content}/>;
+  if (window.location.pathname === '/admin/boutique') return <AdminCatalog/>;
   if (window.location.pathname === '/admin/social') return <AdminSocial />;
 
   if (window.location.pathname === "/admin/quotes") {

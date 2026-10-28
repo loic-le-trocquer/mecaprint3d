@@ -34,6 +34,7 @@ export default function Footer({ content, socialLinks }) {
           </h4>
 
           <div className="space-y-2 text-zinc-400">
+            <p><a href="/boutique" className="hover:text-orange-400">Boutique FormFutura</a></p>
             <p><a href="#services" className="hover:text-orange-400">Services</a></p>
             <p><a href="#univers" className="hover:text-orange-400">Univers</a></p>
             <p><a href="#technologies" className="hover:text-orange-400">Technologies</a></p>

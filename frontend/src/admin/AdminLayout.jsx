@@ -309,7 +309,7 @@ useEffect(() => {
     hover:text-white
   "
 >
-  Matériaux
+              Matériaux
 </a>
 
             {/* =====================================================
@@ -332,6 +332,7 @@ useEffect(() => {
               Voir le site
             </a>
 
+            <a href="/admin/boutique" className="block rounded-2xl border border-white/10 px-5 py-4 font-bold text-zinc-300 hover:border-orange-500">Boutique · Demandes</a>
           </nav>
 
           {/* =====================================================
