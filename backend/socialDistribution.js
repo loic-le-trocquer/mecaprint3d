@@ -1,10 +1,10 @@
 const publisher = require('./socialPublisher');
-function createDistributor({ posts, deliveries, send = publisher.send, configuration = publisher.configuration }) {
+function createDistributor({ posts, deliveries, send = publisher.send, configuration = async () => publisher.configuration(await require('./linkedinOAuth').runtimeEnv()) }) {
   return async function distribute(id, channels) {
     if (!Array.isArray(channels) || !channels.length || channels.length > 2 || new Set(channels).size !== channels.length || channels.some(c => !publisher.CHANNELS.includes(c))) throw Object.assign(new Error('Choisissez Facebook et/ou LinkedIn.'), { status: 400 });
     const post = await posts.publishedForDistribution(id);
     if (!post) throw Object.assign(new Error('Enregistrez et publiez d’abord cette actualité sur le site.'), { status: 400 });
-    const config = configuration();
+    const config = await configuration();
     // Validate every target before making any external change.
     for (const channel of channels) {
       if (!config[channel].configured) throw Object.assign(new Error(`La publication vers ${channel} n’est pas configurée.`), { status: 409 });

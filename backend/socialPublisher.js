@@ -15,6 +15,7 @@ function prepare(post, channel) {
 }
 // Tokens stay on the server. A timeout has an unknown outcome: never automatically retry.
 async function send(post, channel, { env = process.env, fetchImpl = fetch } = {}) {
+  if (channel === 'linkedin' && env === process.env) env = await require('./linkedinOAuth').runtimeEnv(env);
   if (!CHANNELS.includes(channel) || !configuration(env)[channel].configured) throw new Error('Connexion de publication non configurée.');
   const { text, link } = prepare(post, channel);
   let url, headers, payload;

@@ -10,6 +10,22 @@ function createSocialRouter(repository = require('../socialRepository')) {
   const wrap = handler => (req, res, next) => Promise.resolve(handler(req, res)).catch(next);
   const page = req => Math.max(1, Math.min(10000, Number.parseInt(req.query.page, 10) || 1));
   router.use((req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });
+  router.use('/linkedin', rateLimit({ windowMs: 15 * 60 * 1000, limit: 40, standardHeaders: 'draft-8', legacyHeaders: false }));
+  router.get('/linkedin/authorize', wrap(async (req, res) => {
+    res.set('Referrer-Policy', 'no-referrer');
+    try {
+      const result = await require('../linkedinOAuth').createFlow().authorize(req.query.ticket);
+      res.cookie('linkedin_binding', result.binding, { httpOnly: true, secure: true, sameSite: 'lax', path: '/api/social/linkedin', maxAge: 600000 });
+      res.redirect(result.url);
+    } catch { res.status(400).type('text').send('Connexion expirée ou indisponible. Revenez dans l’administration pour recommencer.'); }
+  }));
+  router.get('/linkedin/callback', wrap(async (req, res) => {
+    res.set('Referrer-Policy', 'no-referrer');
+    const binding = (req.get('cookie') || '').split(';').map(s => s.trim()).find(s => s.startsWith('linkedin_binding='))?.slice('linkedin_binding='.length);
+    res.clearCookie('linkedin_binding', { httpOnly: true, secure: true, sameSite: 'lax', path: '/api/social/linkedin' });
+    try { res.redirect(await require('../linkedinOAuth').createFlow().callback(req.query, binding)); }
+    catch (error) { res.status(400).type('text').send(error.status ? error.message : 'Connexion impossible. Recommencez depuis l’administration.'); }
+  }));
   router.get('/article/:id', wrap(async (req, res) => {
     if (!/^[a-f0-9]{24}$/i.test(req.params.id)) return res.status(404).type('html').send('<h1>Publication introuvable</h1><a href="https://www.mecaprint3d.fr/#actualites">Retour aux actualités</a>');
     const post = await repository.published(req.params.id);
@@ -29,7 +45,27 @@ function createSocialRouter(repository = require('../socialRepository')) {
     const [links, feed] = await Promise.all([repository.links(), repository.posts(false, page(req))]);
     res.json({ success: true, links, ...feed, connections: Object.fromEntries(networks.map(n => [n, 'not_connected'])) });
   }));
-  router.get('/admin/distribution', (req, res) => res.json({ success: true, connections: require('../socialPublisher').configuration() }));
+  router.get('/admin/distribution', wrap(async (req, res) => res.json({ success: true, connections: require('../socialPublisher').configuration(await require('../linkedinOAuth').runtimeEnv()) })));
+  router.get('/admin/linkedin/connection', wrap(async (req, res) => {
+    const oauth = require('../linkedinOAuth');
+    let configured = false;
+    try { oauth.config(process.env); configured = true; } catch {}
+    const value = configured ? await oauth.createFlow().credentials() : null;
+    res.json({ success: true, configured, connected: Boolean(value), expires: value?.expires || null });
+  }));
+  router.post('/admin/linkedin/connect', wrap(async (req, res) => {
+    try { res.json({ success: true, url: await require('../linkedinOAuth').createFlow().start() }); }
+    catch (error) { if (error.status) return res.status(error.status).json({ success: false, error: error.message }); throw error; }
+  }));
+  router.post('/admin/linkedin/import', wrap(async (req, res) => {
+    try {
+      const result = await require('../linkedinImport').importLinkedin({ repository, start: req.body?.start ?? 0, alreadySent: async externalId => Boolean(await require('../models/SocialDelivery').exists({ channel: 'linkedin', externalId })) });
+      res.json({ success: true, ...result });
+    } catch (error) {
+      if (error.status) return res.status(error.status).json({ success: false, error: error.message });
+      throw error;
+    }
+  }));
   router.get('/admin/deliveries/:id', wrap(async (req, res) => {
     if (!/^[a-f0-9]{24}$/i.test(req.params.id)) return res.status(400).json({ success: false, error: 'Identifiant invalide.' });
     res.json({ success: true, deliveries: await require('../socialDeliveryRepository').list(req.params.id) });

@@ -5,6 +5,8 @@ import { socialNames, postStatuses, newPost, socialRequest, publicationUrl, soci
 import { PublicationCard } from '../components/SocialNews';
 import HistoryImport from './HistoryImport';
 import SocialDistribution from './SocialDistribution';
+import LinkedinImport from './LinkedinImport';
+import LinkedinConnection from './LinkedinConnection';
 
 const field = 'mt-2 w-full rounded-xl border border-white/20 bg-zinc-950 p-3 text-white focus:border-orange-500';
 const button = 'rounded-xl border border-white/20 px-4 py-3 text-sm font-bold transition hover:border-orange-500 disabled:opacity-50';
@@ -52,6 +54,8 @@ export default function AdminSocial() {
     {!data && !authError && <p role="status">Chargement…</p>}
     {data && <>
       <HistoryImport token={token} busy={busy} perform={perform} refresh={refresh} setNotice={setNotice} />
+      <LinkedinImport token={token} busy={busy} perform={perform} refresh={refresh} setNotice={setNotice} />
+      <LinkedinConnection token={token} busy={busy} perform={perform} />
       <form className="mb-10 rounded-3xl border border-white/10 bg-zinc-900 p-6" onSubmit={e => { e.preventDefault(); perform(async () => { await socialRequest('/admin/links', token, 'PUT', data.links); setNotice('Liens enregistrés. Ils apparaissent sur le site, sans connexion automatique.'); }); }}>
         <h3 className="text-2xl font-black">Vos profils sociaux</h3><p className="mt-2 text-zinc-400">Laissez vide pour masquer un réseau.</p>
         <fieldset disabled={busy} className="mt-4 grid gap-4 xl:grid-cols-3">{Object.entries(socialNames).map(([key, name]) => <Field key={key} label={name}><input type="url" className={field} value={data.links[key] || ''} placeholder={`https://www.${key}.com/…`} onChange={e => setData(prev => ({ ...prev, links: { ...prev.links, [key]: e.target.value } }))} /></Field>)}</fieldset><button disabled={busy} className={button}>Enregistrer les liens</button>
