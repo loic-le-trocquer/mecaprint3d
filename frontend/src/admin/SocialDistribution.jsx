@@ -8,6 +8,18 @@ export default function SocialDistribution({ token, post, busy, perform, save, s
   const [error, setError] = useState('');
   useEffect(() => { let active = true; socialRequest('/admin/distribution', token).then(r => { if (active) setConnections(r.connections); }).catch(() => { if (active) setError('État des connexions indisponible.'); }); return () => { active = false; }; }, [token]);
   useEffect(() => { let active = true; setDeliveries([]); if (post._id) socialRequest(`/admin/deliveries/${post._id}`, token).then(r => { if (active) setDeliveries(r.deliveries); }).catch(() => { if (active) setError('Historique des envois indisponible.'); }); return () => { active = false; }; }, [post._id, token]);
+  async function retry(channel) {
+    await perform(async () => {
+      // Do not re-save or send to other networks during retry.
+      const result = await socialRequest(`/admin/posts/${post._id}/distribute`, token, 'POST', { channels: [channel] });
+      const updated = await socialRequest(`/admin/deliveries/${post._id}`, token);
+      setDeliveries(updated.deliveries);
+      const delivery = result.deliveries[0];
+      setNotice(delivery?.state === 'sent'
+        ? `${names[channel]} : publication envoyée.`
+        : `${names[channel]} : ${delivery?.message || 'Vérifiez le statut sur le réseau.'}`);
+    });
+  }
   const selected = post.channels.filter(c => names[c]);
   const available = selected.length > 0 && selected.every(c => connections?.[c]?.configured);
   return <section className="my-6 rounded-xl border border-orange-500/30 p-4">
@@ -23,7 +35,7 @@ export default function SocialDistribution({ token, post, busy, perform, save, s
       setDeliveries(result.deliveries);
       setNotice(result.deliveries.every(d => d.state === 'sent') ? 'Actualité publiée sur le site et envoyée aux réseaux sélectionnés.' : 'Actualité visible sur le site. Consultez le résultat de chaque réseau ; ne relancez pas un envoi au résultat incertain.');
     })}>Publier sur le site et les réseaux sélectionnés</button>
-    {deliveries.length > 0 && <ul className="mt-4 space-y-3 text-sm">{deliveries.map(d => <li key={d.channel}><strong>{names[d.channel]} : {states[d.state] || d.state}</strong><p>{d.message}</p>{d.externalId && <p className="break-all text-zinc-400">Référence : {d.externalId}</p>}</li>)}</ul>}
-    <p className="mt-3 text-xs leading-5 text-zinc-400">Une seule tentative par actualité et par réseau. En cas de refus ou de résultat incertain, vérifiez le réseau avant de demander une intervention. Enregistrer seul n’envoie rien sur les réseaux.</p>
+    {deliveries.length > 0 && <ul className="mt-4 space-y-3 text-sm">{deliveries.map(d => <li key={d.channel}><strong>{names[d.channel]} : {states[d.state] || d.state}</strong><p>{d.message}</p>{d.externalId && <p className="break-all text-zinc-400">Référence : {d.externalId}</p>}{d.state === 'rejected' && <div className="mt-3"><button type="button" className="rounded-xl border border-orange-500 px-4 py-2 font-bold text-orange-300 disabled:opacity-40" disabled={busy || !connections?.[d.channel]?.configured || !post.channels.includes(d.channel) || post.status !== 'published'} onClick={() => retry(d.channel)}>Réessayer uniquement sur {names[d.channel]}</button><p className="mt-1 text-xs text-zinc-400">Reconnectez le réseau si son autorisation a expiré. Cette action ne republie pas sur les autres réseaux.</p></div>}</li>)}</ul>}
+    <p className="mt-3 text-xs leading-5 text-zinc-400">Seuls les refus explicites peuvent être relancés. Les envois réussis ou de résultat incertain restent bloqués pour éviter les doublons. Enregistrer seul n’envoie rien sur les réseaux.</p>
   </section>;
 }
