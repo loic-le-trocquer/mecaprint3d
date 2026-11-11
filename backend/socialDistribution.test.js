@@ -27,3 +27,26 @@ test('Network timeout, missing receipt and server error remain uncertain', async
   const env = { FACEBOOK_PAGE_ACCESS_TOKEN: 'secret', FACEBOOK_PAGE_ID: '1', FACEBOOK_GRAPH_VERSION: 'v25.0' };
   for (const fetchImpl of [async () => { throw Error('secret'); }, async () => ({ ok: true, json: async () => ({}) }), async () => ({ ok: false, status: 500 })]) assert.equal((await send(post, 'facebook', { env, fetchImpl })).state, 'unknown');
 });
+
+test('Rejected Facebook can be retried while already-sent LinkedIn remains locked', async () => {
+  const records = new Map([['facebook', { state: 'rejected' }], ['linkedin', { state: 'sent', externalId: 'urn:li:share:123' }]]);
+  const sent = [];
+  const distribute = createDistributor({
+    posts: { publishedForDistribution: async () => post },
+    deliveries: {
+      claim: async (id, channel) => {
+        if (records.has(channel) && records.get(channel).state !== 'rejected') return false;
+        records.set(channel, { state: 'sending' });
+        return true;
+      },
+      get: async (id, channel) => records.get(channel),
+      finish: async (id, channel, result) => records.set(channel, result)
+    },
+    configuration: () => ({ facebook: { configured: true }, linkedin: { configured: true } }),
+    send: async (item, channel) => { sent.push(channel); return { state: 'sent' }; }
+  });
+  const result = await distribute(post._id, ['facebook', 'linkedin']);
+  assert.deepEqual(sent, ['facebook']);
+  assert.equal(result[0].state, 'sent');
+  assert.equal(result[1].externalId, 'urn:li:share:123');
+});
